@@ -1,4 +1,4 @@
-📊 Data Analysis Portfolio
+# 📊 Data Analysis Portfolio
 
 ![AI-Powered](https://img.shields.io/badge/🤖_AI--Powered-Data_Analyst-blueviolet?style=for-the-badge)
 
