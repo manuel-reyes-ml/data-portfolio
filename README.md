@@ -45,7 +45,7 @@ Most entry-level candidates have tutorial projects. **I have production code wit
 
 Automated Python ETL pipeline reconciling retirement plan distribution data between Relius and Matrix financial systems at Daybright Financial.
 
-**Business Problem:** Manual reconciliation took 4-6 hours weekly, was error-prone, and blocked critical 1099-R tax reporting deadlines.
+**Business Challenge:** Manual reconciliation took 4-6 hours weekly, was error-prone, and blocked critical 1099-R tax reporting deadlines.
 
 **Solution:** Multi-stage ETL pipeline with comprehensive validation, automated data quality checks, professional error handling, and audit logging.
 
