@@ -3,8 +3,8 @@
 ## AI-Powered PII-Safe Data Intelligence for Retirement Plan Operations
 ## "Chat With Your Data" — Production-Grade Natural Language Analytics
 
-**Document Version:** 1.1 (SDK-First AI Architecture + Evaluation & Docker + 2026 Production Patterns)  
-**Last Updated:** February 14, 2026  
+**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** ⭐ FIRST AI PROJECT TO PUBLISH — GenAI Portfolio Launchpad
@@ -310,7 +310,7 @@ User uploads Excel file
 
 | Task | Details | Output |
 |------|---------|--------|
-| **Project scaffold** | Repo, CI/CD, README, .gitignore, requirements.txt | Green CI pipeline |
+| **Project scaffold** | Repo, CI/CD, README, .gitignore, pyproject.toml, LICENSE, Makefile | Green CI pipeline |
 | **Excel loader** | `openpyxl` reader with validation (expected columns, types) | `src/ingest/loader.py` |
 | **PII anonymizer** | Demo-mode only: replace real PII with synthetic values for GitHub/deploy | `src/ingest/anonymizer.py` |
 | **Data validator** | Post-load checks (schema validation, row counts, PII column detection) | `src/ingest/validator.py` |
@@ -562,6 +562,7 @@ datavault-analyst/
 │   └── app.log                   # Streamlit app logs
 ├── src/
 │   ├── __init__.py
+│   ├── py.typed                  # PEP 561 — type hint support marker
 │   ├── ingest/
 │   │   ├── __init__.py
 │   │   ├── loader.py             # Excel loading + validation
@@ -596,16 +597,21 @@ datavault-analyst/
 ├── scripts/
 │   └── generate_synthetic_data.py  # Faker-based synthetic generator
 ├── tests/
+│   ├── conftest.py               # Shared fixtures, mock LLM providers, test data
 │   ├── test_ingest.py            # Loader, anonymizer, validator tests
 │   ├── test_analytics.py         # Metrics calculation tests
 │   ├── test_ai_guardrails.py     # ⭐ PII leak + scope guardrail tests
 │   ├── test_eval.py              # ⭐ DeepEval AI quality evaluation tests
-│   └── test_synthetic.py         # Synthetic data quality tests
+│   ├── test_synthetic.py         # Synthetic data quality tests
+│   └── eval_dataset.json         # ⭐ 30+ query-response pairs for evaluation
 ├── Dockerfile                    # Container definition for deployment
+├── .dockerignore                 # Excludes .git, logs, data/raw, tests from image
+├── .env.example                  # Required environment variables template
 ├── .gitignore
-├── README.md                     # Professional README with GIF demo
-├── requirements.txt              # Production dependencies
-└── requirements-dev.txt          # Development dependencies
+├── LICENSE                       # MIT License
+├── Makefile                      # make test, make lint, make eval, make docker-build
+├── pyproject.toml                # Project metadata, dependencies, tool config (PEP 621)
+└── README.md                     # Professional README with GIF demo
 ```
 
 ---
@@ -753,11 +759,34 @@ Adding measurable AI quality metrics signals production maturity beyond typical 
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**`.dockerignore`** (keeps image small and secure):
+```
+.git
+.gitignore
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+Makefile
+tests/
+notebooks/
+logs/
+data/raw/
+data/processed/
+data/outputs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
 ```
 
 **Run locally:**
@@ -865,8 +894,8 @@ Tests            Metrics          Structured       Video
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.1 — SDK-First AI Architecture + 2026 Production Patterns)  
-**Date:** February 14, 2026  
+**Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
+**Date:** April 03, 2026  
 **Total Timeline:** 4 weeks  
 **Strategic Role:** First AI project to publish — GenAI portfolio launchpad
 
