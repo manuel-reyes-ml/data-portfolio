@@ -1,0 +1,1353 @@
+# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.0 (FINAL)
+
+## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
+## A Defensible Research System with Statistical Rigor
+
+**Document Version:** 8.1 (Evaluation & Docker Update — SDK-First AI Architecture + 2026 Production Patterns)  
+**Last Updated:** February 14, 2026  
+**Status:** ✅ APPROVED  
+**Author:** Manuel Reyes  
+
+---
+
+## 📋 Table of Contents
+
+1. [Executive Summary](#1-executive-summary)
+2. [Research Question](#2-research-question)
+3. [Stock Screening Criteria](#3-stock-screening-criteria)
+4. [Trigger Framework](#4-trigger-framework)
+5. [Backtest Methodology](#5-backtest-methodology) ⭐ NEW
+6. [Data Integrity & Bias Controls](#6-data-integrity--bias-controls) ⭐ NEW
+7. [Data Architecture: Lakehouse Design](#7-data-architecture-lakehouse-design) ⭐ ENHANCED
+8. [Market Data Modes](#8-market-data-modes) ⭐ NEW
+9. [Phase 1A Scope — Backtest Engine](#9-phase-1a-scope--backtest-engine-weeks-1-6)
+10. [Phase 1B Scope — AI-Powered Dashboard](#10-phase-1b-scope--ai-powered-dashboard-weeks-7-10)
+11. [AI Guardrails](#11-ai-guardrails) ⭐ NEW
+12. [Tech Stack](#12-tech-stack)
+13. [CI/CD Pipeline](#13-cicd-pipeline)
+14. [Logging & Debugging](#14-logging--debugging) ⭐ NEW
+15. [Project Structure](#15-project-structure)
+16. [Project Evolution (5 Stages)](#16-project-evolution-5-stages)
+17. [Success Metrics](#17-success-metrics)
+18. [Risk Mitigation](#18-risk-mitigation)
+19. [Timeline Summary](#19-timeline-summary)
+
+---
+
+## 1. Executive Summary
+
+**Attention-Flow Catalyst** is a flagship project that evolves through all 5 stages of my career transition from Data Analyst to Senior LLM Engineer. It is designed as a **defensible research system**—not just a dashboard—with proper statistical methodology, bias controls, and reproducibility.
+
+### What Makes This Project Different
+
+| Dimension | Typical Tutorial Project | Attention-Flow Catalyst |
+|-----------|-------------------------|-------------------------|
+| **Data Selection** | Manual stock list | Dynamic screener with survivorship bias controls |
+| **Backtest Method** | Naive "if signal, check return" | Walk-forward validation, de-clustering, confidence intervals |
+| **Storage** | SQLite or CSV | Lakehouse (partitioned Parquet + DuckDB) |
+| **API Calls** | Sequential requests | Async httpx (10-50x faster) |
+| **AI Architecture** | Single provider, raw text | Provider-agnostic SDK (Gemini/OpenAI/Claude) |
+| **AI Outputs** | Unstructured text responses | Pydantic-validated structured outputs |
+| **AI Features** | Gimmicky chatbot | LLM SDK + PandasAI, SQL-first, guardrails & observability |
+| **Triggers** | News + Volume only | SEC Form 4, Wiki, News, Volume, **Dilution state** |
+| **Reproducibility** | None | Audit tables, pipeline run logs, version control |
+| **CI/CD** | None | GitHub Actions on every PR |
+
+### Core Capabilities
+
+- **Statistical Rigor:** Walk-forward backtesting, bootstrap confidence intervals, multiple testing controls
+- **Alternative Data:** SEC Form 4 insider filings, dilution/offering state (S-1, 424B5, 8-K), Wikipedia attention, news mentions, volume patterns
+- **Bias Controls:** Survivorship bias handling via historical universe snapshots, corporate actions adjustment
+- **Modern Data Stack:** DuckDB for analytics, Parquet lakehouse, httpx for async API calls
+- **AI Integration:** Natural language queries via LLM SDK (Gemini primary) + PandasAI with guardrails and SQL transparency
+- **Structured Outputs:** Pydantic-validated AI responses with type-safe schemas
+- **AI Observability:** Token usage, cost tracking, latency monitoring, guardrail activation logs
+- **Production Practices:** GitHub Actions CI, type hints, comprehensive testing, audit logging
+- **Domain Expertise:** 6 years of trading knowledge codified into algorithms
+
+---
+
+## 2. Research Question
+
+> **Primary Question:** Which trigger or combination of triggers best predicts +10% price moves within 3 trading days for small-cap stocks?
+
+**Secondary Questions:**
+1. Does sector strength context improve trigger hit rates?
+2. Does index trend context (bullish vs bearish market) affect performance?
+3. Do multi-trigger combinations outperform single triggers?
+4. Which volume patterns precede significant moves?
+5. Does post-dilution-close create higher probability setups?
+6. Are results stable across train vs test periods (walk-forward)?
+
+**Hypothesis:** Combining multiple alternative data signals (insider buying + attention spike + volume accumulation + dilution-clear state) will produce higher hit rates than any single signal alone, and these results will be stable out-of-sample.
+
+---
+
+## 3. Stock Screening Criteria
+
+The system dynamically screens for stocks meeting ALL criteria:
+
+| Criterion | Requirement | Rationale |
+|-----------|-------------|-----------|
+| **Price** | < $5.00 | Bigger percentage move potential |
+| **Exchange** | NYSE, NASDAQ, AMEX only | NO OTC/Pink Sheets — better data quality |
+| **Float** | Small (bottom 30% of screened universe) | Limited supply = faster moves |
+| **Sector** | Strong (top 3 sectors by 20-day performance) | Sector tailwinds increase probability |
+| **Volume** | Minimum avg daily volume > 100K | Ensures liquidity for entry/exit |
+| **Market Cap** | < $500M (micro/small cap) | Focus on overlooked opportunities |
+
+**Output:** ~50 stocks refreshed weekly that meet all criteria
+
+---
+
+## 4. Trigger Framework
+
+### 4.1 Overview
+
+| ID | Trigger Name | Data Source | Signal Type |
+|----|--------------|-------------|-------------|
+| **T1** | SEC Form 4 Insider Buy | edgartools | Smart Money |
+| **T2** | Wikipedia Attention Spike | Wikipedia API | Public Attention |
+| **T3** | News Mention Spike | RSS/GDELT | Media Coverage |
+| **T4** | Volume Accumulation (5 sub-signals) | yfinance | Institutional Activity |
+| **T5** | Dilution/Offering State | edgartools | Capital Structure ⭐ NEW |
+
+---
+
+### 4.2 T1: SEC Form 4 Insider Buy
+
+```yaml
+t1_insider_buy:
+  transaction_types:
+    - P: "Open market purchase"
+    - A: "Grant/Award (if acquisition)"
+  minimum_value: $10,000
+  insider_types:
+    - CEO, CFO, COO, President
+    - Director
+    - 10% Owner
+  lookback_window: 30 days
+  signal_fires_when: "Any qualifying purchase detected"
+```
+
+---
+
+### 4.3 T2: Wikipedia Attention Spike
+
+```yaml
+t2_wiki_attention:
+  baseline_period: 30 days rolling average
+  spike_threshold: 2.0 standard deviations above baseline
+  minimum_daily_views: 100  # filter noise
+  lookback_window: 7 days
+  signal_fires_when: "Daily views > baseline + (2 × std_dev)"
+```
+
+---
+
+### 4.4 T3: News Mention Spike
+
+```yaml
+t3_news_spike:
+  baseline_period: 14 days rolling average
+  spike_threshold: 2.0 standard deviations above baseline
+  minimum_mentions: 3 per day  # filter noise
+  sentiment_filter: null  # Phase 1 = volume only
+  lookback_window: 7 days
+  signal_fires_when: "Daily mentions > baseline + (2 × std_dev)"
+```
+
+---
+
+### 4.5 T4: Volume Accumulation (5 Sub-Signals)
+
+| ID | Signal | Calculation | Threshold |
+|----|--------|-------------|-----------|
+| **T4a** | RVOL | Today's volume / 20-day avg | ≥ 1.5 |
+| **T4b** | Accumulation Score | (Close-Low)/(High-Low) × Volume | Rising over 5 days |
+| **T4c** | OBV Breakout | Cumulative volume | 20-day high |
+| **T4d** | Quiet Accumulation | Price flat + OBV rising | Price < 2% / 10 days, OBV up |
+| **T4e** | Volume Dry-Up | Volume < 50% avg for 3+ days | Tight range < 3% |
+
+---
+
+### 4.6 T5: Dilution / Offering State (NEW)
+
+**What It Detects:** Capital structure changes that affect supply/demand dynamics.
+
+**Forms Tracked:**
+- **S-1, S-3:** Shelf registration filed
+- **424B5:** Prospectus supplement — offering PRICED
+- **8-K:** Material event — offering CLOSED
+- **EFFECT:** Registration statement effective
+
+**State Machine:**
+```yaml
+t5_state_machine:
+  states:
+    CLEAR: "No recent dilution (> 90 days since last event)"
+    OVERHANG: "Shelf registration filed, no active deal"
+    ACTIVE_DEAL: "Offering priced, shares being sold"
+    CLOSED: "Offering completed within 30 days"
+    
+  transitions:
+    CLEAR → OVERHANG: "S-3/S-1 filed"
+    OVERHANG → ACTIVE_DEAL: "424B5 filed"
+    ACTIVE_DEAL → CLOSED: "8-K announcing completion"
+    CLOSED → CLEAR: "30 days elapsed"
+```
+
+**Combination Hypotheses:**
+- `T5_CLOSED + T1 (insider buy)` = Strong bullish conviction
+- `T5_CLOSED + T2 (attention) + T4 (volume)` = Post-dilution reversal
+- `T5_OVERHANG + ANY trigger` = Reduce expected hit rate
+
+---
+
+### 4.7 Combination Testing Matrix
+
+**Individual Triggers (5):** T1, T2, T3, T4, T5_CLOSED
+
+**2-Trigger Combinations (10)**
+**3-Trigger Combinations (10)**
+**4-Trigger Combinations (5)**
+**5-Trigger Combination (1)**
+
+**With Context Filters (×4):**
+- No filter
+- Sector strength filter
+- Index trend filter
+- Dilution state filter
+
+**Total Potential Scenarios:** 31 combinations × 4 contexts = **~124 scenarios**
+
+*(Filtered by minimum signal count threshold)*
+
+---
+
+## 5. Backtest Methodology
+
+> **This section defines the rules that make results trustworthy.**
+
+### 5.1 Signal Anchor Definition
+
+```yaml
+signal_anchor:
+  rule: "Signal confirmed at market close"
+  measurement_start: "Next trading day open"
+  measurement_period: "3 trading days (close-to-close)"
+  
+  example:
+    signal_date: "2025-01-15 (Wednesday close)"
+    entry_price: "2025-01-16 open (Thursday)"
+    exit_price: "2025-01-21 close (Tuesday)"
+    return: "(exit - entry) / entry"
+```
+
+### 5.2 De-Clustering Rule
+
+```yaml
+de_clustering:
+  rule: "One active signal per ticker per 5 trading days"
+  
+  example:
+    day_1: "ABCD fires T1 → COUNTED"
+    day_2: "ABCD fires T1 → IGNORED (within 5-day window)"
+    day_3: "ABCD fires T4 → COUNTED (different trigger type)"
+    day_6: "ABCD fires T1 → COUNTED (new window)"
+    
+  rationale: "Prevents inflated hit rates from consecutive signals"
+```
+
+### 5.3 Transaction Cost Model
+
+```yaml
+transaction_costs:
+  slippage_bps: 25      # 0.25% for small-cap entry
+  spread_proxy_bps: 50  # typical bid-ask spread
+  commission: 0         # most brokers commission-free
+  
+  total_round_trip: 150 bps (1.5%)
+  
+  hit_threshold:
+    gross: "+10% raw return"
+    net: "+11.5% raw return (to net +10% after costs)"
+```
+
+### 5.4 Walk-Forward Validation
+
+```yaml
+walk_forward:
+  training_period: "Year 1 - Year 2 (24 months)"
+  testing_period: "Year 3 (12 months)"
+  
+  rules:
+    - "Tune thresholds on training period ONLY"
+    - "Leaderboard rankings based on TEST period ONLY"
+    - "NO re-tuning after seeing test results"
+    
+  process:
+    1: "Run backtest on training period"
+    2: "Identify top 10 trigger combinations"
+    3: "Run SAME combinations on test period (no changes)"
+    4: "Report test period metrics as final"
+```
+
+### 5.5 Multiple Testing Controls
+
+```yaml
+multiple_testing_controls:
+  minimum_signal_count:
+    threshold: 30 signals minimum per scenario
+    action: "Exclude scenarios with < 30 signals"
+    
+  confidence_intervals:
+    method: "Bootstrap 95% CI on hit rate"
+    iterations: 1000
+    reporting: "Hit rate [CI_low - CI_high]"
+    
+  stability_check:
+    method: "Compare train vs test rankings"
+    metric: "Spearman rank correlation"
+    threshold: "> 0.5 correlation = stable"
+```
+
+---
+
+## 6. Data Integrity & Bias Controls
+
+### 6.1 Survivorship Bias Policy
+
+```yaml
+survivorship_bias:
+  problem: "Screening TODAY's stocks and backtesting 3 years = bias"
+  
+  solution: "Historical universe snapshots"
+  
+  implementation:
+    frequency: "Weekly (every Monday)"
+    storage: "data/processed/universes/universe_{YYYY}_{WW}.parquet"
+    
+    backtest_rule: |
+      For each historical signal date, use the universe snapshot
+      that was active at that time. A stock must have been in
+      the universe BEFORE the signal to be included.
+```
+
+### 6.2 Corporate Actions Handling
+
+```yaml
+corporate_actions:
+  splits:
+    handling: "Use adjusted close for all return calculations"
+    
+  reverse_splits:
+    handling: "Flag, use adjusted prices, exclude 5 days post-split"
+    
+  ticker_changes:
+    storage: "ticker_history table with old → new mapping"
+    
+  delistings:
+    policy: "Include in backtest up to delist date"
+    bankruptcy: "Return = -100% (total loss)"
+```
+
+### 6.3 Calendar & Timezone
+
+```yaml
+calendar:
+  timezone: "US/Eastern"
+  source: "pandas_market_calendars (NYSE)"
+  
+  data_availability_rule: |
+    Signal on date D can only use data available by market close on D.
+```
+
+---
+
+## 7. Data Architecture: Lakehouse Design
+
+### 7.1 Parquet Partitioning
+
+```yaml
+parquet_structure:
+  raw_prices: "data/raw/prices/{source}/year={YYYY}/month={MM}/{ticker}.parquet"
+  raw_events: "data/raw/events/{source}/year={YYYY}/month={MM}/events.parquet"
+  processed_triggers: "data/processed/triggers/year={YYYY}/triggers.parquet"
+  processed_universes: "data/processed/universes/universe_{YYYY}_{WW}.parquet"
+```
+
+### 7.2 Persistent DuckDB Schema
+
+```yaml
+duckdb_file: "data/db/afc.duckdb"
+
+dimension_tables:
+  - dim_company: "ticker, name, sector, exchange, dates"
+  - dim_calendar: "date, is_trading_day, week_id, month_id"
+  - dim_trigger_type: "trigger_id, name, category, description"
+
+fact_tables:
+  - fact_signals: "signal_id, ticker, date, trigger, return, hit"
+  - fact_backtest_results: "scenario, period, signals, hit_rate, CI"
+
+audit_tables:
+  - audit_pipeline_runs: "run_id, pipeline, status, rows, timestamp"
+  - audit_data_quality: "issue_id, table, check, passed, details"
+```
+
+### 7.3 DuckDB Views (Query Parquet)
+
+```sql
+CREATE VIEW v_prices AS
+SELECT * FROM read_parquet('data/raw/prices/**/*.parquet');
+
+CREATE VIEW v_active_signals AS
+SELECT * FROM fact_signals 
+WHERE signal_date >= CURRENT_DATE - 7;
+
+CREATE VIEW v_leaderboard AS
+SELECT trigger_combination, hit_rate_net, hit_rate_ci_low, hit_rate_ci_high
+FROM fact_backtest_results
+WHERE period = 'test' AND signal_count >= 30
+ORDER BY hit_rate_net DESC;
+```
+
+---
+
+## 8. Market Data Modes
+
+### 8.1 Mode A: Intraday (Future)
+
+```yaml
+mode_a_intraday:
+  providers: "Polygon.io ($29-199/mo), Alpaca ($0-99/mo)"
+  resolution: "1-minute bars"
+  features: "True VWAP, intraday volume profile, T4f VWAP Hold"
+  when: "Stage 2+ when budget allows"
+```
+
+### 8.2 Mode B: Daily Only (Phase 1A)
+
+```yaml
+mode_b_daily:
+  provider: "yfinance (FREE)"
+  resolution: "Daily OHLCV"
+  
+  features_enabled:
+    - All T1 (insider) ✅
+    - All T2 (wiki) ✅
+    - All T3 (news) ✅
+    - T4a-e (all volume signals) ✅
+    - All T5 (dilution) ✅
+    
+  features_disabled:
+    - True VWAP (no intraday)
+    - T4f VWAP Hold
+```
+
+### 8.3 Phase 1A Decision
+
+```yaml
+phase_1a_decision:
+  selected: "Mode B (daily-only)"
+  rationale:
+    - "FREE — no budget required"
+    - "Sufficient for validating core hypothesis"
+    - "All primary triggers work with daily data"
+```
+
+---
+
+## 9. Phase 1A Scope — Backtest Engine (Weeks 1-6)
+
+### 9.1 Deliverables
+
+| # | Deliverable | Acceptance Criteria |
+|---|-------------|---------------------|
+| 1 | Project Setup | CI green, pre-commit working |
+| 2 | Stock Screener | ~50 stocks, proper filters |
+| 3 | Universe Snapshots | Weekly Parquet files |
+| 4 | Sector Strength | 11 ETFs tracked |
+| 5 | Async Collectors | httpx parallel calls |
+| 6 | Price Pipeline | 3+ years, adjusted prices |
+| 7 | T1-T5 Detectors | All triggers working |
+| 8 | DuckDB Schema | All tables created |
+| 9 | Backtest Engine | Walk-forward, de-clustering |
+| 10 | Bootstrap CI | 95% CI on all hit rates |
+| 11 | Leaderboard | Test period metrics |
+| 12 | Signal Generator | Daily active signals |
+| 13 | Data Quality | Automated checks |
+| 14 | Documentation | README, .cursor/rules/ |
+| 15 | Test Suite | >80% coverage |
+
+### 9.2 Week-by-Week
+
+| Week | Focus |
+|------|-------|
+| 1 | Setup, CI, screener, universe builder |
+| 2 | Collectors (httpx), Parquet, corporate actions |
+| 3 | T1-T5 triggers, state machine |
+| 4 | DuckDB schema, backtest core, de-clustering |
+| 5 | Walk-forward, bootstrap CI, combinations |
+| 6 | Signal generator, quality checks, docs |
+
+---
+
+## 10. Phase 1B Scope — AI-Powered Dashboard (Weeks 7-10)
+
+### 10.1 Deliverables
+
+| # | Deliverable | Acceptance Criteria |
+|---|-------------|---------------------|
+| 1 | Streamlit Shell | Multi-page, responsive |
+| 2 | Home Page | Quick stats, AI insights |
+| 3 | Leaderboard Page | Sortable, with CI |
+| 4 | Screener Page | Current universe |
+| 5 | Active Signals | Today's watchlist |
+| 6 | Backtest Explorer | Historical signals |
+| 7 | LLM SDK Integration | Provider-agnostic AI layer (Gemini primary) |
+| 8 | Pydantic Response Models | Structured outputs for all AI responses |
+| 9 | PandasAI | Supplementary chat + SQL transparency |
+| 10 | AI Guardrails | Read-only, governance as code, disclaimers |
+| 11 | AI Observability | Token/cost/latency tracking per query |
+| 12 | Deployment | Streamlit Cloud live |
+| 13 | Demo Video | 60 seconds |
+
+### 10.2 Dashboard Wireframe
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🚀 ATTENTION-FLOW CATALYST                                 │
+├─────────────────────────────────────────────────────────────┤
+│  📊 Quick Stats                                             │
+│  │ 50 Stocks │ 12 Signals │ 62.5% Hit │ T1+T4+T5_CLOSED │  │
+├─────────────────────────────────────────────────────────────┤
+│  🤖 AI Insights (LLM SDK — Gemini primary)                  │
+│  "T1+T4+T5_CLOSED shows 62.5% hit rate [55-70% CI]..."     │
+│  📝 Query: SELECT ... FROM v_leaderboard LIMIT 5            │
+│  📊 Tokens: 342 input / 128 output | Cost: $0.0003          │
+│  ⚠️ AI insights are explanatory, not financial advice.     │
+├─────────────────────────────────────────────────────────────┤
+│  💬 Ask a Question: [________________________] [Ask]        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 11. AI Guardrails
+
+### 11.1 Access Control
+
+```yaml
+ai_access:
+  mode: "Read-only"
+  allowed: "SELECT, aggregations, joins"
+  prohibited: "INSERT, UPDATE, DELETE, file access"
+```
+
+### 11.2 Governance as Code
+
+```python
+# src/ai/guardrails.py — Testable guardrail logic
+class AIGuardrail:
+    """Validates AI queries before execution.
+    
+    Unlike config-only guardrails, this approach is testable
+    with pytest and enforced at runtime.
+    """
+    def validate_query(self, query: str) -> GuardrailResult:
+        """Check query against security rules."""
+        # Check for modification attempts (INSERT, UPDATE, DELETE)
+        # Check against blocked tables (v_prices, audit_*)
+        # Check row scan limits (max 10,000)
+        # Check token budget (4000 max)
+        # Return validated or rejected with reason
+        
+    def validate_table_access(self, sql: str) -> bool:
+        """Ensure query only touches allowed tables."""
+        # Parse SQL for table references
+        # Compare against allowed_tables whitelist
+        
+    def sanitize_response(self, response: BaseModel) -> BaseModel:
+        """Ensure AI response contains no inappropriate content."""
+        # Verify no financial advice language
+        # Confirm disclaimer attached
+        # Log guardrail activation if triggered
+```
+
+### 11.3 Table Restrictions
+
+```yaml
+allowed_tables:
+  - v_leaderboard
+  - v_active_signals
+  - dim_company
+  - fact_backtest_results
+
+blocked_tables:
+  - v_prices (too large)
+  - audit_* (internal)
+
+row_limits:
+  max_scan: 10000
+  max_return: 1000
+```
+
+### 11.4 Transparency
+
+```yaml
+transparency:
+  show_sql: "Every response shows the SQL query used"
+  show_source: "Display source table and row count"
+  show_limitations: "Acknowledge when data insufficient"
+```
+
+### 11.5 Cost Controls
+
+```yaml
+cost_controls:
+  caching: "1 hour TTL for identical queries"
+  token_limits: "4000 total tokens per request"
+  rate_limits: "100 queries/day"
+```
+
+### 11.6 Disclaimers
+
+```yaml
+disclaimers:
+  text: "⚠️ AI insights are explanatory, not financial advice."
+  location: "Footer of every AI response"
+```
+
+---
+
+## 12. Tech Stack
+
+### Phase 1A: Backtest Engine
+
+| Category | Technology |
+|----------|------------|
+| Language | Python 3.11+ |
+| Storage | Parquet (partitioned) |
+| Query | DuckDB |
+| HTTP | httpx (async) |
+| SEC Data | edgartools |
+| Market Data | yfinance |
+| Wiki | Wikipedia API |
+| News | feedparser, GDELT |
+| Statistics | scipy, numpy |
+| **Logging** | **logging (stdlib) + python-json-logger** |
+| Testing | pytest, pytest-asyncio |
+| Linting | Ruff, mypy |
+| CI/CD | GitHub Actions |
+
+### Phase 1B: Dashboard
+
+| Category | Technology |
+|----------|------------|
+| Web | Streamlit |
+| Charts | Plotly |
+| **AI (Primary)** | **LLM SDK (Gemini primary, OpenAI/Claude supported)** |
+| **AI (Supplementary)** | **PandasAI (natural language data querying)** |
+| **Structured Outputs** | **Pydantic v2 (response validation)** |
+| **AI Observability** | **Python logging + token/cost tracking** |
+| Hosting | Streamlit Cloud (FREE) |
+| **AI Evaluation** | **DeepEval (answer relevancy, faithfulness > 0.9 for financial data accuracy)** |
+| **Containerization** | **Docker (Dockerfile for app + DuckDB deployment)** |
+
+---
+
+## 13. CI/CD Pipeline
+
+### GitHub Actions
+
+```yaml
+# .github/workflows/ci.yml
+on: [push, pull_request]
+jobs:
+  test:
+    steps:
+      - Checkout
+      - Setup Python 3.11/3.12
+      - Install dependencies
+      - Ruff lint
+      - mypy type check
+      - pytest with coverage
+      - Upload to Codecov
+```
+
+### Pre-commit
+
+```yaml
+# .pre-commit-config.yaml
+- ruff (lint + format)
+- trailing-whitespace
+- end-of-file-fixer
+- check-yaml
+- mypy
+```
+
+---
+
+## 14. Logging & Debugging
+
+### 14.1 Logging Directory Structure
+
+```
+logs/
+├── app/                          # Streamlit dashboard logs
+│   ├── app.log                   # Current log
+│   └── app.log.{date}            # Rotated logs
+├── pipeline/                     # Data pipeline logs
+│   ├── pipeline.log              # Current log
+│   ├── pipeline.log.{date}       # Rotated logs
+│   └── runs/                     # Per-run detailed logs
+│       ├── run_2026-01-29_083000.log
+│       └── run_2026-01-29_120000.log
+├── collectors/                   # API collector logs
+│   ├── collectors.log
+│   └── errors/                   # Error-specific logs
+│       ├── sec_errors.log
+│       ├── wiki_errors.log
+│       └── news_errors.log
+├── backtest/                     # Backtest engine logs
+│   ├── backtest.log
+│   └── runs/
+│       └── backtest_{scenario_id}.log
+├── ai/                           # ⭐ AI observability logs
+│   ├── queries.log               # LLM queries, tokens, cost, latency
+│   └── guardrails.log            # Guardrail activations with reason
+└── debug/                        # Debug logs (verbose, gitignored)
+    └── debug.log
+```
+
+### 14.2 Logging Configuration
+
+**config/logging.yaml**
+```yaml
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  
+  detailed:
+    format: "%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  
+  json:
+    class: pythonjsonlogger.jsonlogger.JsonFormatter
+    format: "%(asctime)s %(levelname)s %(name)s %(funcName)s %(lineno)d %(message)s"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+  
+  file_pipeline:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: logs/pipeline/pipeline.log
+    when: midnight
+    interval: 1
+    backupCount: 30  # Keep 30 days
+    encoding: utf-8
+  
+  file_collectors:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: logs/collectors/collectors.log
+    when: midnight
+    interval: 1
+    backupCount: 30
+    encoding: utf-8
+  
+  file_backtest:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: logs/backtest/backtest.log
+    when: midnight
+    interval: 1
+    backupCount: 30
+    encoding: utf-8
+  
+  file_app:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: detailed
+    filename: logs/app/app.log
+    when: midnight
+    interval: 1
+    backupCount: 14  # Keep 14 days for app
+    encoding: utf-8
+  
+  file_ai:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: json  # JSON format for AI observability (structured parsing)
+    filename: logs/ai/queries.log
+    when: midnight
+    interval: 1
+    backupCount: 30
+    encoding: utf-8
+  
+  file_ai_guardrails:
+    class: logging.handlers.RotatingFileHandler
+    level: WARNING
+    formatter: detailed
+    filename: logs/ai/guardrails.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf-8
+  
+  file_errors:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: detailed
+    filename: logs/errors.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf-8
+  
+  file_debug:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/debug/debug.log
+    maxBytes: 52428800  # 50MB
+    backupCount: 3
+    encoding: utf-8
+
+loggers:
+  # Root logger
+  afc:
+    level: INFO
+    handlers: [console, file_pipeline, file_errors]
+    propagate: false
+  
+  # Module-specific loggers
+  afc.screener:
+    level: INFO
+    handlers: [console, file_pipeline]
+    propagate: false
+  
+  afc.collectors:
+    level: INFO
+    handlers: [console, file_collectors, file_errors]
+    propagate: false
+  
+  afc.collectors.sec:
+    level: INFO
+    handlers: [file_collectors]
+    propagate: true
+  
+  afc.collectors.wiki:
+    level: INFO
+    handlers: [file_collectors]
+    propagate: true
+  
+  afc.triggers:
+    level: INFO
+    handlers: [console, file_pipeline]
+    propagate: false
+  
+  afc.backtest:
+    level: INFO
+    handlers: [console, file_backtest]
+    propagate: false
+  
+  afc.database:
+    level: INFO
+    handlers: [console, file_pipeline]
+    propagate: false
+  
+  afc.app:
+    level: INFO
+    handlers: [console, file_app]
+    propagate: false
+  
+  # AI observability loggers
+  afc.ai:
+    level: INFO
+    handlers: [console, file_ai, file_errors]
+    propagate: false
+  
+  afc.ai.guardrails:
+    level: WARNING
+    handlers: [file_ai_guardrails, file_errors]
+    propagate: true
+
+root:
+  level: WARNING
+  handlers: [console, file_errors]
+```
+
+### 14.3 Logging Utility Module
+
+**src/utils/logging.py**
+```python
+import logging
+import logging.config
+from pathlib import Path
+from datetime import datetime
+from typing import Optional
+import yaml
+
+def setup_logging(
+    config_path: str = "config/logging.yaml",
+    default_level: int = logging.INFO,
+    env_key: str = "LOG_CFG"
+) -> None:
+    """
+    Setup logging configuration.
+    
+    Args:
+        config_path: Path to logging config YAML
+        default_level: Default logging level if config not found
+        env_key: Environment variable to override config path
+    """
+    import os
+    
+    # Create logs directories
+    log_dirs = [
+        "logs/app",
+        "logs/pipeline/runs",
+        "logs/collectors/errors",
+        "logs/backtest/runs",
+        "logs/debug"
+    ]
+    for log_dir in log_dirs:
+        Path(log_dir).mkdir(parents=True, exist_ok=True)
+    
+    # Load config
+    path = os.getenv(env_key, config_path)
+    if Path(path).exists():
+        with open(path, "r") as f:
+            config = yaml.safe_load(f)
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)
+        logging.warning(f"Logging config not found at {path}, using defaults")
+
+def get_logger(name: str) -> logging.Logger:
+    """
+    Get a logger with the afc namespace.
+    
+    Args:
+        name: Logger name (will be prefixed with 'afc.')
+        
+    Returns:
+        Configured logger instance
+        
+    Example:
+        logger = get_logger("collectors.sec")
+        logger.info("Fetching Form 4 filings...")
+    """
+    if not name.startswith("afc."):
+        name = f"afc.{name}"
+    return logging.getLogger(name)
+
+def get_run_logger(
+    run_type: str,
+    run_id: Optional[str] = None
+) -> logging.Logger:
+    """
+    Get a logger for a specific pipeline run with dedicated file.
+    
+    Args:
+        run_type: Type of run ('pipeline', 'backtest', 'collector')
+        run_id: Optional run identifier (defaults to timestamp)
+        
+    Returns:
+        Logger with file handler for this specific run
+    """
+    if run_id is None:
+        run_id = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    
+    logger_name = f"afc.{run_type}.run_{run_id}"
+    logger = logging.getLogger(logger_name)
+    
+    # Add run-specific file handler
+    log_path = Path(f"logs/{run_type}/runs/run_{run_id}.log")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    handler = logging.FileHandler(log_path, encoding="utf-8")
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(logging.Formatter(
+        "%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s"
+    ))
+    logger.addHandler(handler)
+    
+    return logger
+
+class LogContext:
+    """Context manager for logging operation blocks."""
+    
+    def __init__(
+        self,
+        logger: logging.Logger,
+        operation: str,
+        level: int = logging.INFO
+    ):
+        self.logger = logger
+        self.operation = operation
+        self.level = level
+        self.start_time = None
+    
+    def __enter__(self):
+        self.start_time = datetime.now()
+        self.logger.log(self.level, f"Starting: {self.operation}")
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        duration = (datetime.now() - self.start_time).total_seconds()
+        if exc_type is None:
+            self.logger.log(
+                self.level,
+                f"Completed: {self.operation} ({duration:.2f}s)"
+            )
+        else:
+            self.logger.error(
+                f"Failed: {self.operation} ({duration:.2f}s) - {exc_type.__name__}: {exc_val}"
+            )
+        return False  # Don't suppress exceptions
+```
+
+### 14.4 Usage Examples
+
+```python
+# Basic usage
+from src.utils.logging import setup_logging, get_logger, LogContext
+
+# Initialize logging (call once at startup)
+setup_logging()
+
+# Get module-specific logger
+logger = get_logger("collectors.sec")
+
+# Standard logging
+logger.info("Starting SEC Form 4 collection")
+logger.debug(f"Processing ticker: {ticker}")
+logger.warning(f"Rate limit approaching: {remaining} requests left")
+logger.error(f"Failed to fetch filing: {error}", exc_info=True)
+
+# Context manager for operations
+with LogContext(logger, f"Collecting {len(tickers)} tickers"):
+    for ticker in tickers:
+        collect_insider_filings(ticker)
+
+# Pipeline run with dedicated log file
+from src.utils.logging import get_run_logger
+
+run_logger = get_run_logger("backtest", run_id="scenario_T1_T4")
+run_logger.info("Starting backtest for T1+T4 combination")
+```
+
+### 14.5 Log Levels Guide
+
+| Level | When to Use | Example |
+|-------|-------------|---------|
+| **DEBUG** | Detailed diagnostic info | `logger.debug(f"Query returned {len(rows)} rows")` |
+| **INFO** | General operational events | `logger.info("Backtest completed successfully")` |
+| **WARNING** | Something unexpected but handled | `logger.warning("Missing data for AAPL, using interpolation")` |
+| **ERROR** | Error occurred, operation failed | `logger.error("API request failed", exc_info=True)` |
+| **CRITICAL** | Severe error, program may crash | `logger.critical("Database connection lost")` |
+
+### 14.6 Error Tracking Pattern
+
+```python
+# Collector error tracking with context
+async def collect_wiki_pageviews(ticker: str) -> Optional[pd.DataFrame]:
+    logger = get_logger("collectors.wiki")
+    
+    try:
+        logger.debug(f"Fetching pageviews for {ticker}")
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            
+        logger.info(f"Successfully collected {ticker}: {len(data)} days")
+        return pd.DataFrame(data)
+        
+    except httpx.HTTPStatusError as e:
+        logger.error(
+            f"HTTP error for {ticker}: {e.response.status_code}",
+            extra={"ticker": ticker, "status": e.response.status_code}
+        )
+        return None
+        
+    except httpx.RequestError as e:
+        logger.error(
+            f"Request failed for {ticker}: {str(e)}",
+            extra={"ticker": ticker, "error_type": type(e).__name__}
+        )
+        return None
+        
+    except Exception as e:
+        logger.exception(f"Unexpected error for {ticker}")  # Includes traceback
+        return None
+```
+
+### 14.7 Gitignore for Logs
+
+```gitignore
+# Logs
+logs/
+*.log
+
+# Keep directory structure
+!logs/.gitkeep
+!logs/*/
+!logs/*/.gitkeep
+```
+
+---
+
+## 15. Project Structure
+
+```
+attention-flow-catalyst/
+├── .cursor/
+│   └── rules/                    # Cursor AI assistant rules
+│       ├── git-workflow.mdc      # Branch naming, commit conventions, PR standards
+│       ├── learning-mode.mdc     # Learning patterns, documentation standards
+│       └── python-data.mdc       # Pandas/numpy patterns, type hints, docstrings
+├── .github/workflows/ci.yml
+├── config/
+│   ├── thresholds.yaml
+│   └── logging.yaml              # ⭐ Logging configuration
+├── data/
+│   ├── raw/prices/, events/
+│   ├── processed/triggers/, universes/
+│   ├── db/afc.duckdb
+│   └── outputs/
+├── logs/                         # ⭐ Logging directory
+│   ├── app/                      # Dashboard logs
+│   ├── pipeline/                 # Pipeline logs
+│   │   └── runs/                 # Per-run logs
+│   ├── collectors/               # API collector logs
+│   │   └── errors/               # Error-specific logs
+│   ├── backtest/                 # Backtest logs
+│   │   └── runs/                 # Per-scenario logs
+│   ├── ai/                       # ⭐ AI observability logs
+│   │   ├── queries.log           # LLM queries, tokens, cost, latency
+│   │   └── guardrails.log        # Guardrail activations
+│   ├── debug/                    # Verbose debug logs
+│   └── errors.log                # Aggregated errors
+├── src/
+│   ├── screener/
+│   ├── collectors/
+│   ├── triggers/
+│   ├── backtest/
+│   ├── signals/
+│   ├── database/
+│   ├── ai/                       # ⭐ AI integration layer (2026 patterns)
+│   │   ├── __init__.py
+│   │   ├── provider.py           # Provider-agnostic LLM abstraction
+│   │   ├── schemas.py            # Pydantic response models (structured outputs)
+│   │   ├── guardrails.py         # Governance as code (testable)
+│   │   └── observability.py      # Token/cost/latency tracking
+│   └── utils/
+│       ├── __init__.py
+│       ├── config.py
+│       ├── logging.py            # ⭐ Logging utilities
+│       ├── calendar.py
+│       └── async_utils.py
+├── app/
+│   ├── pages/
+│   ├── components/
+│   └── utils/
+├── tests/
+│   ├── ...
+│   └── test_ai_guardrails.py     # ⭐ AI guardrails unit tests
+├── notebooks/
+├── scripts/
+├── Dockerfile                    # Container definition
+├── requirements.txt
+├── requirements-dev.txt
+└── README.md
+```
+
+---
+
+## 16. Project Evolution (5 Stages)
+
+| Stage | Role | Enhancements |
+|-------|------|--------------|
+| 1 | Data Analyst | Backtest engine + AI dashboard |
+| 2 | Data Engineer | AWS S3, Airflow, 500+ tickers |
+| 3 | ML Engineer | XGBoost, LSTM, MLflow |
+| 4 | LLM Specialist | RAG, multi-agent, voice |
+| 5 | Senior LLM | Production, monetization |
+
+---
+
+## 17. Success Metrics
+
+### Phase 1A
+
+| Metric | Target |
+|--------|--------|
+| Price history | 3+ years, 50+ stocks |
+| Universe snapshots | Weekly |
+| Walk-forward | Y1-2 train, Y3 test |
+| De-clustering | 5-day rule |
+| Bootstrap CI | 95% on all |
+| Test coverage | >80% |
+| CI | All green |
+
+### Phase 1B
+
+| Metric | Target |
+|--------|--------|
+| Pages working | All 6 |
+| AI transparency | 100% SQL shown |
+| Structured outputs | 100% Pydantic-validated |
+| Provider switching | Gemini ↔ OpenAI works via config |
+| AI observability | Token/cost/latency logged per query |
+| Guardrail test coverage | >90% |
+| Deployment | Streamlit Cloud |
+| Load time | <5 seconds |
+
+---
+
+## 18. Risk Mitigation
+
+| Risk | Mitigation |
+|------|------------|
+| Survivorship bias | Historical universe snapshots |
+| Overfitting | Walk-forward validation |
+| Multiple testing | Bootstrap CI, min 30 signals |
+| API limits | Caching, async batching |
+| AI hallucinations | SQL transparency, Pydantic structured outputs, governance as code |
+| Provider lock-in | Provider-agnostic abstraction layer (swap via config) |
+| AI cost overruns | Token/cost observability, rate limits, caching |
+
+---
+
+
+### AI Evaluation Layer (Financial Data — Higher Threshold)
+
+AFC uses DeepEval with **elevated thresholds** because incorrect financial analysis
+can mislead trading decisions. Faithfulness is set to 0.9 (vs 0.85 standard).
+
+**Framework:** DeepEval (pytest-compatible, open-source)
+
+| Metric | Target | Why Higher |
+|--------|--------|-----------|
+| Answer Relevancy | > 0.8 | Standard threshold |
+| Faithfulness | > 0.9 | Financial data must be accurate — higher than standard 0.85 |
+| Hallucination | < 0.10 | Lower tolerance — fabricated financial data is dangerous |
+
+**Implementation:**
+- Evaluation test cases in `tests/test_eval.py`
+- Financial accuracy test cases in `tests/eval_dataset.json`
+- CI pipeline includes evaluation gate
+
+
+### Docker Support (Containerization)
+
+**Dockerfile** provided for reproducible local development and deployment.
+
+```dockerfile
+# Dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**Run locally:**
+```bash
+docker build -t attention-flow-catalyst .
+docker run -p 8501:8501 --env-file .env attention-flow-catalyst
+```
+
+**Why This Matters for Portfolio:**
+Docker appears in 60%+ of AI/ML job postings. Including a Dockerfile
+shows deployment readiness — critical for Junior AI Engineer applications.
+
+
+---
+
+## 19. Timeline Summary
+
+| Week | Phase | Focus |
+|------|-------|-------|
+| 1 | 1A | Setup, CI, screener |
+| 2 | 1A | Collectors, Parquet |
+| 3 | 1A | T1-T5 triggers |
+| 4 | 1A | DuckDB, backtest core |
+| 5 | 1A | Walk-forward, CI |
+| 6 | 1A | Signals, quality, docs |
+| 7 | 1B | Streamlit shell |
+| 8 | 1B | Charts, leaderboard |
+| 9 | 1B | LLM SDK + PandasAI, structured outputs, guardrails |
+| 10 | 1B | AI observability, deploy, demo video |
+
+---
+
+## ✅ Approval Status
+
+**APPROVED** — February 14, 2026
+
+This document represents the complete, methodology-complete scope for Attention-Flow Catalyst v8.0 with SDK-first AI architecture and 2026 production patterns.
+
+---
+
+## Quick Reference: What Makes This Defensible + Production-Grade
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│           ATTENTION-FLOW CATALYST v8.0 (FINAL)             │
+│           Defensible Research System + SDK-First AI          │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ METHODOLOGY                                             │
+│     • Walk-forward validation (train Y1-2, test Y3)        │
+│     • De-clustering (5-day rule per ticker)                │
+│     • Transaction costs (1.5% round-trip)                  │
+│     • Bootstrap 95% confidence intervals                   │
+│     • Minimum 30 signals per scenario                      │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ BIAS CONTROLS                                           │
+│     • Historical universe snapshots (survivorship)         │
+│     • Corporate actions handling (splits, delistings)      │
+│     • Point-in-time data only (no look-ahead)             │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ MODERN STACK                                            │
+│     • DuckDB + Parquet lakehouse                           │
+│     • httpx async collectors                               │
+│     • GitHub Actions CI                                    │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ UNIQUE TRIGGERS                                         │
+│     • T5 Dilution state machine (differentiator)           │
+│     • SEC Form 4 + offering tracking (S-1, 424B5, 8-K)    │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ AI WITH GUARDRAILS (2026 Production Patterns)           │
+│     • LLM SDK (Gemini primary, OpenAI/Claude supported)    │
+│     • Provider-agnostic abstraction layer                   │
+│     • Pydantic-validated structured outputs                 │
+│     • SQL transparency (show every query)                  │
+│     • Governance as code (testable guardrails)             │
+│     • AI observability (tokens, cost, latency per query)   │
+│     • Read-only access + disclaimers                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+**Document Status:** ✅ FINAL (v8.0)  
+**Date:** February 14, 2026
+
+*"Defensible methodology + Modern stack + SDK-first AI with structured outputs & guardrails = Research system, not just a dashboard"* 🚀
