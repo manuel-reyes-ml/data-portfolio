@@ -3,8 +3,8 @@
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.1 (Evaluation & Docker Update — SDK-First AI Architecture + 2026 Production Patterns)  
-**Last Updated:** February 14, 2026  
+**Document Version:** 8.2 (Evaluation & Docker + pyproject.toml — SDK-First AI Architecture + 2026 Production Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
 
@@ -1140,9 +1140,12 @@ attention-flow-catalyst/
 │   ├── ai/                       # ⭐ AI observability logs
 │   │   ├── queries.log           # LLM queries, tokens, cost, latency
 │   │   └── guardrails.log        # Guardrail activations
+│   ├── evaluation/               # ⭐ DeepEval evaluation results
 │   ├── debug/                    # Verbose debug logs
 │   └── errors.log                # Aggregated errors
 ├── src/
+│   ├── __init__.py
+│   ├── py.typed                  # PEP 561 — type hint support marker
 │   ├── screener/
 │   ├── collectors/
 │   ├── triggers/
@@ -1166,13 +1169,21 @@ attention-flow-catalyst/
 │   ├── components/
 │   └── utils/
 ├── tests/
+│   ├── conftest.py               # Shared fixtures, mock APIs, test DuckDB, sample data
 │   ├── ...
-│   └── test_ai_guardrails.py     # ⭐ AI guardrails unit tests
+│   ├── test_ai_guardrails.py     # ⭐ AI guardrails unit tests
+│   ├── test_eval.py              # ⭐ DeepEval AI quality evaluation tests
+│   └── eval_dataset.json         # ⭐ 30+ analytics query-response pairs for evaluation
 ├── notebooks/
 ├── scripts/
 ├── Dockerfile                    # Container definition
-├── requirements.txt
-├── requirements-dev.txt
+├── .dockerignore                 # Excludes .git, logs, data/raw, tests, notebooks from image
+├── .env.example                  # Required environment variables template
+├── .gitignore
+├── CONTRIBUTING.md               # Branch naming, commit style, PR process
+├── LICENSE                       # MIT License
+├── Makefile                      # make test, make lint, make eval, make docker-build
+├── pyproject.toml                # Project metadata, dependencies, tool config (PEP 621)
 └── README.md
 ```
 
@@ -1261,11 +1272,33 @@ can mislead trading decisions. Faithfulness is set to 0.9 (vs 0.85 standard).
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**`.dockerignore`** (keeps image small and secure):
+```
+.git
+.gitignore
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+CONTRIBUTING.md
+Makefile
+tests/
+notebooks/
+logs/
+data/raw/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
 ```
 
 **Run locally:**
@@ -1347,7 +1380,7 @@ This document represents the complete, methodology-complete scope for Attention-
 
 ---
 
-**Document Status:** ✅ FINAL (v8.0)  
-**Date:** February 14, 2026
+**Document Status:** ✅ UPDATED (v8.2 — pyproject.toml + 2026 Production Patterns)  
+**Date:** April 03, 2026
 
 *"Defensible methodology + Modern stack + SDK-first AI with structured outputs & guardrails = Research system, not just a dashboard"* 🚀
