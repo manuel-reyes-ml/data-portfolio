@@ -2,8 +2,8 @@
 
 ## AI-Powered Workflow Demand Analysis for Retirement Plan Operations
 
-**Document Version:** 2.4 (SDK-First AI Architecture + Evaluation & Docker + 2026 Production Patterns)  
-**Last Updated:** February 14, 2026  
+**Document Version:** 2.5 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Data Coverage:** June 02, 2025 — Present (~8 months)  
@@ -657,9 +657,11 @@ operations-demand-intelligence/
 │   ├── pipeline.log
 │   ├── analytics.log
 │   ├── ai.log                  # ⭐ AI observability (tokens, cost, latency)
+│   ├── evaluation/             # ⭐ DeepEval evaluation results
 │   └── app.log
 ├── src/
 │   ├── __init__.py
+│   ├── py.typed                # PEP 561 — type hint support marker
 │   ├── ingest/
 │   │   ├── loader.py           # Excel loading
 │   │   └── anonymizer.py       # PII handling
@@ -687,16 +689,23 @@ operations-demand-intelligence/
 │       ├── filters.py
 │       └── charts.py
 ├── tests/
+│   ├── conftest.py             # Shared fixtures, mock LLM providers, test data
 │   ├── test_ingest.py
 │   ├── test_transform.py
 │   ├── test_analytics.py
-│   └── test_ai_guardrails.py   # ⭐ AI guardrails unit tests
+│   ├── test_ai_guardrails.py   # ⭐ AI guardrails unit tests
+│   ├── test_eval.py            # ⭐ DeepEval AI quality evaluation tests
+│   └── eval_dataset.json       # ⭐ 30+ analytics query-response pairs for evaluation
 ├── scripts/
 │   └── generate_synthetic_data.py
+├── Dockerfile                  # Container definition for deployment
+├── .dockerignore               # Excludes .git, logs, data/raw, tests from image
+├── .env.example                # Required environment variables template
 ├── .gitignore
-├── README.md
-├── requirements.txt
-└── requirements-dev.txt
+├── LICENSE                     # MIT License
+├── Makefile                    # make test, make lint, make eval, make docker-build
+├── pyproject.toml              # Project metadata, dependencies, tool config (PEP 621)
+└── README.md
 ```
 
 ---
@@ -771,11 +780,32 @@ Adding measurable AI quality metrics signals production maturity beyond typical 
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**`.dockerignore`** (keeps image small and secure):
+```
+.git
+.gitignore
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+Makefile
+tests/
+logs/
+data/raw/
+data/processed/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
 ```
 
 **Run locally:**
@@ -872,8 +902,8 @@ PII         Parquet    Reports     Filters   Structured  Demo
 
 ---
 
-**Document Status:** 📋 DRAFT (v2.3 — SDK-First AI Architecture + 2026 Production Patterns)  
-**Date:** February 14, 2026  
+**Document Status:** 📋 DRAFT (v2.5 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
+**Date:** April 03, 2026  
 **Data Coverage:** June 2025 — January 2026 (~8 months)  
 **Total Timeline:** 6 weeks
 
