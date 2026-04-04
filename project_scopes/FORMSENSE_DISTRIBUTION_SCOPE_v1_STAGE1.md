@@ -3,8 +3,8 @@
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.1 (SDK-First AI Architecture + Evaluation & Docker + 2026 Production Patterns)  
-**Last Updated:** February 22, 2026  
+**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 📄 DOCUMENT INTELLIGENCE — Multimodal AI for Financial Services Operations
@@ -779,6 +779,8 @@ formsense/
 │   ├── evaluation/               # ⭐ DeepEval extraction evaluation results
 │   └── errors.log
 ├── src/
+│   ├── __init__.py
+│   ├── py.typed                  # PEP 561 — type hint support marker
 │   ├── extraction/
 │   │   ├── __init__.py
 │   │   ├── pdf_processor.py      # PDF → image conversion
@@ -820,6 +822,7 @@ formsense/
 │   └── utils/
 │       └── session.py
 ├── tests/
+│   ├── conftest.py               # Shared fixtures, mock vision API, sample form loaders
 │   ├── test_pdf_processor.py
 │   ├── test_form_extractor.py
 │   ├── test_validation_rules.py
@@ -827,14 +830,20 @@ formsense/
 │   ├── test_ticket_generator.py
 │   ├── test_ai_guardrails.py
 │   ├── test_schemas.py
-│   └── test_eval.py              # ⭐ DeepEval custom GEval for extraction accuracy
+│   ├── test_eval.py              # ⭐ DeepEval custom GEval for extraction accuracy
+│   └── eval_dataset.json         # ⭐ 30+ form extraction test cases for evaluation
 ├── scripts/
 │   └── generate_sample_forms.py  # Create sample distribution forms
 ├── notebooks/
 │   └── extraction_accuracy.ipynb
 ├── Dockerfile                    # Container definition
-├── requirements.txt
-├── requirements-dev.txt
+├── .dockerignore                 # Excludes .git, logs, tests, notebooks from image
+├── .env.example                  # Required environment variables template
+├── .gitignore
+├── CONTRIBUTING.md               # Branch naming, commit style, PR process
+├── LICENSE                       # MIT License
+├── Makefile                      # make test, make lint, make eval, make docker-build
+├── pyproject.toml                # Project metadata, dependencies, tool config (PEP 621)
 └── README.md
 ```
 
@@ -986,11 +995,32 @@ def test_complete_form_extraction():
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**`.dockerignore`** (keeps image small and secure):
+```
+.git
+.gitignore
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+CONTRIBUTING.md
+Makefile
+tests/
+notebooks/
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
 ```
 
 **Run locally:**
@@ -1118,8 +1148,8 @@ Tests        Accuracy     Tests        Queue Page   Video
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.1 — SDK-First AI Architecture + 2026 Production Patterns)  
-**Date:** February 22, 2026  
+**Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
+**Date:** April 03, 2026  
 **Total Timeline:** 5 weeks  
 **Strategic Role:** Document Intelligence Project — Multimodal AI for Financial Services
 
