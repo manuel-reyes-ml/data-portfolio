@@ -3,8 +3,8 @@
 ## AI-Powered Streaming Subscription Rotation Advisor
 ## "Spend Less, Watch More" — Intelligent Subscription Optimization Dashboard
 
-**Document Version:** 1.1 (SDK-First AI Architecture + Evaluation & Docker + 2026 Production Patterns)  
-**Last Updated:** February 21, 2026  
+**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
@@ -486,7 +486,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
-      - run: pip install -r requirements-dev.txt
+      - run: pip install ".[dev]"
       - run: ruff check src/ tests/
       - run: mypy src/ --ignore-missing-imports
       - run: pytest tests/ -v --cov=src --cov-report=term-missing
@@ -518,11 +518,13 @@ streamsmart-optimizer/
 ├── logs/                          # Application logs (gitignored)
 │   ├── app.log
 │   ├── api.log
+│   ├── evaluation/                # ⭐ DeepEval evaluation results
 │   └── ai/
 │       ├── queries.log
 │       └── guardrails.log
 ├── src/
 │   ├── __init__.py
+│   ├── py.typed                   # PEP 561 — type hint support marker
 │   ├── models/
 │   │   ├── __init__.py
 │   │   ├── subscription.py        # Subscription, ViewingLog models
@@ -562,15 +564,23 @@ streamsmart-optimizer/
 │       ├── charts.py              # Reusable Plotly chart components
 │       └── ai_chat.py             # AI chat interface component
 ├── tests/
+│   ├── conftest.py                # Shared fixtures, mock API responses, test data
 │   ├── test_models.py
 │   ├── test_api_clients.py
 │   ├── test_analytics.py
 │   ├── test_ai_schemas.py
-│   └── test_ai_guardrails.py
+│   ├── test_ai_guardrails.py
+│   ├── test_eval.py               # ⭐ DeepEval AI quality evaluation tests
+│   └── eval_dataset.json          # ⭐ 30+ recommendation query-response pairs for evaluation
+├── Dockerfile                     # Container definition for deployment
+├── .dockerignore                  # Excludes .git, logs, data/cache, tests from image
+├── .env.example                   # Required environment variables template
 ├── .gitignore
-├── README.md
-├── requirements.txt
-└── requirements-dev.txt
+├── CONTRIBUTING.md                # Branch naming, commit style, PR process
+├── LICENSE                        # MIT License
+├── Makefile                       # make test, make lint, make eval, make docker-build
+├── pyproject.toml                 # Project metadata, dependencies, tool config (PEP 621)
+└── README.md
 ```
 
 ---
@@ -664,11 +674,32 @@ Adding measurable AI quality metrics signals production maturity beyond typical 
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**`.dockerignore`** (keeps image small and secure):
+```
+.git
+.gitignore
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+CONTRIBUTING.md
+Makefile
+tests/
+logs/
+data/cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
 ```
 
 **Run locally:**
@@ -798,8 +829,8 @@ STAGE 4-5 (FUTURE):     "Do it for me" (Agentic AI)
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.0 — SDK-First AI Architecture + 2026 Production Patterns)  
-**Date:** February 21, 2026  
+**Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
+**Date:** April 03, 2026  
 **Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
 **Total Timeline:** 6 weeks
 
