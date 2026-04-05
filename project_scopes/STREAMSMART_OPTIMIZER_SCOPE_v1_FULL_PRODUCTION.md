@@ -3,8 +3,8 @@
 ## AI-Powered Autonomous Streaming Subscription Manager
 ## "Your AI Agent That Manages Your Streaming — So You Don't Have To"
 
-**Document Version:** 1.1 (Agentic AI Architecture + Production SaaS Patterns)  
-**Last Updated:** February 21, 2026  
+**Document Version:** 1.2 (Agentic AI Architecture + pyproject.toml + Production SaaS Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** 📋 DRAFT — Future Vision (Requires Stage 4-5 Skills)  
 **Author:** Manuel Reyes  
 **Stages Required:** 4 (Agentic AI Engineer) + 5 (Senior LLM Engineer)  
@@ -1128,6 +1128,8 @@ streamsmart-optimizer/
 │       └── deploy.yml             # Build + deploy pipeline
 ├── backend/
 │   ├── src/
+│   │   ├── __init__.py
+│   │   ├── py.typed               # PEP 561 — type hint support marker
 │   │   ├── api/                   # FastAPI routes
 │   │   │   ├── routes/
 │   │   │   ├── middleware/
@@ -1152,12 +1154,14 @@ streamsmart-optimizer/
 │   │   ├── evaluation/            # LLM-as-Judge eval pipeline
 │   │   └── utils/
 │   ├── tests/
+│   │   ├── conftest.py            # Shared fixtures, mock agents, test DB
 │   │   ├── unit/
 │   │   ├── integration/
 │   │   └── eval/                  # 500+ eval scenarios
 │   ├── migrations/                # Alembic
 │   ├── Dockerfile
-│   └── requirements.txt
+│   ├── .dockerignore              # Excludes .git, tests, logs from image
+│   └── pyproject.toml             # Backend dependencies + tool config (PEP 621)
 ├── frontend/
 │   ├── web/                       # React web app
 │   └── mobile/                    # React Native app
@@ -1169,6 +1173,10 @@ streamsmart-optimizer/
 │   ├── api/                       # OpenAPI docs
 │   ├── architecture/              # System design diagrams
 │   └── runbooks/                  # Operational procedures
+├── .env.example                   # Required environment variables template
+├── CONTRIBUTING.md                # Branch naming, commit style, PR process
+├── LICENSE                        # MIT License
+├── Makefile                       # make test, make lint, make eval, make docker-build
 └── README.md
 ```
 
@@ -1384,8 +1392,8 @@ deliverables:
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.0 — Agentic AI Architecture + Production SaaS Patterns)  
-**Date:** February 21, 2026  
+**Document Status:** 📋 DRAFT (v1.2 — Agentic AI Architecture + pyproject.toml + Production SaaS Patterns)  
+**Date:** April 03, 2026  
 **Stages Required:** 4 (Agentic AI) + 5 (Senior LLM Engineer)  
 **Target Launch:** Month 35-37 of Career Roadmap  
 **Predecessor:** StreamSmart Optimizer Stage 1 (Advisory Dashboard)
