@@ -3,8 +3,8 @@
 ## AI-Powered HR Policy RAG Chatbot for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — Natural Language Access to Company Knowledge
 
-**Document Version:** 1.1 (SDK-First AI Architecture + Evaluation-Driven RAG + Docker + 2026 Production Patterns)  
-**Last Updated:** February 22, 2026  
+**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation-Driven RAG + Docker + pyproject.toml + 2026 Production Patterns)  
+**Last Updated:** April 03, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 🧠 RAG FOUNDATION PROJECT — Gateway to Stage 4 Vector DB + LangChain Skills
@@ -641,6 +641,8 @@ policypulse/
 │   ├── evaluation/               # ⭐ DeepEval RAG evaluation results
 │   └── errors.log
 ├── src/
+│   ├── __init__.py
+│   ├── py.typed                  # PEP 561 — type hint support marker
 │   ├── ingestion/
 │   │   ├── __init__.py
 │   │   ├── extractor.py          # PDF/DOCX/MD text extraction
@@ -678,6 +680,7 @@ policypulse/
 │   └── utils/
 │       └── session.py            # Session state management
 ├── tests/
+│   ├── conftest.py               # Shared fixtures, mock embeddings, test ChromaDB
 │   ├── test_extractor.py
 │   ├── test_chunker.py
 │   ├── test_retrieval.py
@@ -694,8 +697,13 @@ policypulse/
 │   └── retrieval_quality.ipynb   # Retrieval accuracy analysis
 ├── Dockerfile                    # Container definition
 ├── docker-compose.yml            # Multi-service: Streamlit + ChromaDB
-├── requirements.txt
-├── requirements-dev.txt
+├── .dockerignore                 # Excludes .git, logs, tests, notebooks from image
+├── .env.example                  # Required environment variables template
+├── .gitignore
+├── CONTRIBUTING.md               # Branch naming, commit style, PR process
+├── LICENSE                       # MIT License
+├── Makefile                      # make test, make lint, make eval, make docker-build
+├── pyproject.toml                # Project metadata, dependencies, tool config (PEP 621)
 └── README.md
 ```
 
@@ -883,11 +891,32 @@ volumes:
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
 COPY . .
 EXPOSE 8501
 CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+```
+
+**`.dockerignore`** (keeps image small and secure):
+```
+.git
+.gitignore
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+CONTRIBUTING.md
+Makefile
+tests/
+notebooks/
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
 ```
 
 **Run locally:**
@@ -1008,8 +1037,8 @@ Tests            Quality Tests    Chat Page
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.1 — SDK-First AI Architecture + 2026 Production Patterns)  
-**Date:** February 22, 2026  
+**Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
+**Date:** April 03, 2026  
 **Total Timeline:** 4 weeks  
 **Strategic Role:** RAG Foundation Project — Gateway to Stage 4 Vector DB + LangChain Skills
 
