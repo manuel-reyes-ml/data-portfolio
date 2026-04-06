@@ -1380,6 +1380,42 @@ This document represents the complete, methodology-complete scope for Attention-
 
 ---
 
+
+## Production README Standard
+
+> **v8.2 Cross-Project Standard:** Every project README must include these elements to meet production-grade portfolio quality.
+
+| Element | Description | Format |
+|---------|-------------|--------|
+| **Mermaid Architecture Diagram** | System flow rendered inline on GitHub — no external images needed | ```` ```mermaid ```` code block |
+| **Dockerfile** | Containerized local setup for reproducibility | `Dockerfile` in project root |
+| **Evaluation Metrics Table** | DeepEval + pytest results summary showing AI quality measurements | Markdown table in README |
+| **Demo GIF** | 15-30 second walkthrough of key functionality | Embedded GIF in README hero section |
+| **"What I Learned" Section** | Key technical takeaways, patterns discovered, and challenges overcome | README section before footer |
+
+### Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+    A[🔍 Dynamic Stock Screener] --> B[Data Collection - httpx async]
+    B --> B1[SEC Form 4 - edgartools]
+    B --> B2[Wikipedia API]
+    B --> B3[RSS/GDELT News]
+    B --> B4[yfinance Prices + Volume]
+    B --> B5[SEC Filings - Dilution State]
+    B1 & B2 & B3 & B4 & B5 --> C[(DuckDB + Parquet Lakehouse)]
+    C --> D[Trigger Engine - 5 Triggers]
+    D --> E[Walk-Forward Backtest]
+    E --> F[Bootstrap 95% CI]
+    F --> G[📊 Trigger Leaderboard]
+    G --> H[🤖 AI Dashboard - LLM SDK + PandasAI]
+    H --> I[Forward Signal Generator]
+```
+
+> **Why Mermaid?** Renders directly in GitHub README — no PNG files to maintain, stays in sync with code, signals architectural thinking to recruiters. Recruiters see the diagram without clicking external links.
+
+---
+
 **Document Status:** ✅ UPDATED (v8.2 — pyproject.toml + 2026 Production Patterns)  
 **Date:** April 03, 2026
 
