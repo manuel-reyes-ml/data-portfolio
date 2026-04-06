@@ -1392,6 +1392,41 @@ deliverables:
 
 ---
 
+
+## Production README Standard
+
+> **v8.2 Cross-Project Standard:** Every project README must include these elements to meet production-grade portfolio quality.
+
+| Element | Description | Format |
+|---------|-------------|--------|
+| **Mermaid Architecture Diagram** | System flow rendered inline on GitHub — no external images needed | ```` ```mermaid ```` code block |
+| **Dockerfile** | Containerized local setup for reproducibility | `Dockerfile` in project root |
+| **Evaluation Metrics Table** | DeepEval + pytest results summary showing AI quality measurements | Markdown table in README |
+| **Demo GIF** | 15-30 second walkthrough of key functionality | Embedded GIF in README hero section |
+| **"What I Learned" Section** | Key technical takeaways, patterns discovered, and challenges overcome | README section before footer |
+
+### Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+    A[👤 User Account + Subscriptions] --> B[LangGraph Orchestrator]
+    B --> C[📺 Content Agent - Watchmode/TMDB]
+    B --> D[💰 Savings Agent - Cost Optimizer]
+    B --> E[📅 Rotation Agent - Schedule Planner]
+    B --> F[🌐 Browser Agent - MCP Cancel/Resubscribe]
+    C --> G[Multi-Agent Consensus]
+    D --> G
+    E --> G
+    F --> G
+    G --> H[Pydantic Structured Plan]
+    H --> I[📊 Production SaaS Dashboard]
+    I --> J[LLMOps Evaluation Pipeline]
+```
+
+> **Why Mermaid?** Renders directly in GitHub README — no PNG files to maintain, stays in sync with code, signals architectural thinking to recruiters. Recruiters see the diagram without clicking external links.
+
+---
+
 **Document Status:** 📋 DRAFT (v1.2 — Agentic AI Architecture + pyproject.toml + Production SaaS Patterns)  
 **Date:** April 03, 2026  
 **Stages Required:** 4 (Agentic AI) + 5 (Senior LLM Engineer)  
