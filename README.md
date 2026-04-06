@@ -179,6 +179,25 @@
 
 ---
 
+## 📂 Repository Structure
+
+```
+data-portfolio/
+├── README.md                                              # This file — Portfolio hub
+└── project_scopes/                                        # 📋 Architecture & scope documents
+    ├── ATTENTION_FLOW_CATALYST_SCOPE_v8.md                # 🚀 Flagship — 5-stage research system
+    ├── DATAVAULT_ANALYST_SCOPE_v1.md                      # 🔐 First AI project — PII-safe analytics
+    ├── FORMSENSE_DISTRIBUTION_SCOPE_v1_STAGE1.md          # 📄 Document intelligence — Vision AI
+    ├── OPERATIONS_DEMAND_INTELLIGENCE_SCOPE_v2_3.md       # 📊 Enterprise analytics — OnBase data
+    ├── POLICYPULSE_HR_RAG_SCOPE_v1_STAGE1.md              # 📋 RAG foundation — HR chatbot
+    ├── STREAMSMART_OPTIMIZER_SCOPE_v1_FULL_PRODUCTION.md   # 📺 Full production — Stages 4-5
+    └── STREAMSMART_OPTIMIZER_SCOPE_v1_STAGE1.md            # 📺 Stage 1 — Consumer AI app
+```
+
+> Each scope document includes: executive summary, business problem, data architecture, feature framework, phased implementation plan, tech stack, CI/CD pipeline, evaluation strategy (DeepEval + pytest), Docker support, Mermaid architecture diagram, and Production README Standard.
+
+---
+
 ## 📖 More Resources
 
 | Resource | Link |
