@@ -829,6 +829,41 @@ STAGE 4-5 (FUTURE):     "Do it for me" (Agentic AI)
 
 ---
 
+
+## Production README Standard
+
+> **v8.2 Cross-Project Standard:** Every project README must include these elements to meet production-grade portfolio quality.
+
+| Element | Description | Format |
+|---------|-------------|--------|
+| **Mermaid Architecture Diagram** | System flow rendered inline on GitHub — no external images needed | ```` ```mermaid ```` code block |
+| **Dockerfile** | Containerized local setup for reproducibility | `Dockerfile` in project root |
+| **Evaluation Metrics Table** | DeepEval + pytest results summary showing AI quality measurements | Markdown table in README |
+| **Demo GIF** | 15-30 second walkthrough of key functionality | Embedded GIF in README hero section |
+| **"What I Learned" Section** | Key technical takeaways, patterns discovered, and challenges overcome | README section before footer |
+
+### Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+    A[👤 User Input - Subscriptions + Habits] --> B[Analytics Engine - pandas]
+    B --> C[📊 Cost Dashboard]
+    C --> C1[Cost-per-View]
+    C --> C2[Monthly Spend]
+    C --> C3[Savings Projections]
+    D[🔍 Content Search Query] --> E[Watchmode + TMDB APIs]
+    E --> F[Where Can I Watch X?]
+    A --> G[🤖 AI Rotation Planner]
+    G --> H[LLM SDK - Gemini/OpenAI/Claude]
+    H --> I[Pydantic RotationPlan Output]
+    I --> J[📅 Optimal Rotation Schedule + Savings]
+    H --> K[LangSmith Observability]
+```
+
+> **Why Mermaid?** Renders directly in GitHub README — no PNG files to maintain, stays in sync with code, signals architectural thinking to recruiters. Recruiters see the diagram without clicking external links.
+
+---
+
 **Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
 **Date:** April 03, 2026  
 **Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
