@@ -894,6 +894,41 @@ Tests            Metrics          Structured       Video
 
 ---
 
+
+## Production README Standard
+
+> **v8.2 Cross-Project Standard:** Every project README must include these elements to meet production-grade portfolio quality.
+
+| Element | Description | Format |
+|---------|-------------|--------|
+| **Mermaid Architecture Diagram** | System flow rendered inline on GitHub — no external images needed | ```` ```mermaid ```` code block |
+| **Dockerfile** | Containerized local setup for reproducibility | `Dockerfile` in project root |
+| **Evaluation Metrics Table** | DeepEval + pytest results summary showing AI quality measurements | Markdown table in README |
+| **Demo GIF** | 15-30 second walkthrough of key functionality | Embedded GIF in README hero section |
+| **"What I Learned" Section** | Key technical takeaways, patterns discovered, and challenges overcome | README section before footer |
+
+### Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+    A[📁 Excel Upload] --> B[Data Loading & Validation]
+    B --> C{Mode?}
+    C -->|No API Key| D[📊 Dashboard Pages]
+    C -->|API Key| E[🤖 AI Chat Interface]
+    D --> D1[Overview]
+    D --> D2[Trends]
+    D --> D3[Breakdown]
+    D --> D4[Amounts]
+    E --> F[LLM SDK - Gemini/OpenAI/Claude]
+    F --> G[PandasAI Code Generation]
+    G --> H[🔒 PII Scan]
+    H --> I[📋 Response + Code + Chart]
+```
+
+> **Why Mermaid?** Renders directly in GitHub README — no PNG files to maintain, stays in sync with code, signals architectural thinking to recruiters. Recruiters see the diagram without clicking external links.
+
+---
+
 **Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
 **Date:** April 03, 2026  
 **Total Timeline:** 4 weeks  
