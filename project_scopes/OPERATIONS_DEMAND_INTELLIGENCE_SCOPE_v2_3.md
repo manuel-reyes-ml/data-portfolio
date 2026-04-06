@@ -902,6 +902,40 @@ PII         Parquet    Reports     Filters   Structured  Demo
 
 ---
 
+
+## Production README Standard
+
+> **v8.2 Cross-Project Standard:** Every project README must include these elements to meet production-grade portfolio quality.
+
+| Element | Description | Format |
+|---------|-------------|--------|
+| **Mermaid Architecture Diagram** | System flow rendered inline on GitHub — no external images needed | ```` ```mermaid ```` code block |
+| **Dockerfile** | Containerized local setup for reproducibility | `Dockerfile` in project root |
+| **Evaluation Metrics Table** | DeepEval + pytest results summary showing AI quality measurements | Markdown table in README |
+| **Demo GIF** | 15-30 second walkthrough of key functionality | Embedded GIF in README hero section |
+| **"What I Learned" Section** | Key technical takeaways, patterns discovered, and challenges overcome | README section before footer |
+
+### Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart LR
+    A[📊 OnBase Excel Export] --> B[PII Removal & Anonymization]
+    B --> C[Data Cleaning & Normalization]
+    C --> D[Analytics Engine - pandas]
+    D --> E[Streamlit Dashboard]
+    E --> E1[Overview KPIs]
+    E --> E2[Trends - Time Series]
+    E --> E3[Breakdown - Dist vs Loan]
+    E --> E4[🤖 AI Analyst Chat]
+    E4 --> F[LLM SDK + PandasAI]
+    F --> G[Pydantic Structured Response]
+    G --> H[🔒 PII Guardrails Check]
+```
+
+> **Why Mermaid?** Renders directly in GitHub README — no PNG files to maintain, stays in sync with code, signals architectural thinking to recruiters. Recruiters see the diagram without clicking external links.
+
+---
+
 **Document Status:** 📋 DRAFT (v2.5 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
 **Date:** April 03, 2026  
 **Data Coverage:** June 2025 — January 2026 (~8 months)  
