@@ -458,7 +458,7 @@ validation:
 | Charts | Plotly | Interactive visualizations |
 | **AI (Primary)** | **Gemini SDK** (provider-agnostic abstraction) | SDK-first architecture |
 | **Structured Outputs** | **Pydantic v2** | Type-safe AI responses |
-| **AI Observability** | **Python logging + token/cost tracking** | Production monitoring |
+| **AI Observability** | **LangSmith + Python logging (token/cost/latency tracking)** | Production tracing & monitoring |
 | Hosting | Streamlit Cloud (FREE) |
 | **AI Evaluation** | **DeepEval (recommendation quality, answer relevancy metrics)** |
 | **Containerization** | **Docker (Dockerfile for deployment)** | Live demo for recruiters |
@@ -499,11 +499,33 @@ jobs:
 ```
 streamsmart-optimizer/
 ├── .cursor/
-│   └── rules/
-│       ├── git-workflow.mdc
-│       ├── learning-mode.mdc
-│       └── python-data.mdc
+│   ├── rules/                    # Production standards (version-controlled)
+│   │   ├── git-workflow.mdc      # alwaysApply: true — branch, commit, PR conventions
+│   │   ├── learning-mode.mdc     # alwaysApply: true — learning patterns, skill progression
+│   │   ├── python-production-standards.mdc  # alwaysApply: true — code style, types, testing
+│   │   ├── streamlit-patterns.mdc    # Auto-attached: app/**/*.py
+│   │   ├── ai-sdk-patterns.mdc       # Auto-attached: src/ai/**/*.py
+│   │   └── evaluation.mdc           # Auto-attached: tests/test_eval.py
+│   ├── commands/                 # Repeatable agent workflows (/command-name)
+│   │   ├── draft-issue.md        # /draft-issue <goal>
+│   │   ├── task-brief.md         # /task-brief <issue#>
+│   │   ├── pr-prep.md            # /pr-prep
+│   │   ├── review.md             # /review
+│   │   ├── test.md               # /test
+│   │   ├── eval.md               # /eval
+│   │   └── commit-msg.md         # /commit-msg
+│   ├── hooks/                    # Auto-run scripts
+│   │   └── format.sh             # Auto-format (black + ruff) after agent edits
+│   ├── hooks.json                # Hook configuration
+│   └── plans/                    # Saved task briefs per Issue
+│       └── issue-XX-task-brief.md
+├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
 ├── .github/
+│   ├── templates/                # Production workflow templates
+│   │   ├── issue_template.md     # GitHub Issue format
+│   │   ├── project_labels.md     # Approved labels + definitions
+│   │   ├── pull_request_template.md  # PR body format
+│   │   └── cursor_task_brief.md  # Agent execution contract
 │   └── workflows/ci.yml
 ├── config/
 │   ├── services.yaml              # Streaming service pricing DB
