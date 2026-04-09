@@ -612,11 +612,34 @@ ai:
 ```
 policypulse/
 ├── .cursor/
-│   └── rules/                    # Cursor AI assistant rules
-│       ├── git-workflow.mdc
-│       ├── learning-mode.mdc
-│       └── python-data.mdc
-├── .github/workflows/ci.yml
+│   ├── rules/                    # Production standards (version-controlled)
+│   │   ├── git-workflow.mdc      # alwaysApply: true — branch, commit, PR conventions
+│   │   ├── learning-mode.mdc     # alwaysApply: true — learning patterns, skill progression
+│   │   ├── python-production-standards.mdc  # alwaysApply: true — code style, types, testing
+│   │   ├── streamlit-patterns.mdc    # Auto-attached: app/**/*.py
+│   │   ├── ai-sdk-patterns.mdc       # Auto-attached: src/ai/**/*.py
+│   │   └── evaluation.mdc           # Auto-attached: tests/test_eval.py
+│   ├── commands/                 # Repeatable agent workflows (/command-name)
+│   │   ├── draft-issue.md        # /draft-issue <goal>
+│   │   ├── task-brief.md         # /task-brief <issue#>
+│   │   ├── pr-prep.md            # /pr-prep
+│   │   ├── review.md             # /review
+│   │   ├── test.md               # /test
+│   │   ├── eval.md               # /eval
+│   │   └── commit-msg.md         # /commit-msg
+│   ├── hooks/                    # Auto-run scripts
+│   │   └── format.sh             # Auto-format (black + ruff) after agent edits
+│   ├── hooks.json                # Hook configuration
+│   └── plans/                    # Saved task briefs per Issue
+│       └── issue-XX-task-brief.md
+├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
+├── .github/
+│   ├── templates/                # Production workflow templates
+│   │   ├── issue_template.md     # GitHub Issue format
+│   │   ├── project_labels.md     # Approved labels + definitions
+│   │   ├── pull_request_template.md  # PR body format
+│   │   └── cursor_task_brief.md  # Agent execution contract
+│   └── workflows/ci.yml
 ├── config/
 │   ├── ai_config.yaml            # LLM + embedding settings
 │   ├── documents.yaml            # Policy document registry
