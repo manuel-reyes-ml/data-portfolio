@@ -1,10 +1,10 @@
-# 📺 STREAMSMART OPTIMIZER — Full Production Scope v1.0
+# 📺 STREAMSMART OPTIMIZER — Full Production Scope v1.3
 
 ## AI-Powered Autonomous Streaming Subscription Manager
 ## "Your AI Agent That Manages Your Streaming — So You Don't Have To"
 
-**Document Version:** 1.2 (Agentic AI Architecture + pyproject.toml + Production SaaS Patterns)  
-**Last Updated:** April 03, 2026  
+**Document Version:** 1.3 (Roadmap v8.3 alignment — Agent Patterns Named + A2A protocol section)  
+**Last Updated:** May 07, 2026  
 **Status:** 📋 DRAFT — Future Vision (Requires Stage 4-5 Skills)  
 **Author:** Manuel Reyes  
 **Stages Required:** 4 (Agentic AI Engineer) + 5 (Senior LLM Engineer)  
@@ -41,7 +41,7 @@
 
 ## 1. Executive Summary
 
-**StreamSmart Optimizer (Full Production)** is an **autonomous AI-powered subscription management platform** that goes beyond advising users — it **acts on their behalf**. Using multi-agent AI orchestration (LangGraph), MCP tool integration, and browser automation, it manages the entire subscription lifecycle: monitoring usage, recommending rotations, executing cancellations, re-subscribing when content drops, and tracking savings — all with human-in-the-loop checkpoints.
+**StreamSmart Optimizer (Full Production)** is an **autonomous AI-powered subscription management platform** that goes beyond advising users — it **acts on their behalf**. Using multi-agent AI orchestration (LangGraph) implementing Anthropic's "Building Effective Agents" patterns — **sequential** (Planner → Content → Verifier → Action → Monitor), **evaluator-optimizer** (Verifier loop), and **human-in-the-loop checkpoints** — combined with **MCP** tool integration (browser, Watchmode, TMDB, calendar servers) and browser automation, it manages the entire subscription lifecycle: monitoring usage, recommending rotations, executing cancellations, re-subscribing when content drops, and tracking savings.
 
 ### Stage 1 vs Full Production
 
@@ -246,7 +246,7 @@ events:
 
 ## 5. Agentic AI System Design
 
-### 5.1 Multi-Agent Architecture (LangGraph)
+### 5.1 Multi-Agent Architecture (LangGraph) — Sequential + Evaluator-Optimizer Patterns
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -291,6 +291,8 @@ events:
 │  ── Tracing: LangSmith (every agent step logged) ───────│
 └──────────────────────────────────────────────────────────┘
 ```
+
+**Pattern Recognition (v8.3):** This architecture implements three of Anthropic's canonical "Building Effective Agents" patterns: **sequential** (Planner → Content → Verifier → Action → Monitor — each agent's output feeds the next), **evaluator-optimizer** (Verifier critiques Planner's output, can route back for revision), and **human-in-the-loop** (LangGraph checkpoint between Verifier approval and Action execution). Naming patterns explicitly is a 2026 hiring signal — recruiters scan project READMEs for this vocabulary.
 
 ### 5.2 Agent Specifications
 
@@ -498,7 +500,28 @@ mcp_servers:
       - schedule_rotation(plan) → Schedule
 ```
 
-### 5.5 Long-Term Agentic Memory (LangMem)
+### 5.5 A2A Protocol — Inter-Agent Communication ⭐ NEW v8.3
+
+**Why A2A:**
+While MCP standardizes how an agent calls external tools (Watchmode API, browser, calendar), the **Agent-to-Agent (A2A) protocol** standardizes how independent agents discover and collaborate with each other. Originally Google (April 2025), donated to the Linux Foundation Agentic AI Foundation alongside MCP (December 2025).
+
+**Use Case in StreamSmart Production:**
+At multi-tenant household scale, A2A enables scenarios MCP alone can't:
+- Mom-Agent discovers Kid-Agent's content preferences without Mom hardcoding them
+- StreamSmart-Agent collaborates with external Budget-Agent (e.g., Monarch Money) to align subscription spending with overall household budget
+- Service-Provider-Agents (e.g., a future Netflix-Agent) advertise pricing/content changes that StreamSmart-Agent can subscribe to
+
+**Implementation Status:** A2A awareness in scope; full implementation deferred until A2A SDK matures (estimated late 2026 per Linux Foundation roadmap). Internal agent collaboration uses LangGraph today; A2A is the production-scale upgrade path.
+
+**MCP vs A2A in StreamSmart:**
+
+| Layer | Protocol | Example |
+|-------|----------|---------|
+| Agent ↔ Tool | MCP | Action-Agent calls `browser.click()` via Playwright MCP |
+| Agent ↔ Agent (internal) | LangGraph | Planner hands off to Content-Agent |
+| Agent ↔ Agent (external) | **A2A** (v2 roadmap) | StreamSmart-Agent ↔ Budget-Agent |
+
+### 5.6 Long-Term Agentic Memory (LangMem)
 
 ```yaml
 memory_types:
@@ -1454,8 +1477,8 @@ flowchart LR
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.2 — Agentic AI Architecture + pyproject.toml + Production SaaS Patterns)  
-**Date:** April 03, 2026  
+**Document Status:** 📋 DRAFT (v1.3 — Roadmap v8.3 alignment: Agent Patterns Named + A2A Protocol Section)  
+**Date:** May 07, 2026  
 **Stages Required:** 4 (Agentic AI) + 5 (Senior LLM Engineer)  
 **Target Launch:** Month 35-37 of Career Roadmap  
 **Predecessor:** StreamSmart Optimizer Stage 1 (Advisory Dashboard)
