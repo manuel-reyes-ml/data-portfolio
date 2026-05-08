@@ -1,10 +1,10 @@
-# 📄 FORMSENSE — Complete Project Scope v1.0
+# 📄 FORMSENSE — Complete Project Scope v1.3
 
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
-**Last Updated:** April 03, 2026  
+**Document Version:** 1.3 (Roadmap v8.3 alignment — Stage 4 agent patterns named + Stage 5 A2A awareness; Stage 1 unchanged)  
+**Last Updated:** May 07, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 📄 DOCUMENT INTELLIGENCE — Multimodal AI for Financial Services Operations
@@ -669,7 +669,7 @@ def test_overall_low_confidence_triggers_manual():
 |-----------|------------|-----|
 | **Language** | Python 3.11+ | Primary language, matches all portfolio projects |
 | **Dashboard** | Streamlit | Consistent with DVA, ODI, AFC, PolicyPulse, StreamSmart |
-| **LLM SDK** | Gemini Vision SDK (primary) | Multimodal capability for form reading |
+| **LLM SDK** | Gemini Vision SDK (primary — Gemini's multimodal vision is industry-leading; **Anthropic Claude Vision** as alternative provider via config swap) | Multimodal capability for form reading |
 | **PDF Processing** | PyMuPDF (fitz) | PDF → image conversion, text extraction |
 | **Image Processing** | Pillow (PIL) | Image preprocessing, rotation, enhancement |
 | **Data Validation** | Pydantic v2 | Structured outputs, consistent with all projects |
@@ -1095,8 +1095,8 @@ Tests        Accuracy     Tests        Queue Page   Video
 | **1** | Data Analyst | ✅ Multimodal extraction + validation + routing (THIS SCOPE) |
 | **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, SQS queue, scheduled batch processing |
 | **3** | ML Engineer | Custom fine-tuned extraction model, form classification (distribution vs loan vs rollover), accuracy improvement |
-| **4** | LLM Specialist | Multi-agent system (Extractor + Validator + Router agents), MCP integration for email sending, form history RAG for cross-referencing |
-| **5** | Senior LLM | Production SaaS: OnBase integration, real-time processing, multi-form-type support, LLMOps evaluation pipeline (extraction accuracy benchmarks) |
+| **4** | LLM Specialist | Multi-agent system implementing **parallelization pattern** (Extractor + Validator + Router run concurrently for throughput) + **evaluator-optimizer** (Validator triggers re-extraction on low confidence). MCP integration for email sending + ticket creation. Form history RAG for cross-referencing previous distributions. |
+| **5** | Senior LLM | Production SaaS: OnBase integration, real-time processing, multi-form-type support, LLMOps evaluation pipeline. **A2A protocol** for cross-system collaboration (FormSense-Agent ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent) — agents from different teams discover and coordinate via standard protocol. |
 
 ---
 
