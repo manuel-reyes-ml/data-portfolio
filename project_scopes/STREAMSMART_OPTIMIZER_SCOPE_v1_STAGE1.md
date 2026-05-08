@@ -1,10 +1,10 @@
-# 📺 STREAMSMART OPTIMIZER — Stage 1 Project Scope v1.0
+# 📺 STREAMSMART OPTIMIZER — Stage 1 Project Scope v1.3
 
 ## AI-Powered Streaming Subscription Rotation Advisor
 ## "Spend Less, Watch More" — Intelligent Subscription Optimization Dashboard
 
-**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
-**Last Updated:** April 03, 2026  
+**Document Version:** 1.3 (Roadmap v8.3 alignment — Stage 4 agent patterns named + Stage 5 A2A; Stage 1 scope unchanged)  
+**Last Updated:** May 07, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
@@ -771,15 +771,15 @@ This project is designed to evolve through all 5 stages of the career roadmap:
 | **1 (THIS SCOPE)** | GenAI-First Data Analyst | Advisory dashboard + AI rotation planner + content search |
 | **2** | GenAI Data Engineer | AWS deployment, PostgreSQL, Airflow for price monitoring, vector DB for content similarity |
 | **3** | ML Engineer | ML-based viewing prediction, churn models, personalized recommendations with collaborative filtering |
-| **4** | Agentic AI Engineer | **Full automation: LangGraph agents for cancel/resubscribe, MCP tool integration, multi-agent orchestration** |
-| **5** | Senior LLM Engineer | Production SaaS, LLMOps evaluation, monetization, mobile app, user accounts |
+| **4** | Agentic AI Engineer | **Full automation implementing orchestrator-workers pattern**: orchestrator agent routes to specialized workers (cancel-worker, resubscribe-worker, content-scout-worker) via LangGraph. **Sequential pattern**: human checkpoint gates execution. **MCP tool integration** for streaming service APIs (Netflix, Hulu, etc.) and browser automation (Playwright MCP). |
+| **5** | Senior LLM Engineer | Production SaaS, LLMOps evaluation, monetization, mobile app, user accounts. **A2A protocol** for multi-tenant scenarios where household members' agents collaborate (Mom-Agent ↔ Kid-Agent on parental controls + shared subscriptions). |
 
 ### Stage 1 → Stage 4-5 Bridge
 
 ```
 STAGE 1 (NOW):          "Tell me what to do" (Advisory AI)
   │
-  │   Skills to build: AWS, Vector DBs, RAG, ML, LangGraph, MCP
+  │   Skills to build: AWS, Vector DBs, RAG, ML, LangGraph, MCP, A2A
   │
   ▼
 STAGE 4-5 (FUTURE):     "Do it for me" (Agentic AI)
