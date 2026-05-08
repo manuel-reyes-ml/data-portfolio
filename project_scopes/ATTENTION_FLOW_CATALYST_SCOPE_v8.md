@@ -1,10 +1,10 @@
-# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.0 (FINAL)
+# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.3
 
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.2 (Evaluation & Docker + pyproject.toml — SDK-First AI Architecture + 2026 Production Patterns)  
-**Last Updated:** April 03, 2026  
+**Document Version:** 8.3 (Roadmap v8.3 alignment — Anthropic SDK primary + Agent Patterns Named + SelfCheckGPT/FActScore eval + A2A awareness)  
+**Last Updated:** May 07, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
 
@@ -46,7 +46,7 @@
 | **Backtest Method** | Naive "if signal, check return" | Walk-forward validation, de-clustering, confidence intervals |
 | **Storage** | SQLite or CSV | Lakehouse (partitioned Parquet + DuckDB) |
 | **API Calls** | Sequential requests | Async httpx (10-50x faster) |
-| **AI Architecture** | Single provider, raw text | Provider-agnostic SDK (Gemini/OpenAI/Claude) |
+| **AI Architecture** | Single provider, raw text | Provider-agnostic SDK (**Anthropic Claude primary**, Gemini/OpenAI fallback) |
 | **AI Outputs** | Unstructured text responses | Pydantic-validated structured outputs |
 | **AI Features** | Gimmicky chatbot | LLM SDK + PandasAI, SQL-first, guardrails & observability |
 | **Triggers** | News + Volume only | SEC Form 4, Wiki, News, Volume, **Dilution state** |
@@ -59,7 +59,7 @@
 - **Alternative Data:** SEC Form 4 insider filings, dilution/offering state (S-1, 424B5, 8-K), Wikipedia attention, news mentions, volume patterns
 - **Bias Controls:** Survivorship bias handling via historical universe snapshots, corporate actions adjustment
 - **Modern Data Stack:** DuckDB for analytics, Parquet lakehouse, httpx for async API calls
-- **AI Integration:** Natural language queries via LLM SDK (Gemini primary) + PandasAI with guardrails and SQL transparency
+- **AI Integration:** Natural language queries via LLM SDK (**Anthropic Claude primary** — financial reasoning quality matters most for AFC's 0.9 faithfulness threshold) + PandasAI with guardrails and SQL transparency
 - **Structured Outputs:** Pydantic-validated AI responses with type-safe schemas
 - **AI Observability:** Token usage, cost tracking, latency monitoring, guardrail activation logs
 - **Production Practices:** GitHub Actions CI, type hints, comprehensive testing, audit logging
@@ -506,7 +506,7 @@ phase_1a_decision:
 | 4 | Screener Page | Current universe |
 | 5 | Active Signals | Today's watchlist |
 | 6 | Backtest Explorer | Historical signals |
-| 7 | LLM SDK Integration | Provider-agnostic AI layer (Gemini primary) |
+| 7 | LLM SDK Integration | Provider-agnostic AI layer (**Anthropic Claude primary**, Gemini fallback) |
 | 8 | Pydantic Response Models | Structured outputs for all AI responses |
 | 9 | PandasAI | Supplementary chat + SQL transparency |
 | 10 | AI Guardrails | Read-only, governance as code, disclaimers |
@@ -523,7 +523,7 @@ phase_1a_decision:
 │  📊 Quick Stats                                             │
 │  │ 50 Stocks │ 12 Signals │ 62.5% Hit │ T1+T4+T5_CLOSED │  │
 ├─────────────────────────────────────────────────────────────┤
-│  🤖 AI Insights (LLM SDK — Gemini primary)                  │
+│  🤖 AI Insights (LLM SDK — Anthropic Claude primary)        │
 │  "T1+T4+T5_CLOSED shows 62.5% hit rate [55-70% CI]..."     │
 │  📝 Query: SELECT ... FROM v_leaderboard LIMIT 5            │
 │  📊 Tokens: 342 input / 128 output | Cost: $0.0003          │
@@ -648,7 +648,7 @@ disclaimers:
 |----------|------------|
 | Web | Streamlit |
 | Charts | Plotly |
-| **AI (Primary)** | **LLM SDK (Gemini primary, OpenAI/Claude supported)** |
+| **AI (Primary)** | **LLM SDK (Anthropic Claude primary, Gemini/OpenAI fallback) — prompt caching reduces costs ~90% on repeated SEC filing context** |
 | **AI (Supplementary)** | **PandasAI (natural language data querying)** |
 | **Structured Outputs** | **Pydantic v2 (response validation)** |
 | **AI Observability** | **Python logging + token/cost tracking** |
@@ -1219,8 +1219,8 @@ attention-flow-catalyst/
 | 1 | Data Analyst | Backtest engine + AI dashboard |
 | 2 | Data Engineer | AWS S3, Airflow, 500+ tickers |
 | 3 | ML Engineer | XGBoost, LSTM, MLflow |
-| 4 | LLM Specialist | RAG, multi-agent, voice |
-| 5 | Senior LLM | Production, monetization |
+| 4 | LLM Specialist | RAG + **Multi-agent system** implementing Anthropic's "Building Effective Agents" patterns: **orchestrator-workers** (Researcher routes to specialized Analyst workers) + **sequential** (Risk Manager gates Executor) + **evaluator-optimizer** (self-correction loop). Each worker calls SEC/Yahoo/news APIs via **MCP servers**. Voice interface. |
+| 5 | Senior LLM | Production deployment, monetization, **A2A protocol** for multi-tenant SaaS where institutional users' agents collaborate (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent), LLMOps evaluation pipeline at scale |
 
 ---
 
@@ -1273,18 +1273,26 @@ attention-flow-catalyst/
 AFC uses DeepEval with **elevated thresholds** because incorrect financial analysis
 can mislead trading decisions. Faithfulness is set to 0.9 (vs 0.85 standard).
 
-**Framework:** DeepEval (pytest-compatible, open-source)
+**v8.3 Enhancement:** Beyond DeepEval, AFC adds **SelfCheckGPT** (consistency-based) 
+and **FActScore** (atomic-fact decomposition with SEC retrieval verification) — 
+financial-grade rigor justified by trading decision risk.
+
+**Frameworks:** DeepEval + SelfCheckGPT + FActScore (all pytest-compatible, open-source)
 
 | Metric | Target | Why Higher |
 |--------|--------|-----------|
 | Answer Relevancy | > 0.8 | Standard threshold |
 | Faithfulness | > 0.9 | Financial data must be accurate — higher than standard 0.85 |
 | Hallucination | < 0.10 | Lower tolerance — fabricated financial data is dangerous |
+| **SelfCheckGPT Score** | > 0.85 | Consistency-based — sample N=5 responses, score divergence as hallucination signal. Catches subtle fabrications DeepEval misses. No external KB needed. |
+| **FActScore (atomic)** | > 0.80 | Decomposes claims into atomic facts → verifies each against SEC EDGAR + financial sources. Gold standard for SEC-grounded analysis. |
 
 **Implementation:**
-- Evaluation test cases in `tests/test_eval.py`
-- Financial accuracy test cases in `tests/eval_dataset.json`
-- CI pipeline includes evaluation gate
+- Evaluation test cases in `tests/test_eval.py` (DeepEval)
+- **NEW v8.3:** `tests/test_selfcheckgpt.py` (consistency sampling, ~3-5 LOC per test using `selfcheckgpt` library)
+- **NEW v8.3:** `tests/test_factscore.py` (atomic-fact decomposition; uses SEC EDGAR + cached Wikipedia as KB)
+- Financial accuracy test cases in `tests/eval_dataset.json` (30+ cases covering filings, earnings, technicals)
+- CI pipeline includes evaluation gate (all three frameworks must pass)
 
 
 ### Docker Support (Containerization)
@@ -1391,7 +1399,7 @@ This document represents the complete, methodology-complete scope for Attention-
 │     • SEC Form 4 + offering tracking (S-1, 424B5, 8-K)    │
 ├─────────────────────────────────────────────────────────────┤
 │  ✅ AI WITH GUARDRAILS (2026 Production Patterns)           │
-│     • LLM SDK (Gemini primary, OpenAI/Claude supported)    │
+│     • LLM SDK (Anthropic Claude primary, Gemini fallback)  │
 │     • Provider-agnostic abstraction layer                   │
 │     • Pydantic-validated structured outputs                 │
 │     • SQL transparency (show every query)                  │
@@ -1439,7 +1447,7 @@ flowchart LR
 
 ---
 
-**Document Status:** ✅ UPDATED (v8.2 — pyproject.toml + 2026 Production Patterns)  
-**Date:** April 03, 2026
+**Document Status:** ✅ UPDATED (v8.3 — Roadmap v8.3 alignment: Anthropic primary + agent patterns + advanced eval + A2A)  
+**Date:** May 07, 2026
 
 *"Defensible methodology + Modern stack + SDK-first AI with structured outputs & guardrails = Research system, not just a dashboard"* 🚀
