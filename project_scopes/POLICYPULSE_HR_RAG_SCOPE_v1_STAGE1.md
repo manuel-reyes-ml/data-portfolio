@@ -1,10 +1,10 @@
-# 📋 POLICYPULSE — Complete Project Scope v1.0
+# 📋 POLICYPULSE — Complete Project Scope v1.3
 
 ## AI-Powered HR Policy RAG Chatbot for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — Natural Language Access to Company Knowledge
 
-**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation-Driven RAG + Docker + pyproject.toml + 2026 Production Patterns)  
-**Last Updated:** April 03, 2026  
+**Document Version:** 1.3 (Roadmap v8.3 alignment — Anthropic SDK primary + FastMCP server + SelfCheckGPT eval)  
+**Last Updated:** May 07, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 🧠 RAG FOUNDATION PROJECT — Gateway to Stage 4 Vector DB + LangChain Skills
@@ -86,7 +86,7 @@ This project directly delivers on **4 critical roadmap objectives**:
 | Roadmap Goal | How PolicyPulse Delivers |
 |-------------|--------------------------|
 | "Build AI-powered dashboards and chatbots" (Stage 1 Strategy) | ✅ Streamlit chatbot with RAG pipeline |
-| "LLM SDKs (Gemini, OpenAI, Claude) + LangChain basics" (Month 3-5 Skills) | ✅ Provider-agnostic SDK with embedding + generation |
+| "LLM SDKs (Gemini, OpenAI, Claude) + LangChain basics" (Month 3-5 Skills) | ✅ Provider-agnostic SDK with **Anthropic SDK as primary** (Claude excels at RAG synthesis with prompt caching) + Gemini fallback |
 | "RAG System for Documentation" (Month 30 Portfolio Target) | ✅ **Early exposure** — builds RAG intuition 25 months ahead of schedule |
 | "Natural language queries" (Flagship Features) | ✅ "What's the PTO policy for employees with 5+ years?" → cited answer |
 
@@ -127,7 +127,7 @@ Recruiters spend <30 seconds on initial portfolio scan. This project passes that
 - **README hero section:** GIF showing "ask policy question → get cited answer → see ticket when unsure" in 8 seconds
 - **Live demo link:** Streamlit Cloud deployment (click and try immediately)
 - **Business impact:** "Reduces HR inquiry volume by routing 70%+ of policy questions to AI with cited answers"
-- **Tech badges:** Python, Streamlit, Gemini SDK, Embeddings, RAG, Pydantic, GitHub Actions
+- **Tech badges:** Python, Streamlit, Anthropic SDK, Gemini Embeddings, RAG, FastMCP, Pydantic, GitHub Actions
 
 ---
 
@@ -490,6 +490,7 @@ retrieval:
 - Build Usage Analytics page (query volume, categories, escalation rate)
 - Implement AI observability (token/cost/latency per query)
 - Add smart suggestions feature (related questions after answer)
+- **Build FastMCP server** (~50 LOC) exposing retrieval as MCP tools — `query_policies(question)` + `list_policy_documents()` — testable from Cursor/Claude Desktop
 - Deploy to Streamlit Cloud (FREE)
 - Create README with demo GIF, architecture diagram
 - Record 3-5 minute demo video
@@ -498,6 +499,7 @@ retrieval:
 - ✅ Escalation tickets generating for low-confidence answers
 - ✅ All 4 dashboard pages rendering
 - ✅ AI observability logging
+- ✅ **FastMCP server running locally** — `mcp_server/server.py` connects to ChromaDB, exposes 2 tools, demonstrable in Cursor settings → MCP servers
 - ✅ Deployed to Streamlit Cloud
 - ✅ README with GIF, live demo link
 
@@ -568,9 +570,10 @@ def test_source_grounding_refuses_without_context():
 |-----------|------------|-----|
 | **Language** | Python 3.11+ | Primary language, matches all portfolio projects |
 | **Dashboard** | Streamlit | Consistent with DVA, ODI, AFC, StreamSmart |
-| **LLM SDK** | Gemini SDK (primary), OpenAI (fallback) | Provider-agnostic pattern from DVA |
+| **LLM SDK (Generation)** | **Anthropic SDK (primary)**, Gemini (fallback), OpenAI (alternative) | Claude excels at RAG synthesis; prompt caching reduces costs ~90% on repeated context |
 | **Embeddings** | Gemini Text Embedding API | Free tier, 768-dim, high quality |
 | **Vector Store** | ChromaDB (local) | Lightweight, no server needed, Python-native, Stage 1 appropriate |
+| **MCP Server** | FastMCP (Python) | Exposes retrieval tools to Cursor/Claude Desktop — 2026 hiring keyword |
 | **PDF Extraction** | PyMuPDF (fitz) | Fast, reliable, preserves structure |
 | **DOCX Extraction** | python-docx | Native Python DOCX reader |
 | **Data Validation** | Pydantic v2 | Structured outputs, consistent with all projects |
@@ -597,13 +600,80 @@ class LLMProvider:
 
 # config/ai_config.yaml
 ai:
-  provider: "gemini"              # or "openai", "claude"
-  generation_model: "gemini-2.0-flash"
+  provider: "anthropic"           # or "gemini", "openai" — Anthropic primary for RAG synthesis
+  generation_model: "claude-sonnet-4-6"
   embedding_model: "models/text-embedding-004"
   temperature: 0.1                # Low for factual policy answers
   max_tokens: 2000
-  fallback_provider: "openai"
+  fallback_provider: "gemini"
 ```
+
+### 10.3 MCP Server (2026 Differentiator) ⭐ NEW v8.3
+
+**Why MCP Matters in 2026:**
+
+The Model Context Protocol (MCP), originally created by Anthropic and donated to the Linux Foundation Agentic AI Foundation in December 2025, is the de facto 2026 standard for agent ↔ tool integration. As of early 2026, the MCP ecosystem has surpassed 97 million monthly SDK downloads with 200+ server implementations across GitHub, Slack, Postgres, Notion, Jira, and Salesforce. PolicyPulse exposing its retrieval as an MCP server means Cursor, Claude Desktop, and any MCP-compatible client can query the HR knowledge base directly — turning the project from "another RAG demo" into "production-ready agent infrastructure."
+
+**What Gets Exposed (2 tools, ~50 LOC total):**
+
+| Tool | Signature | What It Does |
+|------|-----------|--------------|
+| `query_policies` | `(question: str, top_k: int = 5) -> PolicyAnswer` | Retrieve relevant chunks + return answer with citations |
+| `list_policy_documents` | `() -> list[PolicyDocument]` | Return registered policy documents with metadata (title, last_updated, sections) |
+
+**FastMCP Server Implementation:**
+
+```python
+# mcp_server/server.py
+from fastmcp import FastMCP
+from src.retrieval.search import semantic_search
+from src.ai.rag_pipeline import answer_question
+from src.ingestion.extractor import list_documents
+
+mcp = FastMCP("policypulse")
+
+@mcp.tool()
+def query_policies(question: str, top_k: int = 5) -> dict:
+    """Query HR policy knowledge base. Returns answer + citations + confidence."""
+    result = answer_question(question, top_k=top_k)
+    return {
+        "answer": result.answer,
+        "citations": [c.model_dump() for c in result.citations],
+        "confidence": result.confidence,
+        "escalated": result.escalated,
+    }
+
+@mcp.tool()
+def list_policy_documents() -> list[dict]:
+    """List all registered HR policy documents with metadata."""
+    return [doc.model_dump() for doc in list_documents()]
+
+if __name__ == "__main__":
+    mcp.run()
+```
+
+**Cursor / Claude Desktop Integration:**
+
+```json
+// Cursor settings.json or Claude Desktop config
+{
+  "mcpServers": {
+    "policypulse": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/absolute/path/to/policypulse"
+    }
+  }
+}
+```
+
+**Testing Approach:**
+- `tests/test_mcp_server.py` — unit tests for each tool function (uses test ChromaDB fixture from conftest)
+- Manual integration test: launch Cursor → verify `policypulse` appears in MCP servers list → ask Cursor "what's our PTO policy?" → confirm tool invocation
+- Document the integration with screenshots in `mcp_server/README.md` (recruiter-facing artifact)
+
+**Resume Signal:**
+"Exposed retrieval pipeline as a FastMCP server, enabling LLM-native clients (Cursor, Claude Desktop) to query the knowledge base via the Model Context Protocol — the 2026 industry standard for agent-tool integration."
 
 ---
 
@@ -689,6 +759,11 @@ policypulse/
 │       ├── __init__.py
 │       ├── config.py
 │       └── logging.py
+├── mcp_server/                  # ⭐ v8.3 — FastMCP server (2026 differentiator)
+│   ├── __init__.py
+│   ├── server.py                # FastMCP server entry point (~50 LOC)
+│   ├── tools.py                 # MCP tool definitions (query_policies, list_documents)
+│   └── README.md                # MCP server setup + Cursor/Claude Desktop integration
 ├── app/
 │   ├── Home.py                   # Streamlit main page
 │   ├── pages/
@@ -805,6 +880,7 @@ policypulse/
 | Contextual Recall | > 0.80 | Retrieval covers all aspects of expected answer |
 | Answer Relevancy | > 0.80 | AI response addresses the user's question |
 | Hallucination Rate | < 0.10 | Critical for HR policy accuracy |
+| **SelfCheckGPT Score** | > 0.80 | Consistency-based hallucination detection — sample N=5 responses, score divergence; works without external KB (catches subtle fabrications DeepEval misses) |
 | DeepEval test suite | ✅ All green | 30+ eval test cases passing |
 | Dockerfile + Compose | ✅ Running | Streamlit + ChromaDB containerized |
 
@@ -986,8 +1062,8 @@ Tests            Quality Tests    Chat Page
 | **1** | Data Analyst | ✅ RAG chatbot + ChromaDB + Streamlit (THIS SCOPE) |
 | **2** | Data Engineer | AWS S3 document storage, PostgreSQL ticket tracking, scheduled re-ingestion |
 | **3** | ML Engineer | Fine-tuned embedding model for HR domain, re-ranking model for better retrieval |
-| **4** | LLM Specialist | LangChain/LangGraph orchestration, Pinecone vector DB, multi-agent (retriever + verifier + responder), voice interface |
-| **5** | Senior LLM | Production SaaS: multi-tenant, RBAC, Slack/Teams integration, LLMOps evaluation pipeline, A/B testing retrieval strategies |
+| **4** | LLM Specialist | LangChain/LangGraph orchestration (**evaluator-optimizer pattern**: retriever → verifier → responder loop), Pinecone vector DB migration, voice interface, **MCP server expanded** with policy update + ticket creation tools |
+| **5** | Senior LLM | Production SaaS: multi-tenant, RBAC, Slack/Teams integration, LLMOps evaluation pipeline, A/B testing retrieval strategies, **A2A protocol** for HR-Agent ↔ IT-Agent ↔ Payroll-Agent collaboration in cross-functional employee questions |
 
 ---
 
@@ -999,6 +1075,9 @@ Tests            Quality Tests    Chat Page
 - [ ] Escalation workflow defined (confidence < 0.7 → generate ticket)
 - [ ] AI guardrails comprehensive (8 guardrails with test strategy)
 - [ ] ChromaDB appropriate for Stage 1 (upgrade path to Pinecone in Stage 4)
+- [ ] **FastMCP server scoped (~50 LOC, 2 tools exposed)**
+- [ ] **Anthropic SDK as primary provider confirmed (Gemini fallback via config)**
+- [ ] **SelfCheckGPT integrated alongside DeepEval RAG metrics**
 - [ ] AI architecture aligned with DVA, AFC, ODI, StreamSmart (same SDK patterns)
 - [ ] Timeline realistic (4 weeks at 25 hrs/week)
 
@@ -1030,10 +1109,12 @@ Tests            Quality Tests    Chat Page
 │     • Ticket tracking dashboard                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │  🤖 AI FEATURES (2026 Production Patterns)                      │
-│     • LLM SDK (Gemini primary, OpenAI/Claude supported)         │
+│     • LLM SDK (Anthropic Claude primary, Gemini/OpenAI fallback)│
 │     • Provider-agnostic abstraction layer                       │
+│     • FastMCP server (Cursor/Claude Desktop integration)        │
 │     • Pydantic-validated structured outputs                     │
 │     • 8 guardrails (scope, hallucination, PII, grounding)       │
+│     • SelfCheckGPT consistency-based hallucination eval         │
 │     • AI observability (tokens, cost, latency per query)        │
 │     • Session-based conversation memory                         │
 ├─────────────────────────────────────────────────────────────────┤
