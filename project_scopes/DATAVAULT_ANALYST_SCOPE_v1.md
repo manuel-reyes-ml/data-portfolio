@@ -1,10 +1,10 @@
-# 🔐 DATAVAULT ANALYST — Complete Project Scope v1.0
+# 🔐 DATAVAULT ANALYST — Complete Project Scope v1.3
 
 ## AI-Powered PII-Safe Data Intelligence for Retirement Plan Operations
 ## "Chat With Your Data" — Production-Grade Natural Language Analytics
 
-**Document Version:** 1.2 (SDK-First AI Architecture + Evaluation & Docker + pyproject.toml + 2026 Production Patterns)  
-**Last Updated:** April 03, 2026  
+**Document Version:** 1.3 (Roadmap v8.3 alignment confirmed — provider-agnostic architecture allows Anthropic/Gemini swap via config; no functional changes from v1.2)  
+**Last Updated:** May 07, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** ⭐ FIRST AI PROJECT TO PUBLISH — GenAI Portfolio Launchpad
@@ -525,7 +525,7 @@ disclaimer:
 |----------|------------|
 | Web Framework | Streamlit |
 | Charts | Plotly |
-| **AI (Primary)** | **LLM SDK (Gemini primary, OpenAI/Claude supported)** |
+| **AI (Primary)** | **LLM SDK (Gemini primary, OpenAI/Anthropic Claude supported as alternative providers via config swap)** |
 | **AI (Supplementary)** | **PandasAI (natural language DataFrame queries)** |
 | **Structured Outputs** | **Pydantic v2 (response validation)** |
 | **AI Observability** | **Python logging + token/cost/latency tracking** |
@@ -951,9 +951,9 @@ flowchart LR
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
-**Date:** April 03, 2026  
+**Document Status:** 📋 DRAFT (v1.3 — Roadmap v8.3 alignment confirmed; provider-agnostic architecture supports Anthropic/Gemini/OpenAI swap via config)  
+**Date:** May 07, 2026  
 **Total Timeline:** 4 weeks  
 **Strategic Role:** First AI project to publish — GenAI portfolio launchpad
 
-*"PII-safe data access + SDK-first AI + Structured outputs + Code transparency = Production-grade 'Chat With Your Data' that recruiters actually remember"* 🚀
+*"PII-safe data access + SDK-first AI + Structured outputs + Code transparency = Production-grade 'Chat With Your Data' that recruiters actually remember"* 🚀 
