@@ -7,7 +7,7 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-mr410-0077B5?logo=linkedin)](https://linkedin.com/in/mr410) 
 [![GitHub](https://img.shields.io/badge/GitHub-manuel--reyes--ml-181717?logo=github)](https://github.com/manuel-reyes-ml) 
 [![Email](https://img.shields.io/badge/Email-Contact-D14836?logo=gmail)](mailto:manuelreyesv410@gmail.com)
-[![Roadmap](https://img.shields.io/badge/Roadmap-v8.2-28a745)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
+[![Roadmap](https://img.shields.io/badge/Roadmap-v8.3-28a745)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
 
 ---
 
@@ -18,8 +18,8 @@
 | 🎓 Tutorial projects | ✅ **Production ETL system** (live, saving **$15K/year**) |
 | ❌ No domain expertise | ✅ **15+ years business data** + **6 years trading** experience |
 | 📦 Scattered portfolios | ✅ **7 production-grade projects** with skills progression |
-| 🤖 No AI integration | ✅ **GenAI-first** (LLM SDKs, RAG, Multimodal AI, Pydantic structured outputs) |
-| 📉 No AI evaluation | ✅ **Evaluation-driven development** (DeepEval + pytest, RAGAS, Docker in every project) |
+| 🤖 No AI integration | ✅ **GenAI-first** (LLM SDKs with **Anthropic primary**, RAG, **FastMCP server**, Multimodal AI, Pydantic structured outputs) |
+| 📉 No AI evaluation | ✅ **Evaluation-driven development** (DeepEval + pytest, RAGAS, **SelfCheckGPT**, Docker in every project) |
 
 ---
 
@@ -27,17 +27,17 @@
 
 > Each project introduces new skills that build on the previous.
 >
-> 🏗️ **Production Standard:** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table, demo GIF, and "What I Learned" section.
+> 🏗️ **Production Standard (v8.3):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table, demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
 
 | # | Project | Key Skills Added | Status |
 |---|---------|-----------------|--------|
 | 1 | 🧾 **[1099 Reconciliation Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** | ETL, pandas, pytest, CI/CD | ✅ **Production** |
 | 2 | 🔐 **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** | + LLM SDK, PandasAI, Pydantic, PII handling | 📅 Next |
-| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | + Embeddings, ChromaDB, RAG, semantic search, RAG Triad evaluation | 📅 Planned |
+| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | + Embeddings, ChromaDB, RAG, semantic search, RAG Triad evaluation, **FastMCP server, Anthropic SDK primary** | 📅 Planned |
 | 4 | 📄 **[FormSense](https://github.com/manuel-reyes-ml/formsense)** | + Multimodal AI (Gemini Vision), document processing | 📅 Planned |
 | 5 | 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** | + Enterprise real data, advanced analytics | 🚧 In Dev |
 | 6 | 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** | + External APIs, consumer UX, optimization | 📅 Planned |
-| 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | + Statistical methodology, DuckDB, async, multi-source | 🚧 Phase 1A |
+| 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | + Statistical methodology, DuckDB, async, multi-source, **financial-grade eval (SelfCheckGPT + FActScore, 0.9 faithfulness)** | 🚧 Phase 1A |
 
 ---
 
@@ -68,9 +68,9 @@
 ---
 
 ### 📋 PolicyPulse — *RAG Foundation*
-**"Ask Your Policies"** — RAG chatbot answering HR policy questions with cited sources. Auto-escalates to HR via structured tickets when confidence is low.
+**"Ask Your Policies"** — RAG chatbot answering HR policy questions with cited sources. Auto-escalates to HR via structured tickets when confidence is low. **Exposes a FastMCP server** so Cursor/Claude Desktop can query the HR knowledge base directly.
 
-**Tech:** Python • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • Docker • GitHub Actions CI
+**Tech:** Python • **Anthropic SDK (primary, Gemini fallback)** • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • SelfCheckGPT • **FastMCP** • Docker • GitHub Actions CI
 
 ---
 
@@ -98,7 +98,7 @@
 ### 📈 Attention-Flow Catalyst — 🚀 *Flagship*
 **AI-Powered Predictive Trigger Analysis for Small-Cap Stocks** — Defensible research system with walk-forward validation, survivorship bias controls, and alternative data from SEC, Wikipedia, and news sources. Evolves through all 5 career stages.
 
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • Gemini SDK • PandasAI • Streamlit • DeepEval • Docker • GitHub Actions CI
+**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
 
 ---
 
@@ -142,9 +142,10 @@
 
 **AI & GenAI**
 
+![Anthropic SDK](https://img.shields.io/badge/Anthropic_SDK_(primary)-D97757?style=flat-square&logo=anthropic&logoColor=white)
 ![Gemini SDK](https://img.shields.io/badge/Gemini_SDK-8E75B2?style=flat-square&logo=google&logoColor=white)
 ![OpenAI API](https://img.shields.io/badge/OpenAI_API-412991?style=flat-square&logo=openai&logoColor=white)
-![Claude SDK](https://img.shields.io/badge/Claude_SDK-D97757?style=flat-square&logo=anthropic&logoColor=white)
+![FastMCP](https://img.shields.io/badge/FastMCP-7C3AED?style=flat-square&logoColor=white)
 ![PandasAI](https://img.shields.io/badge/PandasAI-150458?style=flat-square&logo=pandas&logoColor=white)
 ![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=white)
 ![ChromaDB](https://img.shields.io/badge/ChromaDB-FF6F61?style=flat-square&logoColor=white)
@@ -165,6 +166,8 @@
 
 ![DeepEval](https://img.shields.io/badge/DeepEval-FF6B6B?style=flat-square&logoColor=white)
 ![RAGAS](https://img.shields.io/badge/RAGAS-4CAF50?style=flat-square&logoColor=white)
+![SelfCheckGPT](https://img.shields.io/badge/SelfCheckGPT-FF9800?style=flat-square&logoColor=white)
+![FActScore](https://img.shields.io/badge/FActScore-F44336?style=flat-square&logoColor=white)
 ![LangSmith](https://img.shields.io/badge/LangSmith-1C3C3C?style=flat-square&logoColor=white)
 
 **APIs & Domain Expertise**
@@ -181,6 +184,8 @@
 
 ## 📂 Repository Structure
 
+> **📌 Document Versions (May 2026):** All scope docs aligned with Roadmap v8.3. Filenames unchanged — version lives in each document's header.
+
 ```
 data-portfolio/
 ├── README.md                                              # This file — Portfolio hub
@@ -194,7 +199,7 @@ data-portfolio/
     └── STREAMSMART_OPTIMIZER_SCOPE_v1_STAGE1.md            # 📺 Stage 1 — Consumer AI app
 ```
 
-> Each scope document includes: executive summary, business problem, data architecture, feature framework, phased implementation plan, tech stack, CI/CD pipeline, evaluation strategy (DeepEval + pytest), Docker support, Mermaid architecture diagram, and Production README Standard.
+> Each scope document includes: executive summary, business problem, data architecture, feature framework, phased implementation plan, tech stack, CI/CD pipeline, evaluation strategy (DeepEval + pytest, plus SelfCheckGPT/FActScore for flagship projects), Docker support, Mermaid architecture diagram, and Production README Standard. Stage 4 evolutions name agent patterns explicitly (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents") and reference A2A protocol for Stage 5 multi-tenant scenarios.
 
 ---
 
@@ -202,7 +207,7 @@ data-portfolio/
 
 | Resource | Link |
 |----------|------|
-| 📋 **Interactive Roadmap** | [37-Month GenAI-First Roadmap (v8.2)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
+| 📋 **Interactive Roadmap** | [37-Month GenAI-First Roadmap (v8.3)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
 | 📚 **Learning Journey** | [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) |
 | 👤 **GitHub Profile** | [@manuel-reyes-ml](https://github.com/manuel-reyes-ml) |
 | 🔗 **LinkedIn** | [Manuel Reyes](https://linkedin.com/in/mr410) |
