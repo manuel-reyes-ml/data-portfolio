@@ -17,17 +17,17 @@
 |:----------------|:-------------|
 | 🎓 Tutorial projects | ✅ **Production ETL system** (live, saving **$15K/year**) |
 | ❌ No domain expertise | ✅ **15+ years business data** + **6 years trading** experience |
-| 📦 Scattered portfolios | ✅ **7 production-grade projects** with skills progression |
-| 🤖 No AI integration | ✅ **GenAI-first** (LLM SDKs with **Anthropic primary**, RAG, **FastMCP server**, Multimodal AI, Pydantic structured outputs) |
+| 📦 Scattered portfolios | ✅ **8 production-grade projects** with skills progression (incl. **two flagships**: AFC + Crucible) |
+| 🤖 No AI integration | ✅ **GenAI-first** (LLM SDKs with **Anthropic primary** + **local-first Qwen3/Ollama**, RAG, **FastMCP server**, Multimodal AI, Pydantic structured outputs) |
 | 📉 No AI evaluation | ✅ **Evaluation-driven development** (DeepEval + pytest, RAGAS, **SelfCheckGPT**, Docker in every project) |
 
 ---
 
-## 📌 Project Pipeline — Skills Progression (Easy → Flagship)
+## 📌 Project Pipeline — Skills Progression (Easy → Two Flagships)
 
 > Each project introduces new skills that build on the previous.
 >
-> 🏗️ **Production Standard (v8.3):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table, demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
+> 🏗️ **Production Standard (v8.3):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table, demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC, Crucible) add advanced rigor — FastMCP server + hallucination detection (SelfCheckGPT/FActScore) for the research systems; sealed out-of-sample vault + overfitting-budget ledger + engine-parity gate for Crucible.
 
 | # | Project | Key Skills Added | Status |
 |---|---------|-----------------|--------|
@@ -38,6 +38,7 @@
 | 5 | 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** | + Enterprise real data, advanced analytics | 🚧 In Dev |
 | 6 | 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** | + External APIs, consumer UX, optimization | 📅 Planned |
 | 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | + Statistical methodology, DuckDB, async, multi-source, **financial-grade eval (SelfCheckGPT + FActScore, 0.9 faithfulness)** | 🚧 Phase 1A |
+| 8 | 🔥 **[Crucible](https://github.com/manuel-reyes-ml/crucible)** 🚀 | + Own backtest harness → NautilusTrader, deterministic strategy plugins, sealed OOS vault + overfitting budget, **local-first LLM (Qwen3/Ollama)**, LangGraph multi-agent execution, Alpaca + Schwab/TOS | 🚧 Phase 1 |
 
 ---
 
@@ -95,10 +96,19 @@
 
 ---
 
-### 📈 Attention-Flow Catalyst — 🚀 *Flagship*
+### 📈 Attention-Flow Catalyst — 🚀 *Flagship #1*
 **AI-Powered Predictive Trigger Analysis for Small-Cap Stocks** — Defensible research system with walk-forward validation, survivorship bias controls, and alternative data from SEC, Wikipedia, and news sources. Evolves through all 5 career stages.
 
 **Tech:** Python • DuckDB • Parquet • httpx async • edgartools • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
+
+---
+
+### 🔥 Crucible — 🚀 *Flagship #2 (started first)*
+**Autonomous Intraday Trading Research Platform** — Strategy-agnostic platform taking any intraday strategy from **backtest → paper → live** through validation gates. An LLM research analyst proposes strategy improvements that are *proved* by deterministic backtests behind a **sealed out-of-sample vault** (every peek logged in an overfitting-budget ledger). Strategies are plugins (Protocol + ABC + registry); IT-1 ORB + VWAP Reclaim ship first to prove the abstraction. **Distinct from AFC:** liquid *intraday execution* vs. illiquid small-cap *swing research* — ~70% shared engineering spine, two different hard problems. Phase 1 (backtest engine) is in Stage 1; autonomous paper/live agentic phases mature across Stages 3–4. Local-first AI keeps cost at zero and data on-machine.
+
+**Tech:** Python • own event-driven backtest harness → **NautilusTrader** (LGPL, free) • Optuna • DuckDB • Parquet • **Ollama/Qwen3 (local-first)** → Gemini → Anthropic → OpenAI • Pydantic • LangGraph • **Alpaca** (paper + live) + **Schwab Trader API/TOS** (live) • DeepEval • Docker • GitHub Actions CI
+
+> ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
 
 ---
 
@@ -143,6 +153,8 @@
 **AI & GenAI**
 
 ![Anthropic SDK](https://img.shields.io/badge/Anthropic_SDK_(primary)-D97757?style=flat-square&logo=anthropic&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama_(local--first)-000000?style=flat-square&logo=ollama&logoColor=white)
+![Qwen3](https://img.shields.io/badge/Qwen3_(local)-615CED?style=flat-square&logoColor=white)
 ![Gemini SDK](https://img.shields.io/badge/Gemini_SDK-8E75B2?style=flat-square&logo=google&logoColor=white)
 ![OpenAI API](https://img.shields.io/badge/OpenAI_API-412991?style=flat-square&logo=openai&logoColor=white)
 ![FastMCP](https://img.shields.io/badge/FastMCP-7C3AED?style=flat-square&logoColor=white)
@@ -150,6 +162,7 @@
 ![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=white)
 ![ChromaDB](https://img.shields.io/badge/ChromaDB-FF6F61?style=flat-square&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=flat-square&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?style=flat-square&logoColor=white)
 ![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?style=flat-square&logo=openai&logoColor=white)
 ![Cursor](https://img.shields.io/badge/Cursor_AI-000000?style=flat-square&logoColor=white)
 
@@ -169,6 +182,13 @@
 ![SelfCheckGPT](https://img.shields.io/badge/SelfCheckGPT-FF9800?style=flat-square&logoColor=white)
 ![FActScore](https://img.shields.io/badge/FActScore-F44336?style=flat-square&logoColor=white)
 ![LangSmith](https://img.shields.io/badge/LangSmith-1C3C3C?style=flat-square&logoColor=white)
+
+**Trading & Backtesting (Crucible)**
+
+![NautilusTrader](https://img.shields.io/badge/NautilusTrader-00BFA5?style=flat-square&logoColor=white)
+![Optuna](https://img.shields.io/badge/Optuna-2196F3?style=flat-square&logo=optuna&logoColor=white)
+![Alpaca](https://img.shields.io/badge/Alpaca_API-FFD400?style=flat-square&logoColor=black)
+![Schwab](https://img.shields.io/badge/Schwab_Trader_API-009DDC?style=flat-square&logoColor=white)
 
 **APIs & Domain Expertise**
 
@@ -190,7 +210,8 @@
 data-portfolio/
 ├── README.md                                              # This file — Portfolio hub
 └── project_scopes/                                        # 📋 Architecture & scope documents
-    ├── ATTENTION_FLOW_CATALYST_SCOPE_v8.md                # 🚀 Flagship — 5-stage research system
+    ├── ATTENTION_FLOW_CATALYST_SCOPE_v8.md                # 🚀 Flagship #1 — 5-stage research system
+    ├── CRUCIBLE_SCOPE_v1.0.md                             # 🔥 Flagship #2 — autonomous intraday (backtest→paper→live)
     ├── DATAVAULT_ANALYST_SCOPE_v1.md                      # 🔐 First AI project — PII-safe analytics
     ├── FORMSENSE_DISTRIBUTION_SCOPE_v1_STAGE1.md          # 📄 Document intelligence — Vision AI
     ├── OPERATIONS_DEMAND_INTELLIGENCE_SCOPE_v2_3.md       # 📊 Enterprise analytics — OnBase data
@@ -199,7 +220,7 @@ data-portfolio/
     └── STREAMSMART_OPTIMIZER_SCOPE_v1_STAGE1.md            # 📺 Stage 1 — Consumer AI app
 ```
 
-> Each scope document includes: executive summary, business problem, data architecture, feature framework, phased implementation plan, tech stack, CI/CD pipeline, evaluation strategy (DeepEval + pytest, plus SelfCheckGPT/FActScore for flagship projects), Docker support, Mermaid architecture diagram, and Production README Standard. Stage 4 evolutions name agent patterns explicitly (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents") and reference A2A protocol for Stage 5 multi-tenant scenarios.
+> Each scope document includes: executive summary, business problem, data architecture, feature framework, phased implementation plan, tech stack, CI/CD pipeline, evaluation strategy (DeepEval + pytest, plus SelfCheckGPT/FActScore for flagship projects), Docker support, Mermaid architecture diagram, and Production README Standard. Stage 4 evolutions name agent patterns explicitly (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents") and reference A2A protocol for Stage 5 multi-tenant scenarios. The Crucible scope adds its research-loop integrity controls — the sealed out-of-sample vault, overfitting-budget ledger, and own-harness↔NautilusTrader engine-parity gate.
 
 ---
 
