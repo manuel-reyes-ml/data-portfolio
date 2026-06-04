@@ -3,7 +3,7 @@
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.0 (OFFICIAL — supersedes v1.0; consolidates revisions v1.1 + v1.2 and adds the sentiment/attention research feature)
+**Document Version:** 2.1 (OFFICIAL — adds factor-importance output, the deterministic/LLM live-monitoring split, and the Prediction Engine; consolidates v1.0 → v2.0 history)
 **Last Updated:** June 3, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
@@ -27,6 +27,8 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 | Execution cadence | sub-second fast loop + EOD flatten | + **swing mode**: EOD decision cadence, multi-day holds, no flatten; PDT largely moot |
 
 > The v1.0 integrity spine is unchanged and remains the foundation: The Wall, sealed OOS vault, logged overfitting budget, point-in-time data, walk-forward CV, engine-parity gate, and the three-gate backtest→paper→live pipeline.
+
+**v2.0 → v2.1 (this revision):** adds (1) **factor-importance ranking** as an explicit analyst output (which factors carry the OOS edge); (2) an explicit **deterministic-scores-and-executes / LLM-analyzes-and-improves** split for live factor monitoring (§9); and (3) a **Prediction Engine** (§6.5) — a *deterministic* conditional base-rate / calibrated-probability research metric (LLM analyzes, does not predict), promotion-gated like every other signal. None of these move the LLM into the trade loop; Principle #2 stands.
 
 ---
 
@@ -277,7 +279,7 @@ Stay free until one trigger fires: (a) free historical depth too thin for the ba
 
 ---
 
-## 6. Sentiment & Attention Signal (Research Feature — sequenced, confirmation-only)
+## 6. Derived Research Signals — Sentiment, Attention & Prediction (sequenced, confirmation-only, promotion-gated)
 
 Sentiment is added the disciplined way: **the order is backtest-clean-sources-only → forward-capture-the-rest → promote only what earns it**, and it is **always confirmation-only, never a trigger** (Principle #6). This protects the system from the single least-reproducible data in the stack.
 
@@ -304,6 +306,34 @@ Scraped **Reddit** and **X/Twitter** history cannot be backtested honestly: Redd
 
 > **Net:** Wikipedia/Trends can flow backtest→paper→live if the backtest says it matters; social rides along as a forward-captured tag and only reaches live if it earns it. Sentiment is the *last* and *lightest* input, not a foundation.
 
+### 6.5 Prediction Engine (conditional base-rate / calibrated probability — research metric)
+
+A **separate, deterministic module** that takes the deterministic engine's factor vector + PIT history and outputs, for each A+/A setup, a **probability and forward-return distribution** for the next move in the trade's direction (P(up)/P(down) **and expected R**), shown as a **metric** beside the setup. The question it answers: *does a data-driven probability add information over the rules alone?*
+
+> **Critical — the LLM is NOT the predictor.** "This factor profile has occurred N times and X% went up" is a *statistical computation*, not an LLM task. An LLM producing a price-move probability from numbers would hallucinate, be non-reproducible, and carry no calibration. The predictor is **deterministic stats/ML**; the **LLM analyzes** the predictor's calibration and where it works or fails — the same division of labor as everywhere else (deterministic predicts; LLM diagnoses).
+
+### 6.6 Two implementations (start simple, earn complexity)
+
+- **(a) Conditional base-rate / analogue cohort (start here).** Encode each setup as its factor vector; find historical analogues (k-NN or binned cohort) using **only past, PIT data**; compute the empirical forward-return distribution, hit rate, **sample size, and confidence interval**. Transparent and directly testable. **Pool cross-sectionally across the universe for statistical power** — per-ticker counts are far too small.
+- **(b) Calibrated classifier (later).** Logistic regression first (interpretable baseline), then gradient-boosted trees; output a **calibrated** P(up) (Platt/isotonic); SHAP for factor importance (ties directly to the "most important factor" question). Walk-forward trained; never sees the OOS vault.
+
+### 6.7 The traps this must survive (blunt)
+
+- **"90% in this ticker" is almost always noise.** A narrow per-ticker slice has n ≈ 3–8; 9-of-10 is sampling noise, not edge. **Require a minimum sample (e.g., n ≥ 30) and report the CI**; pool across the universe to get there.
+- **Win-rate ≠ edge.** 90% up with tiny wins and rare large losses is negative expectancy. The prediction must be tied to the **R-distribution / expectancy**, not bare direction — otherwise it builds a high-win-rate, money-losing trap.
+- **Point-in-time analogue search.** The cohort must use only data available as of each historical date, or it leaks.
+- **Calibration, not just accuracy.** Measure Brier score + reliability curves: when it says 70%, it must happen ~70% of the time.
+- **Multiple comparisons.** Scanning many factor cohorts for high-probability slices is data dredging — every prediction run is logged in the overfitting budget like any other peek.
+- **Regime dependence.** Report base rates by regime; a pre-2022 cohort may not hold.
+
+### 6.8 Promotion ladder (same discipline as sentiment)
+
+1. **Backtest:** compute the prediction as a **tag only** (non-binding); measure calibration and whether conditioning on it improves OOS expectancy (parallel-tag).
+2. **Promote** to influence trades **only if validated** — and then as a **sizing modifier / confirmation input** (scale toward the tier cap when probability + expectancy are high; stand down when the cohort says the edge has decayed), **never the sole trigger**. The deterministic factor stack still gates entry.
+3. The LLM reports on the predictor's health and factor importance; it never produces or overrides the number live.
+
+> **Net:** the prediction engine answers "what has this factor profile done historically, and how confident/expectant should we be?" as a *measured, validated metric* — deterministic to compute, LLM to analyze, promotion-gated like every other signal, and always subordinate to "deterministic owns the trade."
+
 ---
 
 ## 7. Phase 1 — Backtesting Engine + AI Research Loop
@@ -329,12 +359,13 @@ Scraped **Reddit** and **X/Twitter** history cannot be backtested honestly: Redd
 | 12 | Optimizer | Optuna/grid over each strategy's open-parameter table |
 | 13 | Results store | Aggregated stats; per-trade log schema; **sector-tier + sentiment-bucket tags** for attribution |
 | 14 | Sentiment attention tag | Wikipedia/Trends ingested PIT; parallel-tag attribution wired (§6) |
-| 15 | LLM research analyst | Pydantic structured outputs; reads aggregates only; guardrails; observability |
+| 15 | LLM research analyst | Pydantic structured outputs; reads aggregates only; guardrails; observability; **factor-importance ranking** (which factors carry the OOS edge) |
 | 16 | Overfitting budget ledger | Every OOS peek logged with run ID + look-count discount |
 | 17 | OOS confirmation harness | Sealed; one-shot per finalized hypothesis |
 | 18 | Strategy comparison/leaderboard | OOS, regime-tagged, ≥30 trades/scenario, bootstrap CI; ranks SW-A v3 vs SW-B |
 | 19 | Eval suite | DeepEval + pytest on the analyst (faithfulness ≥ 0.9) |
 | 20 | Docs + demo | README w/ Mermaid diagram, "What I Learned", 60s demo GIF |
+| 21 | Prediction engine (base-rate) | Conditional base-rate cohort over the factor vector (PIT, cross-sectional, min sample + CI); calibration test (Brier/reliability); **metric-only**, parallel-tag for OOS lift |
 
 ### What "validated" means (the per-strategy verdict)
 - ≥30 trades per scenario; bootstrap 95% CI; transaction costs applied.
@@ -370,6 +401,19 @@ For swing, the deterministic core runs **once per day on the close**, not sub-se
 
 This mirrors the **TradingAgents** pattern, with agents in oversight roles and the deterministic engine owning execution. (The sub-second fast loop returns later for intraday plugins.)
 
+### Factor monitoring — who decides what (the line that must not blur)
+
+The live behavior of "monitor A+/A setups by factor, drop the decayed ones, execute the ready ones" is **deterministic** — it is rules, re-scored each EOD, and it must match the backtest exactly. The LLM **analyzes** that process; it never decides entries. Putting the LLM in the drop/execute decision would make live results non-deterministic and break the engine-parity gates (Principle #2).
+
+| Action | Owner |
+|---|---|
+| Compute each setup's total factor score (the 4-of-6 stack + any validated prediction/sentiment modifier) | **Deterministic engine** |
+| Drop setups whose factor score decayed (sector left top-third, RS < 70, structure broke) | **Deterministic engine** (re-scored each EOD) |
+| Execute setups still valid + trigger-ready; manage exits | **Deterministic engine** + rules-based risk gate |
+| Watch which factors hold vs. decay; flag live-vs-backtest drift; rank factor importance; write the review; propose adjustments → human gate → research loop | **LLM / agent crew** |
+
+> Factor *weights and importance* are established in backtest/research and applied deterministically live. The LLM tells you when it is *time to re-establish them in research* — it does not re-decide them on the fly (that would chase noise).
+
 ### Deliverables & Gates
 - **Alpaca paper** integration (API paper = live parity); same strategy code path via Nautilus.
 - Engine-parity gate passed.
@@ -388,7 +432,7 @@ This mirrors the **TradingAgents** pattern, with agents in oversight roles and t
 **Engine: NautilusTrader. Live venues: Alpaca live and/or Schwab/TOS** (§11.2).
 
 ### Promotion rule
-Live status is earned per strategy, independently, after Phase 2 parity holds. Go live at **25% of normal risk**, run 30–50 live trades, compare live vs. paper expectancy after the haircut, then consider scaling. **Sentiment promotion:** Wikipedia/Trends carries to live if it earned OOS edge in backtest; social goes live only if forward-captured paper data earned it — confirmation-only, never a trigger.
+Live status is earned per strategy, independently, after Phase 2 parity holds. Go live at **25% of normal risk**, run 30–50 live trades, compare live vs. paper expectancy after the haircut, then consider scaling. **Sentiment promotion:** Wikipedia/Trends carries to live if it earned OOS edge in backtest; social goes live only if forward-captured paper data earned it — confirmation-only, never a trigger. **Prediction-engine promotion:** the probability/expectancy metric influences trades (as a sizing/confirmation modifier) only after it passes calibration + OOS-lift validation — never as the sole trigger.
 
 ### Live-specific engineering
 - Hard, code-enforced guardrails: daily max loss, max trades, two-loss rule, per-position cap, global kill switch.
@@ -437,6 +481,7 @@ Live status is earned per strategy, independently, after Phase 2 parity holds. G
 | Fundamentals/events | **SEC EDGAR** (dilution + 8-K) + Finnhub/AV earnings (free) | Paid tier deferred (§5.3) |
 | Sector map | **SPDR ETF holdings snapshots** (self-built PIT GICS) | Free |
 | Sentiment/attention | **Wikimedia Pageviews API + Google Trends** (backtest); Reddit/X/StockTwits (paper forward-capture) | Free; sequenced per §6 |
+| Prediction / ML | **scikit-learn, statsmodels** (+ SHAP for factor importance) | Base-rate cohort → calibrated classifier; deterministic; LLM analyzes only (§6.5) |
 | Broker (paper) | **Alpaca** (API paper) | Paper and live share one API — true parity |
 | Broker (live) | **Alpaca live + Schwab Trader API (TOS)** | Both wired as live targets; §11.2 |
 | Agents | LangGraph | Phases 2–3 |
@@ -491,6 +536,7 @@ crucible/
 │   ├── data/                       # free-first loaders, universe screen, EDGAR, SPDR snapshots, lakehouse
 │   ├── crosssection/               # ⭐ sector RS + stock RS percentile, PIT, per-timestamp
 │   ├── sentiment/                  # Wikipedia/Trends ingest (backtest); social forward-capture (paper)
+│   ├── predict/                    # ⭐ base-rate cohort + calibrated classifier; calibration tests; deterministic
 │   ├── strategies/                 # base.py (Protocol+ABC), registry.py, swa_v3.py, swb.py
 │   ├── engine/                     # Phase 1 harness: event loop, fills, costs, holding_model
 │   ├── engine_nautilus/            # Phase 2-3 adapter
@@ -498,7 +544,8 @@ crucible/
 │   ├── ai/ · agents/ · execution/ · utils/
 ├── app/                            # Streamlit research dashboard + live monitor
 ├── tests/                          # ⭐ test_lookahead_audit, test_crosssection_pit, test_engine_parity,
-│                                   #    test_oos_vault, test_swa_v3, test_swb, test_ai_guardrails, test_eval
+│                                   #    test_oos_vault, test_swa_v3, test_swb, test_prediction_calibration,
+│                                   #    test_prediction_pit, test_ai_guardrails, test_eval
 ├── notebooks/                      # exploration only; never source of truth
 └── scripts/                        # backfill data, build SPDR/universe snapshots
 ```
@@ -517,6 +564,7 @@ crucible/
 | **PIT sector leakage** | Built PIT GICS + hard-coded reclassification discontinuities (§5.2) |
 | LLM leakage | Aggregates not rows; LLM behind the Wall; deterministic signals |
 | **Sentiment leakage / irreproducibility** | Backtest only PIT-clean attention; social forward-captured; never a trigger; logged in overfitting budget (§6) |
+| **Prediction-engine overfitting / tiny-sample base rates** | Minimum sample + CI; cross-sectional pooling; PIT cohort; calibration test (Brier/reliability); tied to R/expectancy not bare win-rate; metric-first, promotion-gated, never sole trigger (§6.5) |
 | Backtest↔live skew | Own harness → Nautilus (same code); engine-parity gate; Alpaca API-paper parity; live-vs-modeled reconciliation |
 | Capital loss (Phase 3) | Micro-sizing, code-enforced limits, kill switch, tolerable-loss budget |
 | Scope creep (first-project risk) | Strict phase gates; Phase 1 must fully clear before Phase 2 |
@@ -592,6 +640,8 @@ Treat durations as gates, not deadlines.
 | 9 | **Data layer cost** | **$0 free-tier + self-built** for Phase 1 (paid deferred per §5.3) |
 | 10 | **PIT GICS** | **Built** from SPDR ETF holdings snapshots |
 | 11 | **Sentiment/attention** | **Wikipedia/Trends** backtested (confirmation-only; promote to paper/live if it earns OOS edge); **social** forward-captured in paper, promote to live if earned; **never a trigger** |
+| 12 | **Prediction engine** | Deterministic conditional base-rate / calibrated ML as a **research metric**; LLM **analyzes, does not predict**; promotion-gated; sizing/confirmation only, **never the sole trigger** |
+| 13 | **Live factor monitoring** | Deterministic engine **scores, drops, and executes**; LLM **analyzes and proposes** — LLM is never in the trade loop (Principle #2) |
 
 Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. Nothing in your roadmap or AFC scope is modified by this document.
 
