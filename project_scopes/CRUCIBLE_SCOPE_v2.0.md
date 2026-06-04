@@ -3,7 +3,7 @@
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.1 (OFFICIAL — adds factor-importance output, the deterministic/LLM live-monitoring split, and the Prediction Engine; consolidates v1.0 → v2.0 history)
+**Document Version:** 2.2 (OFFICIAL — adds the logging & observability standard and a per-workflow `logs/` layout)
 **Last Updated:** June 3, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
@@ -28,7 +28,9 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 
 > The v1.0 integrity spine is unchanged and remains the foundation: The Wall, sealed OOS vault, logged overfitting budget, point-in-time data, walk-forward CV, engine-parity gate, and the three-gate backtest→paper→live pipeline.
 
-**v2.0 → v2.1 (this revision):** adds (1) **factor-importance ranking** as an explicit analyst output (which factors carry the OOS edge); (2) an explicit **deterministic-scores-and-executes / LLM-analyzes-and-improves** split for live factor monitoring (§9); and (3) a **Prediction Engine** (§6.5) — a *deterministic* conditional base-rate / calibrated-probability research metric (LLM analyzes, does not predict), promotion-gated like every other signal. None of these move the LLM into the trade loop; Principle #2 stands.
+**v2.0 → v2.1 (prior revision):** adds (1) **factor-importance ranking** as an explicit analyst output (which factors carry the OOS edge); (2) an explicit **deterministic-scores-and-executes / LLM-analyzes-and-improves** split for live factor monitoring (§9); and (3) a **Prediction Engine** (§6.5) — a *deterministic* conditional base-rate / calibrated-probability research metric (LLM analyzes, does not predict), promotion-gated like every other signal. None of these move the LLM into the trade loop; Principle #2 stands.
+
+**v2.1 → v2.2 (this revision):** adds a **logging & observability standard** (§12.1) and a per-workflow `logs/` layout — separating *operational logs* (gitignored, structured, for debugging) from *audit/provenance artifacts* (durable, for proving reproducibility and no-leakage).
 
 ---
 
@@ -516,6 +518,7 @@ crucible/
 │                                   # strategy-plugin, backtest-integrity, ai-sdk-patterns, evaluation (auto-attach)
 ├── .github/workflows/ci.yml        # lint, type-check, test, eval gate on every PR
 ├── .env.example                    # API/broker key placeholders (never commit .env)
+├── .gitignore                      # ignores .env, logs/*, data caches, __pycache__, etc.
 ├── .pre-commit-config.yaml
 ├── pyproject.toml                  # single source of config (NO requirements.txt)
 ├── Dockerfile · docker-compose.yml # reproducible run (+ optional Ollama + DuckDB volume)
@@ -528,6 +531,7 @@ crucible/
 │   ├── data_layer.md               # free-first sources, PIT GICS build, survivorship policy
 │   ├── sentiment.md                # the §6 promotion ladder + integrity rules
 │   ├── overfitting_budget.md
+│   ├── observability.md            # the §12.1 logging standard + audit-vs-operational split
 │   ├── engine_parity.md
 │   └── runbook.md
 ├── src/crucible/
@@ -541,16 +545,46 @@ crucible/
 │   ├── engine/                     # Phase 1 harness: event loop, fills, costs, holding_model
 │   ├── engine_nautilus/            # Phase 2-3 adapter
 │   ├── optimize/ · validation/ · results/
-│   ├── ai/ · agents/ · execution/ · utils/
+│   ├── ai/ · agents/ · execution/
+│   ├── obs/                        # ⭐ structured logging, per-workflow loggers, run_id, run-manifests, reconciliation
+│   └── utils/                      # calendar, async, io helpers
 ├── app/                            # Streamlit research dashboard + live monitor
 ├── tests/                          # ⭐ test_lookahead_audit, test_crosssection_pit, test_engine_parity,
 │                                   #    test_oos_vault, test_swa_v3, test_swb, test_prediction_calibration,
-│                                   #    test_prediction_pit, test_ai_guardrails, test_eval
+│                                   #    test_prediction_pit, test_logging_no_secrets, test_ai_guardrails, test_eval
+├── logs/                           # ⭐ runtime logs — GITIGNORED (.gitkeep only); per-workflow JSON streams:
+│   ├── .gitkeep                    #   data/ · backtest/ · optimize/ · crosssection/ · predict/ · ai/ · agents/ · live/
+├── runs/                           # ⭐ run-manifests (run_id, git SHA, config hash, data version, seeds) — provenance
 ├── notebooks/                      # exploration only; never source of truth
 └── scripts/                        # backfill data, build SPDR/universe snapshots
 ```
 
-**Production-grade checklist (carried over):** Mermaid diagram ✅ · Dockerfile ✅ · eval metrics table ✅ · demo GIF ✅ · "What I Learned" ✅ · CI ✅ · `pyproject.toml`-only ✅ · `src/` + `py.typed` ✅ · `.cursor/rules/` ✅.
+**Production-grade checklist (carried over):** Mermaid diagram ✅ · Dockerfile ✅ · eval metrics table ✅ · demo GIF ✅ · "What I Learned" ✅ · CI ✅ · `pyproject.toml`-only ✅ · `src/` + `py.typed` ✅ · `.cursor/rules/` ✅ · structured logging + run-manifests ✅.
+
+### 12.1 Logging & Observability Standard
+
+Every engine and workflow logs — but two streams are deliberately kept separate, because in a research-integrity system they serve different masters.
+
+**(A) Operational logs — `logs/`, gitignored, rotated.** For debugging and ops. Each workflow gets a **named, structured (JSON) logger** threaded with a `run_id`, so a single backtest, optimizer sweep, ranking pass, agent session, or live session is traceable end-to-end. One stream per workflow:
+
+| Stream | Captures |
+|---|---|
+| `logs/data/` | ingestion, EDGAR pulls, SPDR snapshots, universe build, cache hits/misses |
+| `logs/crosssection/` | sector + stock-RS ranking per timestamp |
+| `logs/backtest/` | engine run: signals, fills, costs, exits (per `run_id`) |
+| `logs/optimize/` | Optuna trials, params, scores |
+| `logs/predict/` | base-rate cohort / calibration runs |
+| `logs/ai/` | analyst + agent calls — tokens, cost, latency, guardrail hits |
+| `logs/live/` | order lifecycle, fills, slippage-vs-modeled, kill-switch events (Phase 3) |
+
+Standard: stdlib `logging` + JSON formatter (or `structlog`); levels DEBUG/INFO/WARN/ERROR; size/time rotation; **UTC timestamps**; **never log secrets** (config uses `SecretStr`; a `test_logging_no_secrets` test enforces it).
+
+**(B) Audit / provenance artifacts — durable, NOT throwaway logs.** These are *evidence*, not debug output, and they persist (some version-controlled):
+- **Overfitting-budget ledger** — every OOS peek with `run_id` + look-count discount (ships in repo).
+- **Run manifests** (`runs/`) — `run_id`, git SHA, config/params hash, **data-snapshot version**, random seeds, timestamps. This is what makes a run *reproducible* and ties a result back to the exact code+data that produced it.
+- **Live reconciliation record** — modeled vs. actual fills, logged daily (the slippage truth-check from §9).
+
+> **Why the split matters:** operational logs help you *debug what happened*; provenance artifacts *prove the science* (reproducibility, no-leakage, parity). Conflating them — e.g., putting the overfitting ledger in gitignored `logs/` — would quietly destroy the audit trail that is the entire point of Crucible. Keep `logs/` disposable and `runs/` + the ledger durable.
 
 ---
 
@@ -570,6 +604,7 @@ crucible/
 | Scope creep (first-project risk) | Strict phase gates; Phase 1 must fully clear before Phase 2 |
 | Building above current skill | Section 17 front-loads supporting courses per phase |
 | AI cost overruns | Local-first (Qwen3) default; slow-loop cadence; caching; observability |
+| Silent failure / no provenance | Per-workflow structured logs + run manifests (git SHA, config + data-version hash, seeds); reconciliation record; secrets never logged (§12.1) |
 
 ---
 
