@@ -3,7 +3,7 @@
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.2 (OFFICIAL — adds the logging & observability standard and a per-workflow `logs/` layout)
+**Document Version:** 2.3 (OFFICIAL — adds the ML/model-training policy and a quarantined Stage-3 forecasting research wing)
 **Last Updated:** June 3, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
@@ -30,7 +30,9 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 
 **v2.0 → v2.1 (prior revision):** adds (1) **factor-importance ranking** as an explicit analyst output (which factors carry the OOS edge); (2) an explicit **deterministic-scores-and-executes / LLM-analyzes-and-improves** split for live factor monitoring (§9); and (3) a **Prediction Engine** (§6.5) — a *deterministic* conditional base-rate / calibrated-probability research metric (LLM analyzes, does not predict), promotion-gated like every other signal. None of these move the LLM into the trade loop; Principle #2 stands.
 
-**v2.1 → v2.2 (this revision):** adds a **logging & observability standard** (§12.1) and a per-workflow `logs/` layout — separating *operational logs* (gitignored, structured, for debugging) from *audit/provenance artifacts* (durable, for proving reproducibility and no-leakage).
+**v2.1 → v2.2 (prior revision):** adds a **logging & observability standard** (§12.1) and a per-workflow `logs/` layout — separating *operational logs* (gitignored, structured, for debugging) from *audit/provenance artifacts* (durable, for proving reproducibility and no-leakage).
+
+**v2.2 → v2.3 (this revision):** adds (1) the **ML / model-training policy** (§6.9) — ML is an *earned overlay, never a foundation*; and (2) a quarantined **Forecasting research wing** (§19) for Stage-3 next-day return/volatility prediction — air-gapped from live capital and able to trade only by clearing the full crucible as a plugin.
 
 ---
 
@@ -336,6 +338,17 @@ A **separate, deterministic module** that takes the deterministic engine's facto
 
 > **Net:** the prediction engine answers "what has this factor profile done historically, and how confident/expectant should we be?" as a *measured, validated metric* — deterministic to compute, LLM to analyze, promotion-gated like every other signal, and always subordinate to "deterministic owns the trade."
 
+### 6.9 ML / Model-Training Policy (governance)
+
+Machine learning is an **overlay you earn, never a foundation you need.** The deterministic rules engine is already a trading model; ML only enters where it demonstrably beats that baseline.
+
+- **The rules engine is the baseline.** Any model must beat it **out-of-sample, after costs, after the overfitting-budget discount**, or it is not used.
+- **Data ≠ mandate.** A large dataset is *not* a reason to train a model. What matters is independent samples (markets give few), signal-to-noise (very low), and stationarity (markets shift). Forward/paper data is for **validation**, not for feeding hungry learners.
+- **Permitted in the trading core:** calibrated probability over the factor vector (§6.5); factor-importance (SHAP); **meta-labeling** (ML sizes/filters the rules' trades — never decides direction); regime/volatility classification.
+- **Not permitted in the trading core:** black-box models that decide direction autonomously; replacing the rules engine; anything that breaks interpretability, reproducibility, or the parity gates.
+- **No side door to live.** Anything that would actually place trades — including a forecasting model (§19) — must be wrapped as a **strategy plugin** and clear the same backtest → paper → live crucible as SW-A v3 / SW-B.
+- **Simple beats complex in low-signal domains.** The edge lives in the features (your factors) and the validation discipline, not in model capacity.
+
 ---
 
 ## 7. Phase 1 — Backtesting Engine + AI Research Loop
@@ -541,6 +554,8 @@ crucible/
 │   ├── crosssection/               # ⭐ sector RS + stock RS percentile, PIT, per-timestamp
 │   ├── sentiment/                  # Wikipedia/Trends ingest (backtest); social forward-capture (paper)
 │   ├── predict/                    # ⭐ base-rate cohort + calibrated classifier; calibration tests; deterministic
+│   ├── forecast/                   # 🧪 Stage-3 research wing (QUARANTINED): return/vol forecasting, purged-CV,
+│   │                               #    own OOS vault + overfitting ledger, to_plugin() adapter (§19)
 │   ├── strategies/                 # base.py (Protocol+ABC), registry.py, swa_v3.py, swb.py
 │   ├── engine/                     # Phase 1 harness: event loop, fills, costs, holding_model
 │   ├── engine_nautilus/            # Phase 2-3 adapter
@@ -605,6 +620,7 @@ Standard: stdlib `logging` + JSON formatter (or `structlog`); levels DEBUG/INFO/
 | Building above current skill | Section 17 front-loads supporting courses per phase |
 | AI cost overruns | Local-first (Qwen3) default; slow-loop cadence; caching; observability |
 | Silent failure / no provenance | Per-workflow structured logs + run manifests (git SHA, config + data-version hash, seeds); reconciliation record; secrets never logged (§12.1) |
+| Forecasting-wing false discovery | Quarantined / air-gapped from live; separate OOS vault + overfitting ledger; purged-CV + embargo; economic (not just statistical) metrics; deflated Sharpe; trades only by clearing the full crucible as a plugin (§19) |
 
 ---
 
@@ -647,6 +663,7 @@ Treat durations as gates, not deadlines.
 | Phase 2 agents | Multi-agent orchestration, LangGraph | Stage 4 agentic courses (pulled way forward — hardest stretch) |
 | Phase 2 engine | Event-driven systems, NautilusTrader | Self-driven + Nautilus docs |
 | Phase 2–3 infra / live | Orchestration, monitoring, reconciliation, real-time systems | Stage 2 DE material, Docker/K8s; self-driven |
+| Forecasting wing (Stage 3) | Applied ML, time-series/purged CV, deep learning, financial-ML methodology | Statistics w/ Python → ML Specialization → DL Specialization; López de Prado *Advances in Financial ML* |
 
 > **Honest recommendation: fully complete and ship Phase 1 first** (squarely Stage 1–2 + a Stage-3 taste, genuinely high-value alone, and now lighter because swing-first removes the sub-second engineering), then decide whether to push into the agentic phases or let them wait until your Stage 3–4 skills catch up.
 
@@ -658,9 +675,52 @@ Treat durations as gates, not deadlines.
 
 ---
 
-## 19. Approval & Locked Decisions
+## 19. Research Wing — Next-Day Return Forecasting (Stage 3, quarantined)
 
-**Status:** ✅ APPROVED — v2.0.
+> **Status: exploratory research, air-gapped from live capital.** This wing tests *whether* next-day market movement is predictable for your setup. A rigorous **negative result is a success** and a strong portfolio artifact. It may never place a live trade — and that is an acceptable outcome.
+
+**Reconciliation with §6.9:** end-to-end price prediction is barred from the *trading core*. As a *separate, quarantined feasibility study* — to build production-ML skills and honestly test the market — it is legitimate, provided it stays air-gapped and can reach live only by clearing the full crucible as a plugin.
+
+### 19.1 Reframe the target (the single most important decision)
+- **Do not predict the price level.** Prices are near-random-walk and non-stationary; "tomorrow ≈ today" scores a high R² and is useless.
+- **Predict the *return*, not the price** — and prefer **direction as a calibrated probability** (P(up) over horizon *h*) plus an expected-magnitude distribution.
+- **Know the easier cousin: volatility is far more predictable than direction** (it clusters; GARCH / realized-vol models work). If you want a target where ML genuinely succeeds, forecast volatility/regime — useful for sizing even if direction stays unpredictable.
+
+### 19.2 Data & features (reuse the Crucible spine)
+- **Targets:** next-day (and *h*-day) forward **return sign** (classification) and **magnitude** (regression); a **volatility** target as the high-probability comparison.
+- **Features:** lagged returns, your factor vector, cross-sectional RS/sector, realized vol, volume, calendar, macro context (VIX, rates); attention/sentiment later.
+- **Stationarity:** model **returns, not prices**; consider **fractional differentiation** (López de Prado) to retain memory while achieving stationarity.
+- **Point-in-time, with its own seals:** same lakehouse and Wall, but a **separate OOS vault and overfitting ledger** for this wing (it is a heavy multiple-testing risk).
+
+### 19.3 Model progression (simple → complex; never skip the baseline)
+1. **Baselines to beat:** random-walk / last-sign / always-majority-class. If you can't beat these out-of-sample, **stop — that's the answer.**
+2. **Linear / logistic regression** — interpretable baseline.
+3. **Gradient-boosted trees (XGBoost / LightGBM)** — the practical workhorse for tabular financial features; usually your best real shot.
+4. **Sequence models (LSTM/GRU/Temporal CNN → Transformers)** — the "deep learning" experiment; excellent for skills, but they rarely beat well-tuned GBMs on next-day tabular data and overfit fast. Do these **last**, for learning.
+
+### 19.4 Validation (where most price-prediction projects fool themselves)
+- **Time-aware CV only** — walk-forward, and **purged k-fold with an embargo** (López de Prado) to kill leakage from overlapping labels. **Never random k-fold.**
+- **Statistical metrics:** accuracy vs. base rate, AUC, and **calibration (Brier / reliability)** — calibration matters more than raw accuracy.
+- **Economic metrics decide it:** predictive accuracy ≠ profit. A 55%-accurate model can lose after costs; a 51% model can win. Judge by a **cost-aware strategy's OOS expectancy, by regime.**
+- **Deflated / Probabilistic Sharpe** + a logged trial count to discount multiple testing — this wing is a false-discovery machine if uncontrolled.
+
+### 19.5 Path to (possibly) trading — only through the crucible
+If, and only if, a model beats the baselines OOS, is calibrated, and a cost-aware strategy on it shows positive expectancy across regimes, it is **wrapped as a strategy plugin** (signal = the model's call) and must clear the *same* backtest → paper → live gates as SW-A v3 / SW-B (25% haircut, +0.20R live gate). Even then, the most defensible role is **meta-labeling / sizing** on top of the rules, or a regime/volatility input — not an autonomous direction-caller. **No side door to live.**
+
+### 19.6 Roadmap & skills (Stage 3+)
+- **Timing fits Stage 3:** you'll have Python + statistics + intro ML by then.
+- **Course sequence:** Statistics with Python → applied ML (scikit-learn / a hands-on ML specialization) → time-series forecasting → Deep Learning Specialization (for the LSTM/Transformer experiments). **Domain bible: López de Prado, *Advances in Financial Machine Learning*** (purged CV, meta-labeling, fractional differentiation, deflated Sharpe).
+- **Tools:** scikit-learn, XGBoost/LightGBM, statsmodels → PyTorch for sequence models.
+- **Structure:** `src/crucible/forecast/` — feature store, labeling, models, purged-CV validation, **its own** OOS vault + overfitting ledger, and a `to_plugin()` adapter exposing a validated model as a registrable strategy.
+
+### 19.7 Honest expectation
+The base rate for retail next-day **direction** prediction beating costs is **low**. Treat this as a feasibility study whose primary deliverable is *evidence* — it works or it doesn't, shown rigorously — not profit. If it fails, you've produced a credible, well-documented negative result and learned production ML: a genuine roadmap win. If it surprises you, the crucible gates ensure you find out *honestly* before any capital is at risk.
+
+---
+
+## 20. Approval & Locked Decisions
+
+**Status:** ✅ APPROVED — v2.3.
 
 | # | Decision | Locked choice |
 |---|---|---|
@@ -677,6 +737,7 @@ Treat durations as gates, not deadlines.
 | 11 | **Sentiment/attention** | **Wikipedia/Trends** backtested (confirmation-only; promote to paper/live if it earns OOS edge); **social** forward-captured in paper, promote to live if earned; **never a trigger** |
 | 12 | **Prediction engine** | Deterministic conditional base-rate / calibrated ML as a **research metric**; LLM **analyzes, does not predict**; promotion-gated; sizing/confirmation only, **never the sole trigger** |
 | 13 | **Live factor monitoring** | Deterministic engine **scores, drops, and executes**; LLM **analyzes and proposes** — LLM is never in the trade loop (Principle #2) |
+| 14 | **Forecasting wing** | Stage-3, **quarantined** return/volatility-prediction research; air-gapped from live; trades only by clearing the full crucible as a plugin; a rigorous negative result is an acceptable outcome |
 
 Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. Nothing in your roadmap or AFC scope is modified by this document.
 
