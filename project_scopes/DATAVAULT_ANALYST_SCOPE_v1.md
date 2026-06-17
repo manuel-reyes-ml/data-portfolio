@@ -1,10 +1,10 @@
-# 🔐 DATAVAULT ANALYST — Complete Project Scope v1.3
+# 🔐 DATAVAULT ANALYST — Complete Project Scope v1.4
 
 ## AI-Powered PII-Safe Data Intelligence for Retirement Plan Operations
 ## "Chat With Your Data" — Production-Grade Natural Language Analytics
 
-**Document Version:** 1.3 (Roadmap v8.3 alignment confirmed — provider-agnostic architecture allows Anthropic/Gemini swap via config; no functional changes from v1.2)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** ⭐ FIRST AI PROJECT TO PUBLISH — GenAI Portfolio Launchpad
@@ -957,3 +957,16 @@ flowchart LR
 **Strategic Role:** First AI project to publish — GenAI portfolio launchpad
 
 *"PII-safe data access + SDK-first AI + Structured outputs + Code transparency = Production-grade 'Chat With Your Data' that recruiters actually remember"* 🚀 
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for DataVault. Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for DataVault |
+|---|---|---|---|
+| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python used to call and control LLMs — the foundation for the AI chat layer |
+| 2 | IBM Generative AI Engineering Professional Certificate | Stage 1 | Building GenAI-powered apps with Python; provider-agnostic SDK basics |
+| 3 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured outputs + tool use — the SDK pattern behind "chat with your data" |
+
+**Hands-on, no roadmap cert (build & document instead):** PandasAI code-transparency, governance-as-code PII guardrails, DeepEval on the chat layer.
