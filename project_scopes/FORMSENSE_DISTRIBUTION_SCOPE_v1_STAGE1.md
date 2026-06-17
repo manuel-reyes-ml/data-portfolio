@@ -1,10 +1,10 @@
-# 📄 FORMSENSE — Complete Project Scope v1.3
+# 📄 FORMSENSE — Complete Project Scope v1.4
 
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.3 (Roadmap v8.3 alignment — Stage 4 agent patterns named + Stage 5 A2A awareness; Stage 1 unchanged)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 📄 DOCUMENT INTELLIGENCE — Multimodal AI for Financial Services Operations
@@ -1208,3 +1208,17 @@ flowchart LR
 **Strategic Role:** Document Intelligence Project — Multimodal AI for Financial Services
 
 *"Vision AI form reading + Business rule validation + Smart routing (email OR ticket) = Enterprise-grade document processing that operations teams actually deploy"* 🚀
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for FormSense. Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for FormSense |
+|---|---|---|---|
+| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + LLM control — foundation for the vision/extraction layer |
+| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured (Pydantic) outputs + multimodal calls (provider-agnostic; project uses Gemini Vision) |
+| 3 | Pre-processing Unstructured Data for LLM Applications | Stage 4 | Getting messy scans/PDFs into clean, LLM-ready inputs |
+| 4 | Document AI: From OCR to Agentic Doc Extraction | Stage 4 | The core: scanned forms/PDFs → structured JSON with field schemas |
+
+**Focus thread:** multimodal extraction (handwriting, checkboxes), field-level confidence scoring, Pydantic validation, business-rule routing (complete → ticket, incomplete → advisor email).
