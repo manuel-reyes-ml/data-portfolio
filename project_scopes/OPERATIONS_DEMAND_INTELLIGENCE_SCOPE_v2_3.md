@@ -1,9 +1,9 @@
-# 🚀 OPERATIONS-DEMAND-INTELLIGENCE — Project Scope v2.6
+# 🚀 OPERATIONS-DEMAND-INTELLIGENCE — Project Scope v2.7
 
 ## AI-Powered Workflow Demand Analysis for Retirement Plan Operations
 
-**Document Version:** 2.6 (Roadmap v8.3 alignment confirmed — internal analytics tool; no agentic/MCP scope; provider-agnostic architecture preserved; no functional changes from v2.5)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 2.7 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v2.6)  
+**Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Data Coverage:** June 02, 2025 — Present (~8 months)  
@@ -964,3 +964,18 @@ flowchart LR
 **Total Timeline:** 6 weeks
 
 *"Real business data + SDK-first AI architecture + Structured outputs + Production guardrails = Portfolio-ready project"* 🚀
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for Operations-Demand-Intelligence (ODI). Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for ODI |
+|---|---|---|---|
+| 1 | IBM Data Analyst Professional Certificate | Stage 1 | pandas + analytics + visualization foundation |
+| 2 | Statistics with Python Specialization (University of Michigan) | Stage 1 | Demand patterns, distributions, inference for staffing decisions |
+| 3 | Building with the Claude API (Anthropic Academy) | Stage 1 | The AI insights / chat layer (reuses the DataVault SDK skill) |
+
+**Focus thread:** volume/demand pattern analysis, Distribution vs Loan segmentation, PandasAI chat with guardrails + code transparency, synthetic data for GitHub.
+
+**Hands-on, no roadmap cert:** OnBase workflow data modeling, Plotly dashboards.
