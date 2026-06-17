@@ -1,10 +1,10 @@
-# 📺 STREAMSMART OPTIMIZER — Full Production Scope v1.3
+# 📺 STREAMSMART OPTIMIZER — Full Production Scope v1.4
 
 ## AI-Powered Autonomous Streaming Subscription Manager
 ## "Your AI Agent That Manages Your Streaming — So You Don't Have To"
 
-**Document Version:** 1.3 (Roadmap v8.3 alignment — Agent Patterns Named + A2A protocol section)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Future Vision (Requires Stage 4-5 Skills)  
 **Author:** Manuel Reyes  
 **Stages Required:** 4 (Agentic AI Engineer) + 5 (Senior LLM Engineer)  
@@ -1484,3 +1484,16 @@ flowchart LR
 **Predecessor:** StreamSmart Optimizer Stage 1 (Advisory Dashboard)
 
 *"Multi-agent orchestration + MCP tool integration + Browser automation + LLMOps evaluation + Revenue generation = The ultimate Senior LLM Engineer capstone project"* 🚀
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for StreamSmart (Full Production). Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for StreamSmart (Full Production) |
+|---|---|---|---|
+| 1 | Building with the Claude API (Anthropic Academy) | Stage 1 | SDK foundation for the AI rotation engine |
+| 2 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Observability/traces + LLM-as-judge for the rotation agent |
+| 3 | Automated Testing for LLMOps (DeepLearning.AI) | Stage 5 | The "Circle of Evaluation" capstone — CI evals for the optimization engine |
+
+**Focus thread:** LangSmith observability, agent evaluation, production CI evals, optimization-algorithm quality gates.
