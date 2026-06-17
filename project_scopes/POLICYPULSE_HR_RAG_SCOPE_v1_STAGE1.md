@@ -1,10 +1,10 @@
-# 📋 POLICYPULSE — Complete Project Scope v1.3
+# 📋 POLICYPULSE — Complete Project Scope v1.4
 
 ## AI-Powered HR Policy RAG Chatbot for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — Natural Language Access to Company Knowledge
 
-**Document Version:** 1.3 (Roadmap v8.3 alignment — Anthropic SDK primary + FastMCP server + SelfCheckGPT eval)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 🧠 RAG FOUNDATION PROJECT — Gateway to Stage 4 Vector DB + LangChain Skills
@@ -1181,3 +1181,18 @@ flowchart LR
 **Strategic Role:** RAG Foundation Project — Gateway to Stage 4 Vector DB + LangChain Skills
 
 *"Document ingestion + Semantic search + RAG generation + Citation verification + Ticket escalation = Enterprise-grade AI policy assistant that HR teams actually trust"* 🚀
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for PolicyPulse. Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for PolicyPulse |
+|---|---|---|---|
+| 1 | IBM Generative AI Engineering Professional Certificate | Stage 1 | RAG + LangChain fundamentals (chunking, embeddings, retrieval) |
+| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (primary) + prompt caching for RAG synthesis |
+| 3 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | RAG Triad — Context Relevance, Groundedness, Answer Relevance — your eval backbone |
+| 4 | Vector Databases: from Embeddings to Applications | Stage 2 | Embeddings + vector store (ChromaDB), semantic search, similarity scoring |
+| 5 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | The FastMCP server that exposes retrieval as MCP tools |
+
+**Focus thread:** document → chunk → embed → retrieve → generate, cited answers, confidence-based HR escalation, RAGAS/DeepEval evaluation, MCP tool exposure.
