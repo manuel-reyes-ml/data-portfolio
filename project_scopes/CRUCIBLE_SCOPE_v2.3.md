@@ -3,8 +3,8 @@
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.3 (OFFICIAL — adds the ML/model-training policy and a quarantined Stage-3 forecasting research wing)
-**Last Updated:** June 3, 2026
+**Document Version:** 2.4 (OFFICIAL — adds §Courses & Certifications reference, ordered by attendance, synced to roadmap v8.4; no functional scope changes from v2.3)
+**Last Updated:** June 16, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
 **Codename:** **Crucible** — the vessel where raw material is subjected to extreme heat until only what's pure survives. Every strategy must survive the crucible of backtest → paper → live before it touches real money.
@@ -32,7 +32,9 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 
 **v2.1 → v2.2 (prior revision):** adds a **logging & observability standard** (§12.1) and a per-workflow `logs/` layout — separating *operational logs* (gitignored, structured, for debugging) from *audit/provenance artifacts* (durable, for proving reproducibility and no-leakage).
 
-**v2.2 → v2.3 (this revision):** adds (1) the **ML / model-training policy** (§6.9) — ML is an *earned overlay, never a foundation*; and (2) a quarantined **Forecasting research wing** (§19) for Stage-3 next-day return/volatility prediction — air-gapped from live capital and able to trade only by clearing the full crucible as a plugin.
+**v2.2 → v2.3 (prior revision):** adds (1) the **ML / model-training policy** (§6.9) — ML is an *earned overlay, never a foundation*; and (2) a quarantined **Forecasting research wing** (§19) for Stage-3 next-day return/volatility prediction — air-gapped from live capital and able to trade only by clearing the full crucible as a plugin.
+
+**v2.3 → v2.4 (this revision):** adds a **§Courses & Certifications** reference (ordered by attendance, synced to roadmap v8.4) — quick-reference course map for the project; no functional scope changes.
 
 ---
 
@@ -744,3 +746,22 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 ---
 
 *Educational/operational specification only. Not investment, financial, or legal advice. This document defines process and execution logic; it makes no claim that any strategy has positive expectancy — that is what the crucible is for.*
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for Crucible. Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for Crucible |
+|---|---|---|---|
+| 1 | Building with the Claude API (Anthropic Academy) | Stage 1 | SDK foundation for the cloud fallback providers (Gemini → Anthropic → OpenAI) |
+| 2 | Fine-Tuning LLMs with PEFT (DeepLearning.AI) | Stage 3 | Local model customization (LoRA/QLoRA) for the Qwen3 analyst |
+| 3 | Fast & Efficient LLM Inference with vLLM (DeepLearning.AI) | Stage 3 | Local-first inference + quantization (nearest cert to the Ollama/Qwen3 layer) |
+| 4 | Agentic AI (Andrew Ng) | Stage 4 | Agent design patterns + disciplined evals — underpins "the Wall" + oversight |
+| 5 | AI Agents in LangGraph | Stage 4 | The LangGraph agent crew (analyst → risk-manager → trader) |
+| 6 | Multi-AI Agent Systems with crewAI (DeepLearning.AI) | Stage 4 | Multi-agent oversight + risk-manager veto patterns |
+| 7 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Agent evaluation/observability for the autonomous paper/live loop |
+
+**Focus thread:** local-first serving, the LLM "behind the Wall" (reads aggregates, never raw rows), deterministic core owns every trade, multi-agent oversight, agent evals.
+
+**Honest gap (no roadmap cert):** trading/backtesting infrastructure (NautilusTrader, Optuna, event-driven harness) — hands-on + docs; formal path is Georgia Tech / OMSCS later.
