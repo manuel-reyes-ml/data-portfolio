@@ -1,10 +1,10 @@
-# 📺 STREAMSMART OPTIMIZER — Stage 1 Project Scope v1.3
+# 📺 STREAMSMART OPTIMIZER — Stage 1 Project Scope v1.4
 
 ## AI-Powered Streaming Subscription Rotation Advisor
 ## "Spend Less, Watch More" — Intelligent Subscription Optimization Dashboard
 
-**Document Version:** 1.3 (Roadmap v8.3 alignment — Stage 4 agent patterns named + Stage 5 A2A; Stage 1 scope unchanged)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
@@ -892,3 +892,17 @@ flowchart LR
 **Total Timeline:** 6 weeks
 
 *"Real consumer pain point + Finance domain expertise + SDK-first AI + Structured outputs + Live content APIs = Portfolio project that recruiters AND users actually care about"* 🚀
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for StreamSmart (Stage 1 scope). Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for StreamSmart (Stage 1) |
+|---|---|---|---|
+| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + async API calls — foundation for the external-API layer |
+| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | The AI rotation-planner LLM layer + structured outputs |
+
+**Focus thread:** httpx async to Watchmode/TMDB, Pydantic models, financial-disclaimer guardrails, LangSmith tracing, DeepEval.
+
+> Production-scale courses (optimization + observability) are listed in the Full-Production scope.
