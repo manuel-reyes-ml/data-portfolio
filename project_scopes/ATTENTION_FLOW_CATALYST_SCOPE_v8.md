@@ -1,10 +1,10 @@
-# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.3
+# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.4
 
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.3 (Roadmap v8.3 alignment — Anthropic SDK primary + Agent Patterns Named + SelfCheckGPT/FActScore eval + A2A awareness)  
-**Last Updated:** May 07, 2026  
+**Document Version:** 8.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v8.3)  
+**Last Updated:** June 16, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
 
@@ -1451,3 +1451,25 @@ flowchart LR
 **Date:** May 07, 2026
 
 *"Defensible methodology + Modern stack + SDK-first AI with structured outputs & guardrails = Research system, not just a dashboard"* 🚀
+---
+
+## 📚 Courses & Certifications (take in this order)
+
+*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them across AFC's multi-stage build. Focus notes are project-specific.*
+
+| # | Course (roadmap name) | Stage | Focus for Attention-Flow Catalyst |
+|---|---|---|---|
+| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + LLM control — foundation for the AI dashboard layer |
+| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (AFC's primary provider) + structured outputs |
+| 3 | Improving Accuracy of LLM Applications (DeepLearning.AI) | Stage 1 | Eval framework + hallucination simulation — pairs with the eval-first slice |
+| 4 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | Faithfulness/groundedness for AI-generated trigger insights |
+| 5 | Agentic AI (Andrew Ng) | Stage 4 | Design patterns for the Stage 4 Agentic Trading Assistant |
+| 6 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | Agents call SEC/market-data sources via MCP tools |
+| 7 | AI Agents in LangGraph | Stage 4 | Multi-agent architecture for the Stage 4 assistant |
+| 8 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Agent evaluation/observability |
+
+**Focus thread:** read-only swing research → AI dashboard (Phase 1B) → ML triggers → Stage 4 agentic assistant; SEC/EDGAR-grounded, 0.9 faithfulness threshold.
+
+> The **eval-first slice** (`AFC_EVAL_FIRST_CORE_SCOPE`) carries its own §15 course map for the SEC-grounded faithfulness benchmark sub-project — build that first.
+
+**Honest gap (no roadmap cert):** trading/backtesting methodology (walk-forward, bootstrap CI, de-clustering) — hands-on + domain self-study; formal path is Georgia Tech / OMSCS later.
