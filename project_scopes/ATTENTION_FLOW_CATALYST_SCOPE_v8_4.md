@@ -3,7 +3,7 @@
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v8.3)  
+**Document Version:** 8.5 (Added **T6 — Squeeze Context** trigger §4.7, modeled primarily as a 5th context filter; short-interest/float primitives sourced from `signalcore`. No other functional changes from v8.4.)  
 **Last Updated:** June 16, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
@@ -49,7 +49,7 @@
 | **AI Architecture** | Single provider, raw text | Provider-agnostic SDK (**Anthropic Claude primary**, Gemini/OpenAI fallback) |
 | **AI Outputs** | Unstructured text responses | Pydantic-validated structured outputs |
 | **AI Features** | Gimmicky chatbot | LLM SDK + PandasAI, SQL-first, guardrails & observability |
-| **Triggers** | News + Volume only | SEC Form 4, Wiki, News, Volume, **Dilution state** |
+| **Triggers** | News + Volume only | SEC Form 4, Wiki, News, Volume, **Dilution state**, **Squeeze context (short interest + float)** |
 | **Reproducibility** | None | Audit tables, pipeline run logs, version control |
 | **CI/CD** | None | GitHub Actions on every PR |
 
@@ -78,6 +78,7 @@
 4. Which volume patterns precede significant moves?
 5. Does post-dilution-close create higher probability setups?
 6. Are results stable across train vs test periods (walk-forward)?
+7. **Does a loaded short-squeeze context (high short-%-of-float + low float + high days-to-cover) lift the hit rate of catalysts T1–T5?** ⭐ NEW
 
 **Hypothesis:** Combining multiple alternative data signals (insider buying + attention spike + volume accumulation + dilution-clear state) will produce higher hit rates than any single signal alone, and these results will be stable out-of-sample.
 
@@ -111,6 +112,7 @@ The system dynamically screens for stocks meeting ALL criteria:
 | **T3** | News Mention Spike | RSS/GDELT | Media Coverage |
 | **T4** | Volume Accumulation (5 sub-signals) | yfinance | Institutional Activity |
 | **T5** | Dilution/Offering State | edgartools | Capital Structure ⭐ NEW |
+| **T6** | Squeeze Context (short interest + float) | yfinance / FINRA | Supply Pressure ⭐ NEW |
 
 ---
 
@@ -204,7 +206,49 @@ t5_state_machine:
 
 ---
 
-### 4.7 Combination Testing Matrix
+### 4.7 T6: Squeeze Context (NEW)
+
+**What It Detects:** a *loaded* short-squeeze state — a large block of obligated future buying (short interest) trapped against a small tradable supply (float). Conceptual reference: `Short_Squeeze_Context_Reference.md`.
+
+> **Role — read this first.** T6 is **fuel, not a spark.** Short interest is a reservoir of forced future buying; it does *nothing* until a catalyst ignites it. So T6's **primary** use is as a **context filter** (the 5th context in §4.8), answering "does a loaded squeeze state lift the hit rate of catalysts T1–T5?" — **not** as a standalone leg blown out across the full trigger-combination matrix. Treating fuel as a catalyst would be mechanically wrong and would explode the multiple-testing surface (63 combos × contexts) for setups that are already rare.
+
+**Metrics** (computed from `signalcore` primitives — short interest + float; see Boundary Spec):
+
+| Metric | Formula | Covers |
+|---|---|---|
+| `pct_float_short` | `shares_short / float` | Supply pressure — the fuel |
+| `days_to_cover` (≡ short interest ratio) | `shares_short / avg_daily_volume` | Time-to-exit — congested cover |
+| `float_turnover` | `daily_volume / float` | Velocity — real-time ignition tell |
+
+```yaml
+t6_squeeze_context:
+  role: "CONTEXT (loaded state). Fuel, not spark. Primary use = 5th context filter (§4.8)."
+  data_source:
+    short_interest: "FINRA bi-monthly (via yfinance sharesShort) — LAGGED ~2 weeks"
+    float: "yfinance floatShares (re-derive on dilution events; see T5)"
+    volume / avg_daily_volume: "yfinance daily / 20-day"
+  loaded_state_when:                 # the CONTEXT (potential) — a-priori, to be tuned in-sample only
+    pct_float_short: ">= 0.20"       # test 0.15–0.30
+    days_to_cover:   ">= 5"          # test 3–10
+    float:           "bottom 30% of universe (already screened in §3)"
+  ignition_tell:                     # optional live confirmation
+    float_turnover_spike: ">= 2.0x its 20-day median"
+  fires_when: "loaded_state AND paired with a catalyst (T1–T5) — NEVER standalone"
+  squeeze_combination_hypotheses:
+    - "T6_loaded + T1 (insider buy)   = smart money buying into trapped shorts (highest conviction)"
+    - "T6_loaded + T2/T3 (attention)  = retail-driven ignition"
+    - "T6_loaded + T4 (RVOL/accum)    = squeeze likely already underway"
+    - "T6_loaded + T5_CLOSED          = post-dilution squeeze (float fixed, shorts offside)"
+  caveats:
+    - "Short interest is bi-monthly / lagged ~2 weeks — a real weakness vs the 3-day horizon; measure it, don't assume it away."
+    - "High short interest is often justified (deteriorating fundamentals) — fuel is NOT bullish alone."
+    - "Squeeze setups are RARE — the 30-signal minimum (§5.5) will exclude many squeeze-context scenarios; report honest n."
+    - "Float is not static — re-derive from the T5 dilution state on offerings/lockups; do not cache."
+```
+
+---
+
+### 4.8 Combination Testing Matrix
 
 **Individual Triggers (5):** T1, T2, T3, T4, T5_CLOSED
 
@@ -213,15 +257,16 @@ t5_state_machine:
 **4-Trigger Combinations (5)**
 **5-Trigger Combination (1)**
 
-**With Context Filters (×4):**
+**With Context Filters (×5):**
 - No filter
 - Sector strength filter
 - Index trend filter
 - Dilution state filter
+- **Squeeze-context filter (T6 loaded state)** ⭐ NEW
 
-**Total Potential Scenarios:** 31 combinations × 4 contexts = **~124 scenarios**
+**Total Potential Scenarios:** 31 combinations × 5 contexts = **~155 scenarios**
 
-*(Filtered by minimum signal count threshold)*
+> **Why T6 is a context, not a 6th combinatorial trigger:** squeeze fuel is not a catalyst, so it is tested as an overlay that either lifts or doesn't lift the existing catalysts — not as another standalone leg. This keeps the scenario count at 155 rather than exploding to 63 combos × 5 = 315, which matters under the §5.5 multiple-testing controls and the 30-signal floor (squeeze setups are rare).
 
 ---
 
@@ -440,6 +485,7 @@ mode_b_daily:
     - All T3 (news) ✅
     - T4a-e (all volume signals) ✅
     - All T5 (dilution) ✅
+    - T6 (squeeze context) ✅  # short interest is bi-monthly anyway → daily mode sufficient (lag noted)
     
   features_disabled:
     - True VWAP (no intraday)
@@ -471,7 +517,7 @@ phase_1a_decision:
 | 4 | Sector Strength | 11 ETFs tracked |
 | 5 | Async Collectors | httpx parallel calls |
 | 6 | Price Pipeline | 3+ years, adjusted prices |
-| 7 | T1-T5 Detectors | All triggers working |
+| 7 | T1-T6 Detectors | All triggers working |
 | 8 | DuckDB Schema | All tables created |
 | 9 | Backtest Engine | Walk-forward, de-clustering |
 | 10 | Bootstrap CI | 95% CI on all hit rates |
@@ -487,7 +533,7 @@ phase_1a_decision:
 |------|-------|
 | 1 | Setup, CI, screener, universe builder |
 | 2 | Collectors (httpx), Parquet, corporate actions |
-| 3 | T1-T5 triggers, state machine |
+| 3 | T1-T6 triggers, state machine |
 | 4 | DuckDB schema, backtest core, de-clustering |
 | 5 | Walk-forward, bootstrap CI, combinations |
 | 6 | Signal generator, quality checks, docs |
@@ -1351,7 +1397,7 @@ shows deployment readiness — critical for Junior AI Engineer applications.
 |------|-------|-------|
 | 1 | 1A | Setup, CI, screener |
 | 2 | 1A | Collectors, Parquet |
-| 3 | 1A | T1-T5 triggers |
+| 3 | 1A | T1-T6 triggers |
 | 4 | 1A | DuckDB, backtest core |
 | 5 | 1A | Walk-forward, CI |
 | 6 | 1A | Signals, quality, docs |
@@ -1396,6 +1442,7 @@ This document represents the complete, methodology-complete scope for Attention-
 ├─────────────────────────────────────────────────────────────┤
 │  ✅ UNIQUE TRIGGERS                                         │
 │     • T5 Dilution state machine (differentiator)           │
+│     • T6 Squeeze context (short int. + float, as overlay)  │
 │     • SEC Form 4 + offering tracking (S-1, 424B5, 8-K)    │
 ├─────────────────────────────────────────────────────────────┤
 │  ✅ AI WITH GUARDRAILS (2026 Production Patterns)           │
@@ -1434,8 +1481,9 @@ flowchart LR
     B --> B3[RSS/GDELT News]
     B --> B4[yfinance Prices + Volume]
     B --> B5[SEC Filings - Dilution State]
-    B1 & B2 & B3 & B4 & B5 --> C[(DuckDB + Parquet Lakehouse)]
-    C --> D[Trigger Engine - 5 Triggers]
+    B --> B6[Short Interest + Float - yfinance/FINRA]
+    B1 & B2 & B3 & B4 & B5 & B6 --> C[(DuckDB + Parquet Lakehouse)]
+    C --> D[Trigger Engine - 6 Triggers]
     D --> E[Walk-Forward Backtest]
     E --> F[Bootstrap 95% CI]
     F --> G[📊 Trigger Leaderboard]
