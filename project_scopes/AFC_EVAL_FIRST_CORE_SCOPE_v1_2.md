@@ -6,7 +6,7 @@
 **Last Updated:** June 10, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
-**Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v8.md` (v8.3) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.3.
+**Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v8_4.md` (v8.4) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.4.
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## 0. What This Document Is (and Isn't)
 
-This is a **vertical slice** of Attention-Flow Catalyst, not a new project. It pulls AFC's filing-retrieval + LLM-analyst + evaluation components *forward* and ships them first, as a standalone, publishable benchmark. The finance-research machinery (screener, backtest engine, dashboard) stays exactly where it is in AFC v8.3 and is built *after*.
+This is a **vertical slice** of Attention-Flow Catalyst, not a new project. It pulls AFC's filing-retrieval + LLM-analyst + evaluation components *forward* and ships them first, as a standalone, publishable benchmark. The finance-research machinery (screener, backtest engine, dashboard) stays exactly where it is in AFC v8.4 and is built *after*.
 
 - **It IS:** the production AI core of AFC, sequenced eval-first, packaged as a portable benchmark repo.
 - **It IS NOT:** a throwaway demo, a fork of AFC, or a change to the AFC scope.
@@ -159,9 +159,9 @@ EvalCase
 
 ## 5. Scope — Deliverables That Move FORWARD
 
-Pulled from AFC v8.3 (§ references are to that doc), built to production standard.
+Pulled from AFC v8.4 (§ references are to that doc), built to production standard.
 
-| # | Deliverable | Source in AFC v8.3 | Acceptance |
+| # | Deliverable | Source in AFC v8.4 | Acceptance |
 |---|---|---|---|
 | 1 | Project setup (`src/` layout, `pyproject.toml` only, `py.typed`, pre-commit, Docker) | Phase 1A #1 | CI green, pre-commit working |
 | 2 | SEC EDGAR async retrieval (httpx) — S-1, 424B5, 8-K, Form 4 | subset of Phase 1A #5 | Filings fetched + cached, provenance recorded |
@@ -172,19 +172,19 @@ Pulled from AFC v8.3 (§ references are to that doc), built to production standa
 | 7 | AI observability (token/cost/latency per call) | Phase 1B #11 | Per-call logs |
 | 8 | **Claims dataset + controlled perturbation set (labeled)** — built per **§4.3** | NEW (extends `eval_dataset.json`, 30+ cases) | ≥30 cases per §4.3 composition target |
 | 9 | **DeepEval harness** (faithfulness, hallucination) | §17 eval layer | Runs in CI |
-| 10 | **SelfCheckGPT harness** (consistency, N=5; organic run) | v8.3 eval enhancement | Runs in CI |
-| 11 | **FActScore harness** (atomic decomposition + EDGAR verification) | v8.3 eval enhancement | Runs in CI |
+| 10 | **SelfCheckGPT harness** (consistency, N=5; organic run) | v8.4 eval enhancement | Runs in CI |
+| 11 | **FActScore harness** (atomic decomposition + EDGAR verification) | v8.4 eval enhancement | Runs in CI |
 | 12 | **Benchmark runner + findings report** (precision/recall, agreement matrix, failure taxonomy) | NEW | Reproducible report + README writeup |
 | 13 | Test suite >80% + Mermaid architecture diagram + demo GIF | Phase 1A #14/#15 | Coverage gate, diagram, GIF in README |
 | 14 | `.cursor/rules/` (git-workflow, learning-mode, python-production-standards, evaluation) | AFC convention | Present |
 
 ---
 
-## 6. Scope — Deliverables That DEFER (stay in AFC v8.3, built later)
+## 6. Scope — Deliverables That DEFER (stay in AFC v8.4, built later)
 
 These are **not cancelled** — they remain the rest of AFC and are built after this slice ships.
 
-| Deferred | Source in AFC v8.3 | Why it can wait |
+| Deferred | Source in AFC v8.4 | Why it can wait |
 |---|---|---|
 | Stock screener / universe snapshots / sector strength | Phase 1A #2, #3, #4 | Finance universe machinery; not needed to evaluate filing claims |
 | Price pipeline (OHLCV, adjusted) | Phase 1A #6 | Claims are about filings, not prices |
@@ -206,7 +206,7 @@ These are **not cancelled** — they remain the rest of AFC and are built after 
 
 ---
 
-## 8. Tech Stack (consistent with AFC v8.3)
+## 8. Tech Stack (consistent with AFC v8.4)
 
 - **Language:** Python 3.12, `src/` layout, `pyproject.toml`-only, `py.typed`
 - **Retrieval:** `httpx` async → SEC EDGAR; local Parquet/JSON cache for filings
@@ -352,7 +352,7 @@ Still future work; the v1.x build scope is unchanged.
 
 Focus: **Python-for-AI + evaluation** — only what's needed to ship this slice. Pursue certificates *in parallel* with the 4 build weeks (learn-while-building). Two lists: courses already in your roadmap to pull forward, and researched 2026 additions worth updating *into* your roadmap.
 
-> These are recommendations. **`roadmap.html` (v8.3) is not modified** — updating it is your call.
+> These are recommendations. **`roadmap.html` (v8.4) is not modified** — updating it is your call.
 
 ### 15.1 Already in your roadmap — pull forward for this slice
 
