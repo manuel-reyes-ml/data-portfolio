@@ -2,7 +2,7 @@
 
 ## SEC-Grounded Faithfulness Benchmark for Small-Cap Filing Analysis
 
-**Document Version:** 1.1 (OFFICIAL — adds §14 News extension note + §15 Courses & Certifications)
+**Document Version:** 1.2 (OFFICIAL — adds §14 sub-note: the FINRA / verifiable-quantitative source category. Future-work only; v1.x build scope unchanged.)
 **Last Updated:** June 10, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
@@ -17,6 +17,7 @@
 | v0.1 (DRAFT) | Initial eval-first slice: forward/defer split, research question, three-method eval design, controlled-perturbation methodology, structure, timeline. |
 | **v1.0 (OFFICIAL)** | Draft approved. **Added §4.3 — Perturbation Error Catalog** (10 error types × 3 difficulty tiers, worked examples, per-detector expectations, labeling schema, composition target). Cross-referenced from §4.2 and §5 deliverable #8. |
 | **v1.1 (OFFICIAL)** | **Added §14** — Future Extension: News & the "Faithful-but-Wrong" Problem (additive, future work). **Added §15** — Courses & Certifications (roadmap-aligned + researched 2026 additions, learn-while-building map). |
+| **v1.2 (OFFICIAL)** | **Extended §14** — added the **verifiable-quantitative source category** (FINRA short interest): a non-authoritative carrying medium whose underlying quantity *is* checkable against an authoritative structured KB. Corrects the implicit "non-SEC = unverifiable" assumption; strengthens the extension taxonomy. Future-work only — **v1.x build scope unchanged.** |
 
 ---
 
@@ -324,6 +325,26 @@ The eval methodology is deliberately **SEC-only**. News *can* be evaluated, but 
 **Why it's a strong *future* study, not part of this slice:** news isolates the **faithful-but-wrong** failure — "the analyst faithfully relayed the article, but the article was false; can any detector in this stack catch that?" The answer is **no** — all three measure grounding-to-source, not truth — and demonstrating that cleanly is itself a contribution. It generalizes well beyond finance.
 
 **Implication for AFC proper:** when T3 (news) feeds the analyst, score it for *faithfulness-to-article only*, treat news as a **lower-trust input** with disclaimers, and never present news-derived claims as verified fact.
+
+### 14.1 A third source category — verifiable quantitative claims (the FINRA / short-interest case)
+
+*(Added v1.2. Future-work refinement of the taxonomy above; not part of the v1.x build.)*
+
+The SEC-vs-news split above reads as a binary — authoritative prose vs. unverifiable prose — but short-interest data exposes a **third category** the taxonomy should name. When an LLM reports a short-interest fact, it is almost always reading it from **secondary prose** (a news item, a screener blurb, an analyst note: *"32% of float short, 6 days to cover, up from 28%"*). That carrying text is **non-authoritative** — so by the rule above it is a news-type source. But unlike a general news claim, the underlying **quantity** is **checkable against an authoritative structured source** (FINRA's bi-monthly short-interest record). That is exactly the condition under which FActScore does **not** collapse: there is a real external KB to decompose atomic facts against.
+
+| Source category | Carrying medium | Faithful-to-source = true? | Authoritative KB to verify against? | FActScore behavior |
+|---|---|---|---|---|
+| SEC filing (the core) | authoritative prose | Yes — the filing *is* the authority | Yes — EDGAR | Works fully |
+| **Verifiable quantitative (FINRA short interest)** | non-authoritative prose | No | **Yes — FINRA record** | **Works — the rare non-SEC case** |
+| General news | non-authoritative prose | No | No | Collapses into DeepEval |
+
+This makes short interest a **stronger extension example than general news**, and it corrects an implicit assumption in this section — that "non-SEC = unverifiable." The sharp future study is: *can the stack catch an analyst that faithfully relays a secondary article's short-interest figure when that figure is wrong, given FINRA as the ground-truth KB?* — the faithful-but-wrong problem, but this time **with a checkable answer**, which the news case lacks.
+
+**Two caveats keep this honest:**
+- **Thin corpus on its own.** Raw FINRA data is a number, not a document — almost no narrative faithfulness surface, which is exactly why it stays out of the SEC-grounded core. It earns a place *only* through the secondary-prose route above, never as a standalone SEC-style corpus.
+- **"True" means as-reported.** The target is fidelity to the **reported** FINRA figure — not whether short interest perfectly reflects real positioning (naked shorts, settlement timing are known data limitations, out of scope for a *faithfulness* benchmark).
+
+Still future work; the v1.x build scope is unchanged.
 
 ---
 
