@@ -1,9 +1,9 @@
-# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.4
+# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.6
 
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.5 (Added **T6 — Squeeze Context** trigger §4.7, modeled primarily as a 5th context filter; short-interest/float primitives sourced from `signalcore`. No other functional changes from v8.4.)  
+**Document Version:** 8.6 (Synced to roadmap v8.6 — added **GraphRAG / Financial Knowledge-Graph (Neo4j)** to §16 Stage 2 evolution: a hybrid retriever over SEC filings, plus 2 graph courses to §Courses. Also reconciles the prior version/filename drift — v8.5 added **T6 — Squeeze Context** §4.7 + `signalcore` short-interest primitives; both carried forward unchanged. Additive only.)  
 **Last Updated:** June 16, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
@@ -1263,7 +1263,7 @@ attention-flow-catalyst/
 | Stage | Role | Enhancements |
 |-------|------|--------------|
 | 1 | Data Analyst | Backtest engine + AI dashboard |
-| 2 | Data Engineer | AWS S3, Airflow, 500+ tickers |
+| 2 | Data Engineer | AWS S3, Airflow, 500+ tickers. 🆕 **Financial Knowledge Graph + Vector DB (GraphRAG capstone):** ingest SEC filings (PDFs) → extract entities into a **Neo4j knowledge graph** (companies, filings, officers/insiders, holdings, dates → typed relationships) + a **vector index** (Pinecone/Qdrant) for semantic breadth, served via a **hybrid retriever** for multi-hop, explainable reasoning. Makes the "knowledge graph" real (not just SQL tables) and directly targets multi-hop hallucination — reinforcing the 0.9 faithfulness standard. Honest caveat: vector stays the backbone (~80%); the graph is weeks of ontology work added for relationship reasoning, not trend. |
 | 3 | ML Engineer | XGBoost, LSTM, MLflow |
 | 4 | LLM Specialist | RAG + **Multi-agent system** implementing Anthropic's "Building Effective Agents" patterns: **orchestrator-workers** (Researcher routes to specialized Analyst workers) + **sequential** (Risk Manager gates Executor) + **evaluator-optimizer** (self-correction loop). Each worker calls SEC/Yahoo/news APIs via **MCP servers**. Voice interface. |
 | 5 | Senior LLM | Production deployment, monetization, **A2A protocol** for multi-tenant SaaS where institutional users' agents collaborate (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent), LLMOps evaluation pipeline at scale |
@@ -1503,7 +1503,7 @@ flowchart LR
 
 ## 📚 Courses & Certifications (take in this order)
 
-*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them across AFC's multi-stage build. Focus notes are project-specific.*
+*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them across AFC's multi-stage build. Focus notes are project-specific.*
 
 | # | Course (roadmap name) | Stage | Focus for Attention-Flow Catalyst |
 |---|---|---|---|
@@ -1511,10 +1511,12 @@ flowchart LR
 | 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (AFC's primary provider) + structured outputs |
 | 3 | Improving Accuracy of LLM Applications (DeepLearning.AI) | Stage 1 | Eval framework + hallucination simulation — pairs with the eval-first slice |
 | 4 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | Faithfulness/groundedness for AI-generated trigger insights |
-| 5 | Agentic AI (Andrew Ng) | Stage 4 | Design patterns for the Stage 4 Agentic Trading Assistant |
-| 6 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | Agents call SEC/market-data sources via MCP tools |
-| 7 | AI Agents in LangGraph | Stage 4 | Multi-agent architecture for the Stage 4 assistant |
-| 8 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Agent evaluation/observability |
+| 5 | 🆕 Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | **Perfect domain fit** — builds a knowledge graph from SEC filings (AFC's exact domain) + a vector index into a hybrid retriever (Cypher + LangChain); the direct on-ramp to the §16 Stage 2 Financial-KG capstone |
+| 6 | 🆕 Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — KGs from unstructured filings, fuse vector + graph retrieval, end-to-end GraphRAG pipelines |
+| 7 | Agentic AI (Andrew Ng) | Stage 4 | Design patterns for the Stage 4 Agentic Trading Assistant |
+| 8 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | Agents call SEC/market-data sources via MCP tools |
+| 9 | AI Agents in LangGraph | Stage 4 | Multi-agent architecture for the Stage 4 assistant |
+| 10 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Agent evaluation/observability |
 
 **Focus thread:** read-only swing research → AI dashboard (Phase 1B) → ML triggers → Stage 4 agentic assistant; SEC/EDGAR-grounded, 0.9 faithfulness threshold.
 
