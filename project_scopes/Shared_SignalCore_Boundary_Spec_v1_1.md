@@ -1,4 +1,4 @@
-# SHARED SIGNAL-PRIMITIVES LIBRARY — BOUNDARY SPEC v1.1
+# SHARED SIGNAL-PRIMITIVES LIBRARY — BOUNDARY SPEC v1.2
 
 *The dependency contract between **AFC** (Attention-Flow Catalyst) and **Crucible**. Defines exactly which code is shared, which stays project-specific, and the rules that keep the boundary from rotting.*
 
@@ -7,6 +7,8 @@
 > **Why this exists:** AFC and Crucible are locked as **siblings, no merge** (Crucible §20, Decision #2 — split on *liquidity + execution*, not timeframe). They share a thin layer of accumulation/dilution/data primitives and nothing else. This doc draws that line so the same VDU/OBV/dilution math is written **once**, without dragging the two projects toward a merge they explicitly rejected.
 >
 > **v1.1 change:** added `signalcore.shortinterest` (float / short-interest primitives) to support AFC's **T6 Squeeze Context** trigger. Primitives only — the squeeze *thresholds* and *trigger logic* stay in AFC.
+>
+> **v1.2 change:** added a §7 anti-pattern guarding the GraphRAG boundary — the **knowledge-graph / Neo4j entity model** (introduced in roadmap v8.6 as AFC's Stage 2 Financial-KG capstone) is project logic, never a `signalcore` primitive. Clarification only; no code-ownership changes.
 
 ---
 
@@ -97,6 +99,7 @@ flowchart TD
 - ❌ `signalcore` importing either project, or reaching into a project's lakehouse path. → Inverts the dependency; forbidden.
 - ❌ Attention/insider *trigger logic* in `signalcore`. → Only the *filing fetch/parse* is shared; interpretation is AFC's.
 - ❌ Treating the short-interest accessor's value as fresh-as-of-`t`. → It is bi-monthly and lagged; the accessor exposes the effective date so AFC can model that honestly.
+- ❌ A **knowledge graph / Neo4j entity model** (companies · filings · officers · holdings → typed relationships), Cypher, or any GraphRAG hybrid-retriever logic in `signalcore`. → The entity ontology *is* project logic — it lives in **AFC** (the Stage 2 Financial-KG capstone), never in `signalcore`. The library may supply the *primitives* a graph ingest consumes (dilution filing records, short-interest ratios, PIT data accessors), but the graph schema, Cypher, and retriever stay in the project.
 
 ---
 
