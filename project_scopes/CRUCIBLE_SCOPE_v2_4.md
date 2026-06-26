@@ -3,7 +3,7 @@
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.4 (OFFICIAL — adds §Courses & Certifications reference, ordered by attendance, synced to roadmap v8.4; no functional scope changes from v2.3)
+**Document Version:** 2.5 (OFFICIAL — re-synced course reference to roadmap v8.6. The v8.6 GraphRAG/Neo4j additions are intentionally **N/A for Crucible** — liquid intraday universe, no knowledge-graph retrieval (per the AFC↔Crucible boundary). v8.5 local-first toolchain (Qwen3/Ollama) already reflected in §11.1. No functional scope changes from v2.4.)
 **Last Updated:** June 16, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
@@ -34,7 +34,9 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 
 **v2.2 → v2.3 (prior revision):** adds (1) the **ML / model-training policy** (§6.9) — ML is an *earned overlay, never a foundation*; and (2) a quarantined **Forecasting research wing** (§19) for Stage-3 next-day return/volatility prediction — air-gapped from live capital and able to trade only by clearing the full crucible as a plugin.
 
-**v2.3 → v2.4 (this revision):** adds a **§Courses & Certifications** reference (ordered by attendance, synced to roadmap v8.4) — quick-reference course map for the project; no functional scope changes.
+**v2.3 → v2.4 (prior revision):** adds a **§Courses & Certifications** reference (ordered by attendance, synced to roadmap v8.4) — quick-reference course map for the project; no functional scope changes.
+
+**v2.4 → v2.5 (this revision):** re-synced the **§Courses & Certifications** reference to roadmap v8.6; confirmed GraphRAG/Neo4j is **N/A for Crucible** (liquid universe — no graph retrieval); v8.5 local-first toolchain already reflected. No functional scope changes.
 
 ---
 
@@ -750,7 +752,7 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 
 ## 📚 Courses & Certifications (take in this order)
 
-*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for Crucible. Focus notes are project-specific.*
+*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for Crucible. Focus notes are project-specific.*
 
 | # | Course (roadmap name) | Stage | Focus for Crucible |
 |---|---|---|---|
