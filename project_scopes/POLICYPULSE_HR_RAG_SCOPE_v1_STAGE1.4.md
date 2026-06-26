@@ -1,9 +1,9 @@
-# 📋 POLICYPULSE — Complete Project Scope v1.4
+# 📋 POLICYPULSE — Complete Project Scope v1.5
 
 ## AI-Powered HR Policy RAG Chatbot for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — Natural Language Access to Company Knowledge
 
-**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Document Version:** 1.5 (Synced to roadmap v8.6 — added **GraphRAG / Knowledge-Graph (Neo4j)** as a Stage 2/3 evolution upgrade path in §16, plus 2 graph courses (DeepLearning.AI intro + Neo4j GraphAcademy cert) to §Courses. ChromaDB remains the Stage 1 backbone; graph is an additive relationship-reasoning layer. Additive only — no Stage 1 build-scope changes from v1.4.)  
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
@@ -1060,10 +1060,12 @@ Tests            Quality Tests    Chat Page
 | Stage | Role | PolicyPulse Enhancements |
 |-------|------|--------------------------|
 | **1** | Data Analyst | ✅ RAG chatbot + ChromaDB + Streamlit (THIS SCOPE) |
-| **2** | Data Engineer | AWS S3 document storage, PostgreSQL ticket tracking, scheduled re-ingestion |
-| **3** | ML Engineer | Fine-tuned embedding model for HR domain, re-ranking model for better retrieval |
+| **2** | Data Engineer | AWS S3 document storage, PostgreSQL ticket tracking, scheduled re-ingestion. 🆕 **GraphRAG upgrade path (intro):** evolve to a hybrid retriever — **Neo4j knowledge graph** (policies, sections, roles, effective-dates → typed relationships) **+ ChromaDB vectors** — to fix multi-hop policy questions where vector-only retrieval stitches the wrong chunks together. Vector stays the backbone (~80% of queries); the graph is the additive layer (~15–20%). |
+| **3** | ML Engineer | Fine-tuned embedding model for HR domain, re-ranking model for better retrieval. 🆕 **GraphRAG (deepen):** mature the Neo4j knowledge graph — entity-extraction pipeline, graph-quality monitoring, dual-channel (graph-path + vector) retrieval fusion; targets multi-hop hallucination and improves explainability/groundedness. |
 | **4** | LLM Specialist | LangChain/LangGraph orchestration (**evaluator-optimizer pattern**: retriever → verifier → responder loop), Pinecone vector DB migration, voice interface, **MCP server expanded** with policy update + ticket creation tools |
 | **5** | Senior LLM | Production SaaS: multi-tenant, RBAC, Slack/Teams integration, LLMOps evaluation pipeline, A/B testing retrieval strategies, **A2A protocol** for HR-Agent ↔ IT-Agent ↔ Payroll-Agent collaboration in cross-functional employee questions |
+
+> 🕸️ **GraphRAG note (roadmap v8.6):** the knowledge-graph layer is an *additive* relationship-reasoning upgrade, not a replacement. A vector pipeline stands up in days; a knowledge graph is weeks of ontology work — so add it for multi-hop / relationship-heavy policy questions, not because it's trendy. Practitioner + peer-reviewed evidence (e.g. FinanceBench-style multi-hop tests) shows GraphRAG cutting hallucinations and token usage versus vector-only on connected-reasoning queries, at the cost of ~1.5–1.8× infra and entity-pipeline maintenance. The two on-ramp courses are listed in §Courses below.
 
 ---
 
@@ -1185,7 +1187,7 @@ flowchart LR
 
 ## 📚 Courses & Certifications (take in this order)
 
-*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for PolicyPulse. Focus notes are project-specific.*
+*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for PolicyPulse. Focus notes are project-specific.*
 
 | # | Course (roadmap name) | Stage | Focus for PolicyPulse |
 |---|---|---|---|
@@ -1193,6 +1195,8 @@ flowchart LR
 | 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (primary) + prompt caching for RAG synthesis |
 | 3 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | RAG Triad — Context Relevance, Groundedness, Answer Relevance — your eval backbone |
 | 4 | Vector Databases: from Embeddings to Applications | Stage 2 | Embeddings + vector store (ChromaDB), semantic search, similarity scoring |
-| 5 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | The FastMCP server that exposes retrieval as MCP tools |
+| 5 | 🆕 Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | GraphRAG on-ramp — fuse a knowledge graph + vector index into a hybrid retriever (Cypher + LangChain); maps directly to the §16 Stage 2 GraphRAG upgrade path |
+| 6 | 🆕 Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — build KGs from unstructured policy docs, fuse vector + graph retrieval end-to-end |
+| 7 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | The FastMCP server that exposes retrieval as MCP tools |
 
 **Focus thread:** document → chunk → embed → retrieve → generate, cited answers, confidence-based HR escalation, RAGAS/DeepEval evaluation, MCP tool exposure.
