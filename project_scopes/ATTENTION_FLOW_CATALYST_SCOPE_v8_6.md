@@ -1,9 +1,9 @@
-# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.6
+# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.7
 
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.6 (Synced to roadmap v8.6 — added **GraphRAG / Financial Knowledge-Graph (Neo4j)** to §16 Stage 2 evolution: a hybrid retriever over SEC filings, plus 2 graph courses to §Courses. Also reconciles the prior version/filename drift — v8.5 added **T6 — Squeeze Context** §4.7 + `signalcore` short-interest primitives; both carried forward unchanged. Additive only.)  
+**Document Version:** 8.6 (Synced to roadmap v8.6 — added **GraphRAG / Financial Knowledge-Graph (Neo4j)** to §16 Stage 2 evolution: a hybrid retriever over SEC filings, plus 2 graph courses to §Courses. Also reconciles the prior version/filename drift — v8.5 added **T6 — Squeeze Context** §4.7 + `signalcore` short-interest primitives; both carried forward unchanged. **v8.7:** added **Agentic Loop Spec** (§2 intro — read-only research loop · eval-suite verifier · unattended/read-only autonomy) per roadmap v8.8's Loop Engineering addition. Additive only.)  
 **Last Updated:** June 16, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
@@ -66,6 +66,11 @@
 - **Domain Expertise:** 6 years of trading knowledge codified into algorithms
 
 ---
+
+> 🔁 **Agentic Loop Spec (roadmap v8.8):**
+> - **Loop type:** *read-only research / goal-loop* — screen → trigger-detect (T1–T6) → label (+10%-in-3-days) → score → leaderboard; Stage 4 wraps this as the **Agentic Trading Assistant**.
+> - **Verifier:** the eval suite — **DeepEval ≥0.9 faithfulness**, SelfCheckGPT / FActScore on SEC-grounded claims; PIT / leakage tests gate the backtest.
+> - **Autonomy:** safe to run **unattended** because the system is **read-only** (no orders, no execution). The **"behind the Wall"** rule (LLM sees only aggregated in-sample stats) is the governance that keeps the loop honest. Layered exits: verifier pass + max-iteration cap + token budget.
 
 ## 2. Research Question
 
