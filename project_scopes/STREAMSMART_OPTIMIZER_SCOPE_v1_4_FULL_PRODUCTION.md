@@ -1,9 +1,9 @@
-# 📺 STREAMSMART OPTIMIZER — Full Production Scope v1.4
+# 📺 STREAMSMART OPTIMIZER — Full Production Scope v1.5
 
 ## AI-Powered Autonomous Streaming Subscription Manager
 ## "Your AI Agent That Manages Your Streaming — So You Don't Have To"
 
-**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Document Version:** 1.5 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to StreamSmart: consumer optimizer + API content search, no graph retrieval. Course-reference note updated to v8.6. Additive; no functional scope changes from v1.4.)  
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Future Vision (Requires Stage 4-5 Skills)  
 **Author:** Manuel Reyes  
@@ -1488,7 +1488,7 @@ flowchart LR
 
 ## 📚 Courses & Certifications (take in this order)
 
-*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for StreamSmart (Full Production). Focus notes are project-specific.*
+*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for StreamSmart (Full Production). Focus notes are project-specific.*
 
 | # | Course (roadmap name) | Stage | Focus for StreamSmart (Full Production) |
 |---|---|---|---|
