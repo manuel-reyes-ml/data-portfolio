@@ -1,9 +1,9 @@
-# 📄 FORMSENSE — Complete Project Scope v1.4
+# 📄 FORMSENSE — Complete Project Scope v1.5
 
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.4 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v1.3)  
+**Document Version:** 1.5 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to FormSense: multimodal form extraction + validation, no graph retrieval. Course-reference note updated to v8.6. Additive; no functional scope changes from v1.4.)  
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
@@ -1212,7 +1212,7 @@ flowchart LR
 
 ## 📚 Courses & Certifications (take in this order)
 
-*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for FormSense. Focus notes are project-specific.*
+*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for FormSense. Focus notes are project-specific.*
 
 | # | Course (roadmap name) | Stage | Focus for FormSense |
 |---|---|---|---|
