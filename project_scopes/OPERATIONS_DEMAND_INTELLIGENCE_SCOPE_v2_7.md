@@ -1,8 +1,8 @@
-# 🚀 OPERATIONS-DEMAND-INTELLIGENCE — Project Scope v2.7
+# 🚀 OPERATIONS-DEMAND-INTELLIGENCE — Project Scope v2.8
 
 ## AI-Powered Workflow Demand Analysis for Retirement Plan Operations
 
-**Document Version:** 2.7 (Added §Courses & Certifications reference — ordered by attendance, synced to roadmap v8.4; no functional scope changes from v2.6)  
+**Document Version:** 2.8 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to ODI: internal enterprise analytics, no agentic or graph retrieval scope. Course-reference note updated to v8.6. Additive; no functional scope changes from v2.7.)  
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
@@ -968,7 +968,7 @@ flowchart LR
 
 ## 📚 Courses & Certifications (take in this order)
 
-*Quick reference, synced with roadmap v8.4. Same course names as the roadmap; listed top-to-bottom in the order to take them for Operations-Demand-Intelligence (ODI). Focus notes are project-specific.*
+*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for Operations-Demand-Intelligence (ODI). Focus notes are project-specific.*
 
 | # | Course (roadmap name) | Stage | Focus for ODI |
 |---|---|---|---|
