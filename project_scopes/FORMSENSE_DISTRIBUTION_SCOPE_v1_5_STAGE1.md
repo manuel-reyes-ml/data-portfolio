@@ -1,9 +1,9 @@
-# 📄 FORMSENSE — Complete Project Scope v1.5
+# 📄 FORMSENSE — Complete Project Scope v1.6
 
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.5 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to FormSense: multimodal form extraction + validation, no graph retrieval. Course-reference note updated to v8.6. Additive; no functional scope changes from v1.4.)  
+**Document Version:** 1.6 (Added **Multi-Source Extraction** — a distribution request arrives as an **email with the form attached**, so the **email body and the PDF/image form are read concurrently at initial intake** (transaction fields may live in the body, the form, or both), with field-level **reconciliation** on overlap/conflict; the same mechanism also covers a later advisor escalation reply. Structured extraction, **not** GraphRAG/graph retrieval (which stays N/A for FormSense). Additive — extends the existing extract→validate→route workflow; Phase 2 (§8) renamed and extended to cover advisor-reply reconciliation (inbound email); synced to roadmap v8.6.)  
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
@@ -20,7 +20,7 @@
 5. [Data Architecture](#5-data-architecture)
 6. [Feature Framework](#6-feature-framework)
 7. [Phase 1: Form Extraction Engine](#7-phase-1-form-extraction-engine-weeks-1-3)
-8. [Phase 2: Validation + Email Escalation + Dashboard](#8-phase-2-validation--email-escalation--dashboard-weeks-4-5)
+8. [Phase 2: Validation + Email Escalation + Reply Reconciliation + Dashboard](#8-phase-2-validation--email-escalation--reply-reconciliation--dashboard-weeks-4-5)
 9. [AI Guardrails](#9-ai-guardrails)
 10. [Tech Stack](#10-tech-stack)
 11. [Project Structure](#11-project-structure)
@@ -68,6 +68,7 @@ This is a **Multimodal AI project** — using vision-capable LLMs to understand 
 ### Core Capabilities
 
 - **Multimodal Form Reading:** Upload PDF/image of distribution form → AI reads checkboxes, handwriting, selections, and printed text
+- **🆕 Multi-Source Extraction (email body + form, concurrent):** a request typically arrives as an **email with the distribution form attached**, and transaction fields may appear in the **email body, the form, or both** — so on intake the same structured schema is extracted **concurrently from both sources** and **reconciled** field-by-field (higher-confidence value wins on overlap, agreement raises confidence, conflicts flag for human review). The identical mechanism later handles an advisor's escalation reply. Structured extraction over known sources, **not** graph retrieval (no GraphRAG/knowledge-graph layer).
 - **Intelligent Field Extraction:** Extract 15+ fields including participant info, distribution type, payment method, tax elections, and beneficiary data
 - **Business Rule Validation:** Validate extracted data against retirement plan distribution rules (required fields per distribution type, valid ranges, cross-field dependencies)
 - **Smart Routing:** Complete forms → generate operations processing ticket | Incomplete forms → generate email to financial advisor with specific missing items
@@ -75,6 +76,8 @@ This is a **Multimodal AI project** — using vision-capable LLMs to understand 
 - **Structured Outputs:** Pydantic-validated extraction results with field-level confidence
 - **AI Observability:** Token usage, cost tracking, extraction accuracy metrics
 - **Production Practices:** GitHub Actions CI, type hints, comprehensive testing, sample forms
+
+> 📥 **Multi-source extraction flow (v1.6):** FormSense reads **two sources per case, together**. At **initial intake** a request usually arrives as an **email body + attached PDF form**, and the transaction details may sit in either or both — so both are extracted **concurrently** into the *same* `FormExtraction` schema and **reconciled** (per-field confidence wins on overlap, agreement raises confidence, unresolved conflicts → human review). The **same mechanism** later handles an advisor's escalation reply. Net flow: *intake (email + form) → reconcile → validate → route; if incomplete → email advisor → read the reply → reconcile → complete the ticket.* No retrieval/graph layer. (Cross-document linking via a knowledge graph remains a separate, optional Stage 2/3 concern — see §16 "Form history RAG.")
 
 ---
 
@@ -522,6 +525,7 @@ rules:
 - Set up project structure (matching established pattern)
 - Implement Gemini Vision API client (provider-agnostic abstraction)
 - Build PDF-to-image conversion pipeline (PyMuPDF → PIL)
+- Build **email-body intake parser** (read the request email's text into the same `FormExtraction` schema) + **field-level reconciliation** of email vs. form values (confidence-weighted merge, conflicts flagged)
 - Create initial extraction prompt engineering (form understanding instructions)
 - Test basic extraction on sample distribution form
 - Set up GitHub Actions CI
@@ -530,6 +534,7 @@ rules:
 **Deliverables:**
 - ✅ Gemini Vision API reading sample forms
 - ✅ Basic field extraction working (name, SSN last 4, distribution type)
+- ✅ Email body + form read concurrently on intake and reconciled into one `FormExtraction`
 - ✅ Pydantic schemas validated
 - ✅ CI pipeline green
 
@@ -568,12 +573,13 @@ rules:
 
 ---
 
-## 8. Phase 2: Validation + Email Escalation + Dashboard (Weeks 4-5)
+## 8. Phase 2: Validation + Email Escalation + Reply Reconciliation + Dashboard (Weeks 4-5)
 
 ### Week 4: Email Generation + Ticket Creation
 
 **Tasks:**
 - Build escalation email generator (LLM drafts professional email listing missing items)
+- Build **advisor-reply intake**: when an escalation reply arrives, read its email body and **reconcile** the newly-supplied fields back into the original `FormExtraction` (confidence-weighted), then re-run validation to see if the case is now complete
 - Create email template system (YAML-configured templates per escalation type)
 - Implement processing ticket generator (structured ticket from extraction data)
 - Build escalation email preview and edit interface
@@ -583,6 +589,7 @@ rules:
 
 **Deliverables:**
 - ✅ Professional escalation emails generated for incomplete forms
+- ✅ Advisor reply read + reconciled → case re-validated and completed (or re-escalated)
 - ✅ Processing tickets created for complete forms
 - ✅ Email preview/edit interface working
 - ✅ Processing Queue page rendering
@@ -1092,7 +1099,7 @@ Tests        Accuracy     Tests        Queue Page   Video
 
 | Stage | Role | FormSense Enhancements |
 |-------|------|------------------------|
-| **1** | Data Analyst | ✅ Multimodal extraction + validation + routing (THIS SCOPE) |
+| **1** | Data Analyst | ✅ Multimodal extraction (form **+ email body, read concurrently on intake**, with field-level reconciliation) + validation + routing (THIS SCOPE) |
 | **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, SQS queue, scheduled batch processing |
 | **3** | ML Engineer | Custom fine-tuned extraction model, form classification (distribution vs loan vs rollover), accuracy improvement |
 | **4** | LLM Specialist | Multi-agent system implementing **parallelization pattern** (Extractor + Validator + Router run concurrently for throughput) + **evaluator-optimizer** (Validator triggers re-extraction on low confidence). MCP integration for email sending + ticket creation. Form history RAG for cross-referencing previous distributions. |
