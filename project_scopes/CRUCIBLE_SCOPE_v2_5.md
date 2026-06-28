@@ -3,7 +3,7 @@
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.5 (OFFICIAL — re-synced course reference to roadmap v8.6. The v8.6 GraphRAG/Neo4j additions are intentionally **N/A for Crucible** — liquid intraday universe, no knowledge-graph retrieval (per the AFC↔Crucible boundary). v8.5 local-first toolchain (Qwen3/Ollama) already reflected in §11.1. No functional scope changes from v2.4.)
+**Document Version:** 2.6 (OFFICIAL — added **Agentic Loop Spec** (§2 intro): Crucible's two-speed execution loop, its verifier (3-gate promotion + engine-parity + sealed OOS vault + overfitting ledger), and autonomy — **paper unattended; LIVE keeps a mandatory human sign-off + kill-switch** — per roadmap v8.8's Loop Engineering addition. — v2.5: re-synced course reference to roadmap v8.6. The v8.6 GraphRAG/Neo4j additions are intentionally **N/A for Crucible** — liquid intraday universe, no knowledge-graph retrieval (per the AFC↔Crucible boundary). v8.5 local-first toolchain (Qwen3/Ollama) already reflected in §11.1. No functional scope changes from v2.4.)
 **Last Updated:** June 16, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
@@ -36,7 +36,9 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 
 **v2.3 → v2.4 (prior revision):** adds a **§Courses & Certifications** reference (ordered by attendance, synced to roadmap v8.4) — quick-reference course map for the project; no functional scope changes.
 
-**v2.4 → v2.5 (this revision):** re-synced the **§Courses & Certifications** reference to roadmap v8.6; confirmed GraphRAG/Neo4j is **N/A for Crucible** (liquid universe — no graph retrieval); v8.5 local-first toolchain already reflected. No functional scope changes.
+**v2.4 → v2.5 (prior revision):** re-synced the **§Courses & Certifications** reference to roadmap v8.6; confirmed GraphRAG/Neo4j is **N/A for Crucible** (liquid universe — no graph retrieval); v8.5 local-first toolchain already reflected. No functional scope changes.
+
+**v2.5 → v2.6 (this revision):** added the **Agentic Loop Spec** (§2 intro) per roadmap v8.8's Loop Engineering addition — names the two-speed execution loop, its verifier (3-gate/parity/OOS-vault/overfitting-ledger), and the **mandatory human sign-off + kill-switch on the LIVE path** (irreversible action). No other functional scope changes.
 
 ---
 
@@ -88,6 +90,11 @@ This scope describes **one flagship project with three build phases**:
 - **Financial-grade evaluation and observability** for every AI component.
 
 ---
+
+> 🔁 **Agentic Loop Spec (roadmap v8.8):**
+> - **Loop type:** *two-speed execution loop* — research/backtest loop (Phase 1) → autonomous paper-trading agent (Phase 2) → live execution (Phase 3).
+> - **Verifier:** the **3-gate promotion pipeline**, engine-parity gate, sealed OOS vault, and overfitting-budget ledger (a strategy must *earn* its way to real capital).
+> - **Autonomy:** **paper** may run unattended; **LIVE execution keeps a mandatory human-in-the-loop sign-off + kill-switch.** A live trade is irreversible, so per loop-engineering safety guidance autonomous loops must **not** run the live path without a human gate — this is the **"behind the Wall"** governance applied to execution.
 
 ## 2. Design Principles (Non-Negotiable)
 
