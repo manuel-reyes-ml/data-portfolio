@@ -1,9 +1,9 @@
-# 📄 FORMSENSE — Complete Project Scope v1.6
+# 📄 FORMSENSE — Complete Project Scope v1.7
 
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.6 (Added **Multi-Source Extraction** — a distribution request arrives as an **email with the form attached**, so the **email body and the PDF/image form are read concurrently at initial intake** (transaction fields may live in the body, the form, or both), with field-level **reconciliation** on overlap/conflict; the same mechanism also covers a later advisor escalation reply. Structured extraction, **not** GraphRAG/graph retrieval (which stays N/A for FormSense). Additive — extends the existing extract→validate→route workflow; Phase 2 (§8) renamed and extended to cover advisor-reply reconciliation (inbound email); synced to roadmap v8.6.)  
+**Document Version:** 1.6 (Added **Multi-Source Extraction** — a distribution request arrives as an **email with the form attached**, so the **email body and the PDF/image form are read concurrently at initial intake** (transaction fields may live in the body, the form, or both), with field-level **reconciliation** on overlap/conflict; the same mechanism also covers a later advisor escalation reply. Structured extraction, **not** GraphRAG/graph retrieval (which stays N/A for FormSense). Additive — extends the existing extract→validate→route workflow; Phase 2 (§8) renamed and extended to cover advisor-reply reconciliation (inbound email); synced to roadmap v8.6. **v1.7:** added **Agentic Loop Spec** (§2 intro — loop type · verifier · autonomy) per roadmap v8.8's Loop Engineering addition.)  
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
@@ -80,6 +80,11 @@ This is a **Multimodal AI project** — using vision-capable LLMs to understand 
 > 📥 **Multi-source extraction flow (v1.6):** FormSense reads **two sources per case, together**. At **initial intake** a request usually arrives as an **email body + attached PDF form**, and the transaction details may sit in either or both — so both are extracted **concurrently** into the *same* `FormExtraction` schema and **reconciled** (per-field confidence wins on overlap, agreement raises confidence, unresolved conflicts → human review). The **same mechanism** later handles an advisor's escalation reply. Net flow: *intake (email + form) → reconcile → validate → route; if incomplete → email advisor → read the reply → reconcile → complete the ticket.* No retrieval/graph layer. (Cross-document linking via a knowledge graph remains a separate, optional Stage 2/3 concern — see §16 "Form history RAG.")
 
 ---
+
+> 🔁 **Agentic Loop Spec (roadmap v8.8):**
+> - **Loop type:** *goal-loop* — intake → reconcile → validate → route → (if incomplete) escalate → read advisor reply → reconcile → re-validate, until the case is complete or the round-cap is hit.
+> - **Verifier:** business-rule validation + per-field **confidence threshold** (the loop's "can say no"); cross-source agreement raises confidence.
+> - **Autonomy:** runs **unattended** (extraction/routing are verifiable and non-irreversible), with a **human-review gate on low-confidence fields** and a **max-escalation-round cap** to prevent email ping-pong. No financial/irreversible action → no sign-off gate required.
 
 ## 2. Strategic Positioning
 
