@@ -3,7 +3,7 @@
 ## AI-Powered Agentic Knowledge Platform for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — From RAG Chatbot to Hybrid GraphRAG + Agentic Knowledge Operations
 
-**Document Version:** 1.6 (Full-Production companion to the Stage-1 scope `POLICYPULSE_HR_RAG_SCOPE_v1_STAGE1_5.md` v1.5. **Synced to roadmap v8.9.** Details all 5 stages — the Stage-1 RAG foundation evolves into a hybrid **GraphRAG (Neo4j + vector)** retriever, an **agentic evaluator-optimizer** retrieval loop, and a **multi-tenant SaaS** with A2A. **v8.9 course alignment:** the **MCP primer** (DeepLearning.AI "MCP: Build Rich-Context AI Apps with Anthropic", Elie Schoppik, free) is pulled forward to **Stage 1**, taken *before* the FastMCP build, with the full MCP deep-dive retained at Stage 4; the **TypeScript sprint** resource is the Total TypeScript + Zod tutorials (Month 14). Additive — Stage-1 build scope is unchanged from the Stage-1 v1.5 document.)
+**Document Version:** 1.6 (Full-Production companion to the Stage-1 scope `POLICYPULSE_HR_RAG_SCOPE_v1_STAGE1_5.md` v1.5. **Synced to roadmap v8.9.** Details all 5 stages — the Stage-1 RAG foundation evolves into a hybrid **GraphRAG (Neo4j + vector)** retriever, an **agentic evaluator-optimizer** retrieval loop, and a **multi-tenant SaaS** with A2A. **v8.9 course alignment:** the **MCP primer** (DeepLearning.AI "MCP: Build Rich-Context AI Apps with Anthropic", Elie Schoppik, free) is pulled forward to **Stage 1**, taken *before* the FastMCP build, with the full MCP deep-dive retained at Stage 4; the **TypeScript sprint** resource is the Total TypeScript + Zod tutorials (Month 14). Additive — Stage-1 build scope is unchanged from the Stage-1 v1.5 document.) **Stage 2 explicitly includes containerized deployment to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff), per roadmap v8.9 Stage-2 cloud skills.
 **Last Updated:** June 30, 2026
 **Status:** 📋 DRAFT — Future Vision (Stages 2–5 require progressive skill acquisition)
 **Author:** Manuel Reyes
@@ -373,7 +373,7 @@ policypulse/
 | Phase | Stage | Build focus | Exit criteria |
 |-------|-------|-------------|---------------|
 | Foundation | 1 | Vector RAG + cited answers + escalation + FastMCP | Live Streamlit demo; RAG Triad measured; MCP tools callable in Cursor |
-| Cloud | 2 | S3 + PostgreSQL + scheduled re-ingestion; **GraphRAG intro** (Neo4j) | Multi-hop questions answered by graph traversal; nightly re-ingest working |
+| Cloud | 2 | S3 + PostgreSQL + scheduled re-ingestion; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff); **GraphRAG intro** (Neo4j) | App running on ECS/Fargate; multi-hop questions answered by graph traversal; nightly re-ingest working |
 | Intelligence | 3 | Fine-tuned embeddings + re-ranker; **GraphRAG deepen** (dual-channel fusion, graph-quality monitoring) | Hybrid beats vector-only baseline on labeled multi-hop set; Neo4j credential earned by building |
 | Agentic | 4 | LangGraph evaluator-optimizer loop; Pinecone migration; expanded MCP write tools; voice | Self-correcting loop measurably lifts groundedness; write tools approval-gated |
 | Platform | 5 | Multi-tenant SaaS, RBAC, Slack/Teams, A2A, LLMOps CI | Multi-tenant isolation verified; A2A cross-team answer with provenance; regression gates green |
@@ -385,7 +385,7 @@ policypulse/
 | Stage | Role | PolicyPulse Enhancements |
 |-------|------|--------------------------|
 | **1** | Data Analyst | ✅ RAG chatbot + ChromaDB + Anthropic-primary SDK + cited answers + confidence-based HR escalation + FastMCP (2 read tools) + Streamlit (FOUNDATION SCOPE) |
-| **2** | Data Engineer | AWS S3 document store, PostgreSQL ticket tracking, scheduled re-ingestion. 🕸️ **GraphRAG upgrade path (intro):** hybrid retriever — **Neo4j knowledge graph** (policies · sections · roles · effective-dates → typed relationships) **+ ChromaDB vectors** — for multi-hop questions vector-only retrieval can't assemble. Vector stays the backbone (~80%); graph is additive (~15–20%). |
+| **2** | Data Engineer | AWS S3 document store, PostgreSQL ticket tracking, scheduled re-ingestion, **containerized deployment to AWS ECS/Fargate** (migrating off Stage-1 Streamlit Cloud). 🕸️ **GraphRAG upgrade path (intro):** hybrid retriever — **Neo4j knowledge graph** (policies · sections · roles · effective-dates → typed relationships) **+ ChromaDB vectors** — for multi-hop questions vector-only retrieval can't assemble. Vector stays the backbone (~80%); graph is additive (~15–20%). |
 | **3** | ML Engineer | Fine-tuned HR-domain embedding model + learned re-ranker. 🕸️ **GraphRAG (deepen):** entity-extraction pipeline, graph-quality monitoring, dual-channel (graph-path + vector) fusion; targets multi-hop hallucination and improves explainability/groundedness. Neo4j GraphAcademy → Certified Professional earned by building. |
 | **4** | Agentic AI Engineer | LangGraph orchestration (**evaluator-optimizer pattern**: retrieve → verify → re-retrieve loop), Pinecone migration, voice interface, **MCP server expanded** with approval-gated policy-update + ticket-create tools. |
 | **5** | Senior LLM Engineer | Production SaaS: multi-tenant, RBAC, Slack/Teams integration, LLMOps evaluation pipeline, A/B testing retrieval strategies, **A2A protocol** for HR-Agent ↔ IT-Agent ↔ Payroll-Agent collaboration on cross-functional employee questions. |
@@ -428,7 +428,7 @@ policypulse/
 | RAG (chunking, embeddings, semantic search) | Stage 1 ✅ | The retrieval foundation |
 | FastMCP | Stage 1 ✅ | Read-tool MCP server (primed by the v8.9 MCP primer) |
 | RAGAS, SelfCheckGPT, DeepEval | Stage 1 ✅ | Groundedness / hallucination evaluation |
-| AWS (S3, RDS) | Stage 2 | Document store, ticket tracking, scheduled re-ingestion |
+| AWS (S3, RDS, ECS/Fargate) | Stage 2 | Document store, ticket tracking, scheduled re-ingestion, containerized app deployment |
 | PostgreSQL, Redis | Stage 2 | Production data + cache layer |
 | Vector DBs (ChromaDB → Pinecone) | Stage 2 | Semantic retrieval backbone → managed multi-tenant |
 | **GraphRAG / Neo4j** | **Stage 2→3** | **Hybrid retriever; the signature differentiator** |
