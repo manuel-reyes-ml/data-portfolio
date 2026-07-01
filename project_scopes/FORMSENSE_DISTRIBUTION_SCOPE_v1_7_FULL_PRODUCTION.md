@@ -1,9 +1,9 @@
-# 📄 FORMSENSE — Full Production Scope v1.7
+## 📄 FORMSENSE — Full Production Scope v1.7
 
 ## AI-Powered Autonomous Document-Operations Platform for Retirement Plan Distribution Processing
 ## "From Paper to Processing" — From Multimodal Form Reader to Multi-Agent Document Operations
 
-**Document Version:** 1.7 (Full-Production companion to the Stage-1 scope `FORMSENSE_DISTRIBUTION_SCOPE_v1_6_STAGE1.md`. Version reconciled to **v1.7** to match FormSense's current revision — the Stage-1 title already reads v1.7 (Agentic Loop Spec added per roadmap v8.8); the "1.6" in its version field was stale drift. **Synced to roadmap v8.9.** Details all 5 stages — the Stage-1 multimodal extract→validate→route engine evolves into a **batch pipeline**, a **fine-tuned extraction model**, a **multi-agent parallelized + evaluator-optimizer** system, and a **production SaaS** with OnBase integration and A2A. Additive — Stage-1 build scope unchanged.)
+**Document Version:** 1.7 (Full-Production companion to the Stage-1 scope `FORMSENSE_DISTRIBUTION_SCOPE_v1_6_STAGE1.md`. Version reconciled to **v1.7** to match FormSense's current revision — the Stage-1 title already reads v1.7 (Agentic Loop Spec added per roadmap v8.8); the "1.6" in its version field was stale drift. **Synced to roadmap v8.9.** Details all 5 stages — the Stage-1 multimodal extract→validate→route engine evolves into a **batch pipeline**, a **fine-tuned extraction model**, a **multi-agent parallelized + evaluator-optimizer** system, and a **production SaaS** with OnBase integration and A2A. Additive — Stage-1 build scope unchanged.) **Stage 2 explicitly includes containerized deployment to AWS ECS/Fargate** (app + async workers; Streamlit Cloud → ECS handoff), per roadmap v8.9 Stage-2 cloud skills.
 **Last Updated:** June 30, 2026
 **Status:** 📋 DRAFT — Future Vision (Stages 2–5 require progressive skill acquisition)
 **Author:** Manuel Reyes
@@ -376,7 +376,7 @@ formsense/
 | Phase | Stage | Build focus | Exit criteria |
 |-------|-------|-------------|---------------|
 | Foundation | 1 | Multimodal multi-source extraction + reconciliation + ERISA validation + routing | Live Streamlit demo; GEval accuracy measured; advisor-reply reconciliation working |
-| Pipeline | 2 | AWS S3 + SQS batch + PostgreSQL ticket tracking; scheduled processing | High-volume async intake working; durable ticket tracking |
+| Pipeline | 2 | AWS S3 + SQS batch + PostgreSQL ticket tracking; scheduled processing; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff) | High-volume async intake working; durable ticket tracking; app + workers running on ECS/Fargate |
 | Intelligence | 3 | Fine-tuned extraction model + form-type classifier | Fine-tuned model beats off-the-shelf baseline; classifier above threshold |
 | Agentic | 4 | Parallelized agents + evaluator-optimizer re-extraction; MCP actions; form-history RAG | Re-extraction loop measurably cuts human-review rate; write actions approval-gated |
 | Platform | 5 | OnBase integration, real-time, multi-form-type, A2A, LLMOps CI | OnBase round-trip working; A2A outcome with provenance; accuracy regression gates green |
@@ -388,7 +388,7 @@ formsense/
 | Stage | Role | FormSense Enhancements |
 |-------|------|------------------------|
 | **1** | Data Analyst | ✅ Multimodal extraction (form **+ email body, read concurrently on intake**, field-level reconciliation) + ERISA validation + routing (complete→ticket / incomplete→advisor email) + advisor-reply reconciliation (FOUNDATION SCOPE) |
-| **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, **SQS queue**, scheduled batch processing for high-volume intake. |
+| **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, **SQS queue**, scheduled batch processing for high-volume intake, **containerized deployment to AWS ECS/Fargate** (app + async workers, migrating off Stage-1 Streamlit Cloud). |
 | **3** | ML Engineer | **Custom fine-tuned extraction model** + **form classification** (distribution vs loan vs rollover); accuracy improvement measured vs off-the-shelf baseline. |
 | **4** | Agentic AI Engineer | Multi-agent system implementing the **parallelization pattern** (Extractor + Validator + Router run concurrently for throughput) + **evaluator-optimizer** (Validator triggers re-extraction on low confidence). **MCP integration** for email sending + ticket creation (approval-gated). **Form-history RAG** (vector, **not** GraphRAG) for cross-referencing previous distributions. |
 | **5** | Senior LLM Engineer | Production SaaS: **OnBase integration**, real-time processing, multi-form-type support, LLMOps evaluation pipeline. **A2A protocol** for cross-system collaboration (FormSense-Agent ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent) — agents from different teams discover and coordinate via the standard protocol. |
@@ -431,7 +431,7 @@ formsense/
 | Multimodal LLM SDK (Gemini Vision; Claude/GPT-4o fallback) | Stage 1 ✅ | Form reading (checkboxes, handwriting, layout) |
 | Business-rule / validation engineering | Stage 1 ✅ | ERISA-aware YAML rule engine |
 | GEval, DeepEval | Stage 1 ✅ | Extraction-accuracy evaluation |
-| AWS (S3, SQS, RDS) | Stage 2 | Form storage, async batch queue, ticket tracking |
+| AWS (S3, SQS, RDS, ECS/Fargate) | Stage 2 | Form storage, async batch queue, ticket tracking, containerized app + worker deployment |
 | PostgreSQL | Stage 2 | Production data + audit layer |
 | Fine-tuning / model training | Stage 3 | Domain extraction model |
 | Classification (scikit-learn / PyTorch) | Stage 3 | Form-type classifier |
