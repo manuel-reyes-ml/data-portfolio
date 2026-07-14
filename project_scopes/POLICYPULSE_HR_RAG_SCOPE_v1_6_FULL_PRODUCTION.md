@@ -1,15 +1,41 @@
-# 📋 POLICYPULSE — Full Production Scope v1.6
+# 📋 POLICYPULSE — Full Production Scope v2.0
 
 ## AI-Powered Agentic Knowledge Platform for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — From RAG Chatbot to Hybrid GraphRAG + Agentic Knowledge Operations
 
-**Document Version:** 1.6 (Full-Production companion to the Stage-1 scope `POLICYPULSE_HR_RAG_SCOPE_v1_STAGE1_5.md` v1.5. **Synced to roadmap v8.9.** Details all 5 stages — the Stage-1 RAG foundation evolves into a hybrid **GraphRAG (Neo4j + vector)** retriever, an **agentic evaluator-optimizer** retrieval loop, and a **multi-tenant SaaS** with A2A. **v8.9 course alignment:** the **MCP primer** (DeepLearning.AI "MCP: Build Rich-Context AI Apps with Anthropic", Elie Schoppik, free) is pulled forward to **Stage 1**, taken *before* the FastMCP build, with the full MCP deep-dive retained at Stage 4; the **TypeScript sprint** resource is the Total TypeScript + Zod tutorials (Month 14). Additive — Stage-1 build scope is unchanged from the Stage-1 v1.5 document.) **Stage 2 explicitly includes containerized deployment to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff), per roadmap v8.9 Stage-2 cloud skills.
+**Document Version:** 2.0 (🎯 **v10.0 REALIGNMENT** — 5-stage model collapsed to the 3-stage arc (S1 RAG → S2 embedding/vector as data infra → S3 GraphRAG + agentic + eval/observability); destination Applied AI Engineer → FDE. Adds the 2026 three-layer eval + Arize Phoenix observability. Prior v1.6 note archived below.)
 **Last Updated:** June 30, 2026
-**Status:** 📋 DRAFT — Future Vision (Stages 2–5 require progressive skill acquisition)
+**Status:** 📋 DRAFT — v10.0-aligned; S2–S3 layers build progressively across the 3-stage model.
 **Author:** Manuel Reyes
-**Stages Covered:** 1 (foundation, built first) → 2 (Data Engineer) → 3 (ML Engineer) → 4 (Agentic AI Engineer) → 5 (Senior LLM Engineer)
+**Stages Covered (v10.0):** S1 (foundation, built first) → S2 (DE/AE hardening) → S3 (Applied AI → FDE). One evolving system — ML is an embedded literacy module inside S3, not a separate stage.
 **Predecessor:** PolicyPulse Stage 1 (RAG Chatbot + ChromaDB + FastMCP — `..._v1_STAGE1_5.md`)
 **Strategic Priority:** 🧠 RAG FOUNDATION → 🕸️ GRAPHRAG HYBRID → 🤖 AGENTIC KNOWLEDGE PLATFORM
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🏁 **Flagship (lead)** — the **Applied-AI flagship** (regulated-finance RAG differentiator). In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | RAG foundation — ChromaDB retrieval + **FastMCP** server exposure + eval gates (RAGAS/DeepEval, blocking); synthetic data only. |
+| **S2** | DE/AE hardening | Embedding pipeline + vector store treated as **data infrastructure** — orchestrated ingest (Airflow), document-metadata **dbt models** + contracts, retrieval/usage analytics, Docker/ECS, monitoring (the AI-adjacent DE evidence). |
+| **S3** | Applied AI (RAG/agentic + eval) | **GraphRAG (Neo4j + ChromaDB)** + agentic evaluator-optimizer retrieval (iteration cap = safety backstop) + **per-document access-control retrieval** + three-layer eval + Arize Phoenix observability + MCP + privacy-routed providers. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -32,7 +58,7 @@
 15. [Security & Compliance](#15-security--compliance)
 16. [Project Structure](#16-project-structure)
 17. [Development Phases](#17-development-phases)
-18. [Project Evolution (5 Stages)](#18-project-evolution-5-stages)
+18. [Project Evolution (3 Stages)](#18-project-evolution-5-stages)
 19. [Success Metrics](#19-success-metrics)
 20. [Risk Mitigation](#20-risk-mitigation)
 21. [Skills Required (Roadmap Alignment)](#21-skills-required-roadmap-alignment)
@@ -70,14 +96,14 @@ STAGE 1 (NOW):        "Answer my policy question, with a citation."   (Single-pa
   │
   │   + AWS storage, scheduled re-ingestion, Neo4j knowledge graph (Stage 2)
   │   + fine-tuned embeddings, re-ranker, graph-quality monitoring (Stage 3)
-  │   + LangGraph evaluator-optimizer loop, expanded MCP tools (Stage 4)
-  │   + multi-tenant SaaS, RBAC, A2A cross-team routing, LLMOps (Stage 5)
+  │   + LangGraph evaluator-optimizer loop, expanded MCP tools (S3)
+  │   + multi-tenant SaaS, RBAC, A2A cross-team routing, LLMOps (S3)
   ▼
-STAGE 5 (GOAL):       "Resolve my cross-functional question end-to-end — verified,
+STAGE 3 (GOAL):       "Resolve my cross-functional question end-to-end — verified,
                        routed across HR/IT/Payroll agents, audited."   (Agentic platform)
 ```
 
-The product promise sharpens at each stage but never changes character: **grounded, cited, honest about uncertainty.** Stage 1 proves the grounded-answer contract on a small corpus. Stage 5 proves it holds under multi-tenant load, multi-hop questions, and cross-team handoffs — the difference between "a RAG demo" and "knowledge infrastructure a company runs on."
+The product promise sharpens at each stage but never changes character: **grounded, cited, honest about uncertainty.** Stage 1 proves the grounded-answer contract on a small corpus. S3 proves it holds under multi-tenant load, multi-hop questions, and cross-team handoffs — the difference between "a RAG demo" and "knowledge infrastructure a company runs on."
 
 ---
 
@@ -115,7 +141,7 @@ flowchart TB
         G --> RERANK
     end
 
-    subgraph Reason[🤖 Agentic Loop - Stage 4]
+    subgraph Reason[🤖 Agentic Loop - S3]
         RERANK --> RESP[Responder<br/>Anthropic Claude primary]
         RESP --> VERIFY{Grounded?<br/>RAGAS + SelfCheckGPT}
         VERIFY -->|No| ROUTER
@@ -123,7 +149,7 @@ flowchart TB
         VERIFY -->|conf < 0.7| TICKET[🎫 HR Ticket / A2A Route]
     end
 
-    subgraph Serve[🌐 Serving - Stage 5]
+    subgraph Serve[🌐 Serving - S3]
         ANS --> API[FastAPI + MCP Server]
         TICKET --> API
         API --> SLACK[Slack / Teams]
@@ -131,7 +157,7 @@ flowchart TB
     end
 ```
 
-The architecture is deliberately layered so each stage slots in behind a stable interface: the **router** (Stage 2/3) sits in front of an unchanged retrieve-generate core; the **verifier loop** (Stage 4) wraps the responder without changing the answer contract; the **serving layer** (Stage 5) wraps everything behind FastAPI + MCP.
+The architecture is deliberately layered so each stage slots in behind a stable interface: the **router** (Stage 2/3) sits in front of an unchanged retrieve-generate core; the **verifier loop** (S3) wraps the responder without changing the answer contract; the **serving layer** (S3) wraps everything behind FastAPI + MCP.
 
 ---
 
@@ -184,7 +210,7 @@ retrieve (vector + graph)
 > - **Verifier:** RAGAS RAG Triad (context relevance · groundedness · answer relevance) + SelfCheckGPT consistency, with the confidence threshold as the loop's "can say no."
 > - **Autonomy:** runs **unattended** — answering is read-only and non-irreversible. The only state-changing actions (HR ticket creation, A2A routing) are themselves reversible and logged. A **max-retry cap** prevents loops; **low-confidence → human (HR)** is the hard fallback.
 
-### 6.2 A2A cross-team routing (Stage 5)
+### 6.2 A2A cross-team routing (S3)
 
 When a question spans domains, PolicyPulse's HR agent discovers and delegates to peer agents over the A2A protocol (Linux Foundation Agentic AI Foundation): `HR-Agent ↔ IT-Agent ↔ Payroll-Agent`. Each agent owns its corpus; the employee sees one answer assembled from verified contributions, with provenance per claim.
 
@@ -355,11 +381,11 @@ policypulse/
     ingest/        # extraction · chunking · embeddings · entity extraction
     graph/         # Neo4j ontology · Cypher · graph-quality monitors (Stage 2/3)
     retrieve/      # vector channel · graph channel · fusion · re-ranker (Stage 3)
-    agent/         # evaluator-optimizer loop · LangGraph (Stage 4)
+    agent/         # evaluator-optimizer loop · LangGraph (S3)
     eval/          # RAGAS · SelfCheckGPT · multi-hop labeled set
     mcp_server/    # FastMCP — read tools (S1) + approval-gated write tools (S4)
-    api/           # FastAPI · Slack/Teams adapters (Stage 5)
-    a2a/           # cross-team agent protocol (Stage 5)
+    api/           # FastAPI · Slack/Teams adapters (S3)
+    a2a/           # cross-team agent protocol (S3)
     guardrails/
   tests/
   pyproject.toml   # py.typed · src layout · semver
@@ -380,19 +406,20 @@ policypulse/
 
 ---
 
-## 18. Project Evolution (5 Stages)
+## 18. Project Evolution (3 Stages — v10.0)
 
-| Stage | Role | PolicyPulse Enhancements |
-|-------|------|--------------------------|
-| **1** | Data Analyst | ✅ RAG chatbot + ChromaDB + Anthropic-primary SDK + cited answers + confidence-based HR escalation + FastMCP (2 read tools) + Streamlit (FOUNDATION SCOPE) |
-| **2** | Data Engineer | AWS S3 document store, PostgreSQL ticket tracking, scheduled re-ingestion, **containerized deployment to AWS ECS/Fargate** (migrating off Stage-1 Streamlit Cloud). 🕸️ **GraphRAG upgrade path (intro):** hybrid retriever — **Neo4j knowledge graph** (policies · sections · roles · effective-dates → typed relationships) **+ ChromaDB vectors** — for multi-hop questions vector-only retrieval can't assemble. Vector stays the backbone (~80%); graph is additive (~15–20%). |
-| **3** | ML Engineer | Fine-tuned HR-domain embedding model + learned re-ranker. 🕸️ **GraphRAG (deepen):** entity-extraction pipeline, graph-quality monitoring, dual-channel (graph-path + vector) fusion; targets multi-hop hallucination and improves explainability/groundedness. Neo4j GraphAcademy → Certified Professional earned by building. |
-| **4** | Agentic AI Engineer | LangGraph orchestration (**evaluator-optimizer pattern**: retrieve → verify → re-retrieve loop), Pinecone migration, voice interface, **MCP server expanded** with approval-gated policy-update + ticket-create tools. |
-| **5** | Senior LLM Engineer | Production SaaS: multi-tenant, RBAC, Slack/Teams integration, LLMOps evaluation pipeline, A/B testing retrieval strategies, **A2A protocol** for HR-Agent ↔ IT-Agent ↔ Payroll-Agent collaboration on cross-functional employee questions. |
+*One evolving system across the roadmap's 3 stages — never rebuilt per stage. The retired v9.2 "ML Engineer / Senior LLM Engineer" tiers collapse into **Stage 3**, where ML work is an embedded literacy module governed by the earned-overlay rule.*
 
-> 🕸️ **GraphRAG note (roadmap v8.6/v8.9):** the knowledge-graph layer is an *additive* relationship-reasoning upgrade, not a replacement. Add it for multi-hop / relationship-heavy policy questions, not because it's trendy. The vector pipeline stands up in days; the graph is weeks of ontology work at ~1.5–1.8× infra. The two on-ramp courses (DeepLearning.AI "Knowledge Graphs for RAG" → Neo4j GraphAcademy) are in §Courses.
+| Stage | Role (v10.0) | PolicyPulse layer & production deliverables | Exit criteria |
+|---|---|---|---|
+| **S1** | Foundation (GenAI-first core) | RAG chatbot — ChromaDB + Anthropic-primary SDK + **cited** answers + confidence-based HR escalation + **FastMCP** read tools + Streamlit. **Blocking eval gates** (RAGAS Triad + SelfCheckGPT). Synthetic policy corpus only. | Groundedness baseline measured; CI eval gate green; FastMCP read tools live. |
+| **S2** | DE/AE hardening | Embedding pipeline + vector store treated as **data infrastructure** — Airflow-scheduled re-ingestion, doc-metadata **dbt models + tests + data contracts** (Great Expectations), retrieval/usage analytics marts, AWS S3 + PostgreSQL, **Docker → ECS/Fargate** (Terraform-provisioned), monitoring + written postmortem. GraphRAG on-ramp (Neo4j intro). | Pipeline reproducible via Terraform; contracts enforced in CI; ECS deploy live; re-ingestion scheduled. |
+| **S3** | Applied AI (RAG/agentic + eval) | Hybrid **GraphRAG (Neo4j + ChromaDB)** + agentic **evaluator-optimizer** loop (retrieve → verify → re-retrieve; **iteration cap = safety backstop**) + **per-document access-control retrieval** + **MCP** expanded (approval-gated write tools) + **three-layer eval** (per-query RAGAS · trajectory tracing · drift vs frozen golden set) + **Arize Phoenix** observability + privacy-routed providers. | Hybrid beats vector-only on the labeled multi-hop set; **faithfulness ≥ 0.9**; zero cross-scope retrieval in the access-control audit. |
 
----
+> **Optional beyond-portfolio extension (S3 stretch, earned-overlay gated):** multi-tenant SaaS + RBAC + A2A cross-team routing (formerly the v9.2 "S3"). Build only if it beats the single-tenant baseline on a real need — not required for the flagship.
+
+> 🕸️ **GraphRAG note:** the knowledge-graph layer is an *additive* relationship-reasoning upgrade for multi-hop policy questions, not a replacement. Vector stays the ~80% backbone; the graph earns its place only by beating the multi-hop baseline. On-ramp courses are in §Courses (S2 Knowledge-Graphs-for-RAG → S3 Neo4j GraphAcademy).
+
 
 ## 19. Success Metrics
 
@@ -419,26 +446,28 @@ policypulse/
 
 ---
 
-## 21. Skills Required (Roadmap Alignment)
+## 21. Skills Required (Roadmap Alignment — v10.0)
 
-| Skill | Roadmap Stage | How PolicyPulse Uses It |
-|-------|---------------|------------------------|
-| Python, pandas, Pydantic | Stage 1 ✅ | Data models, structured outputs |
-| LLM SDK (Anthropic primary), Streamlit | Stage 1 ✅ | RAG generation + Stage-1 chat UI |
-| RAG (chunking, embeddings, semantic search) | Stage 1 ✅ | The retrieval foundation |
-| FastMCP | Stage 1 ✅ | Read-tool MCP server (primed by the v8.9 MCP primer) |
-| RAGAS, SelfCheckGPT, DeepEval | Stage 1 ✅ | Groundedness / hallucination evaluation |
-| AWS (S3, RDS, ECS/Fargate) | Stage 2 | Document store, ticket tracking, scheduled re-ingestion, containerized app deployment |
-| PostgreSQL, Redis | Stage 2 | Production data + cache layer |
-| Vector DBs (ChromaDB → Pinecone) | Stage 2 | Semantic retrieval backbone → managed multi-tenant |
-| **GraphRAG / Neo4j** | **Stage 2→3** | **Hybrid retriever; the signature differentiator** |
-| Fine-tuning / embedding training, re-ranking | Stage 3 | HR-domain embeddings + learned re-ranker |
-| **LangGraph** | **Stage 4** | **Evaluator-optimizer retrieval loop** |
-| **MCP (deep dive)** | **Stage 4** | **Expanded approval-gated write tools** |
-| TypeScript + Zod | Stage 2 (Month 14 sprint) | TS MCP server variant; Zod = MCP SDK input validation |
-| **LLMOps Evaluation** | **Stage 5** | **CI evals, A/B retrieval, regression gates** |
-| **A2A protocol** | **Stage 5** | **HR ↔ IT ↔ Payroll cross-team routing** |
-| FastAPI, System Design, Production Monitoring | Stage 5 | SaaS backend, multi-tenant architecture, observability |
+| Skill | Stage | How PolicyPulse Uses It |
+|-------|-------|------------------------|
+| Python, pandas, Pydantic | S1 ✅ | Data models, structured outputs |
+| LLM SDK (Anthropic primary), Streamlit | S1 ✅ | RAG generation + Stage-1 chat UI |
+| RAG (chunking, embeddings, semantic search) | S1 ✅ | The retrieval foundation |
+| FastMCP | S1 ✅ | Read-tool MCP server (primed by the MCP primer) |
+| RAGAS, SelfCheckGPT, DeepEval | S1 ✅ | Groundedness / hallucination evaluation |
+| **dbt + data contracts (Great Expectations)** | **S2** | **Doc-metadata models, tests, quality gates — vector/embedding pipeline as data infrastructure** |
+| **Airflow, Terraform** | **S2** | **Scheduled re-ingestion; reproducibly-provisioned infra** |
+| AWS (S3, RDS, ECS/Fargate), Docker | S2 | Document store, ticket tracking, containerized deployment |
+| PostgreSQL, Redis | S2 | Production data + cache layer |
+| Vector DBs (ChromaDB → Pinecone) | S2 | Semantic retrieval backbone → managed multi-tenant |
+| **GraphRAG / Neo4j** | **S2 → S3** | **Hybrid retriever; the signature differentiator** |
+| **LangGraph + evaluator-optimizer loop** | **S3** | **Agentic retrieve → verify → re-retrieve (iteration-capped)** |
+| **MCP (deep dive) + access-control retrieval** | **S3** | **Approval-gated write tools; per-document RBAC at retrieval** |
+| **Three-layer eval + Arize Phoenix observability** | **S3** | **Per-query + trajectory tracing + drift vs frozen golden set** |
+| **LLMOps (CI evals, A/B, regression gates)** | **S3** | **Blocking groundedness gates; retrieval A/B** |
+| TypeScript + Zod | S2 (Month-14 sprint) | TS MCP server variant; Zod = MCP SDK input validation |
+| FastAPI, System Design, Production Monitoring | S3 | Backend, architecture, observability |
+
 
 ---
 
@@ -469,7 +498,7 @@ policypulse/
 │     • Neo4j knowledge graph for multi-hop ~15–20%                │
 │     • Fine-tuned HR embeddings + learned re-ranker (Stage 3)     │
 ├─────────────────────────────────────────────────────────────────┤
-│  🤖 AGENTIC LOOP (Stage 4)                                       │
+│  🤖 AGENTIC LOOP (S3)                                       │
 │     • retrieve → respond → verify → re-retrieve (LangGraph)      │
 │     • Verifier: RAGAS Triad + SelfCheckGPT + confidence gate     │
 │     • Unattended (read-only); low-confidence → human (HR)        │
@@ -479,7 +508,7 @@ policypulse/
 │     • S3 read: get_policy_graph (multi-hop transparency)         │
 │     • S4 write (approval-gated): propose_policy_update · ticket  │
 ├─────────────────────────────────────────────────────────────────┤
-│  🌐 PLATFORM (Stage 5)                                           │
+│  🌐 PLATFORM (S3)                                           │
 │     • Multi-tenant SaaS + RBAC + Slack/Teams                     │
 │     • A2A: HR ↔ IT ↔ Payroll cross-team routing                 │
 │     • FastAPI + AWS ECS · PostgreSQL · Redis · S3                │
@@ -499,33 +528,27 @@ policypulse/
 
 ---
 
-## 📚 Courses & Certifications (take in this order)
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Quick reference, synced with roadmap **v8.9**. Same course names as the roadmap; listed top-to-bottom in the order to take them for PolicyPulse (Full Production). Focus notes are project-specific.*
+*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs are noted.*
 
-| # | Course (roadmap name) | Stage | Focus for PolicyPulse |
-|---|---|---|---|
-| 1 | IBM Generative AI Engineering Professional Certificate | Stage 1 | RAG + LangChain fundamentals (chunking, embeddings, retrieval) |
-| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (primary) + prompt caching for RAG synthesis |
-| 3 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | RAG Triad — Context Relevance, Groundedness, Answer Relevance — the eval backbone |
-| 4 | 🆕 v8.9 — MCP: Build Rich-Context AI Apps with Anthropic (Elie Schoppik, free) | **Stage 1 (primer)** | **Pulled forward:** learn the MCP protocol *before* building the FastMCP server, not after |
-| 5 | Vector Databases: from Embeddings to Applications | Stage 2 | Embeddings + vector store (ChromaDB → Pinecone), semantic search, similarity scoring |
-| 6 | 🕸️ Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | GraphRAG on-ramp — fuse a knowledge graph + vector index into a hybrid retriever (Cypher + LangChain); maps to the §18 Stage-2 GraphRAG path |
-| 7 | 🕸️ Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — build KGs from unstructured policy docs, fuse vector + graph end-to-end |
-| 8 | 📘 v8.9 — Total TypeScript (Beginner's + Zod) — Matt Pocock (free) | Stage 2 (Month 14 sprint) | TS MCP server variant; Zod is exactly the MCP TS SDK's input-validation layer |
-| 9 | MCP: Build Rich-Context AI Apps with Anthropic (deep dive) | Stage 4 | Expanded MCP — approval-gated write tools in the agentic capstone |
-| 10 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Observability/traces + LLM-as-judge for the retrieval loop |
-| 11 | Automated Testing for LLMOps (DeepLearning.AI) | Stage 5 | CI evals / regression gates for the production retrieval pipeline |
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** IBM Generative AI Engineering Professional Certificate (RAG/LangChain spine) · Building with the Claude API (Anthropic Academy — SDK, structured outputs, prompt caching) · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications (eval-from-scratch) · MCP primer (DeepLearning.AI, Elie Schoppik — *before* the FastMCP build) · Docker for Beginners (KodeKloud) · 30 Days of Streamlit
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
-**Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer, confidence-based HR escalation, RAGAS/SelfCheckGPT evaluation, MCP tool exposure (read → approval-gated write), A2A cross-team routing.
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com (indexing/query-plan internals) · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals (HashiCorp) · Pre-processing Unstructured Data for LLM Applications · Vector Databases: from Embeddings to Applications · Knowledge Graphs for RAG (GraphRAG on-ramp — DeepLearning.AI × Neo4j)
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) **or** DP-750 Azure Databricks
 
-> **MCP-primer placement (v8.9):** the primer now sits in Stage 1 *before* the FastMCP build (#4), and the full deep-dive stays in Stage 4 (#9). This is a resequencing, not a duplicate — you learn the protocol before you first build against it.
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** MCP: Build Rich-Context AI Apps (full) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · HuggingFace NLP + LLM Course · Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · NVIDIA DLI: Building RAG Agents with LLMs (doubles as PolicyPulse evidence)
+- **Certifications:** **Neo4j Certified Professional** (FREE — backs the GraphRAG layer) · **NVIDIA NCA-GENL** ($125) · **Databricks Certified GenAI Engineer Associate** ($200) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Anthropic CCA-F** ($125 — primary-SDK source-of-truth)
+
+**Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · confidence-based HR escalation · RAGAS/SelfCheckGPT eval · MCP tool exposure (read → approval-gated write) · access-control retrieval.
+
+> **Cert discipline (v10.0):** the shipped, production-grade project is the primary hiring signal; certs are tiebreakers. Committed canon = **DP-700 + AWS DEA-C01** (S2) and the S3 GenAI set. Platform certs (SnowPro Core / DP-750 / Databricks DE / dbt AE) are a **conditional menu — take exactly ONE**, matched to a concrete apply-list's stack. Keyword-density is a negative signal.
 
 ---
 
-**Document Status:** 📋 DRAFT — Full-Production companion to PolicyPulse Stage 1 (`..._v1_STAGE1_5.md`)
-**Date:** June 30, 2026
-**Stages Covered:** 1 → 5
-**Strategic Role:** RAG Foundation → Hybrid GraphRAG → Agentic Knowledge Platform
-
-*"Grounded, cited, honest about uncertainty — proven on a small corpus at Stage 1, and holding under multi-tenant load, multi-hop questions, and cross-team handoffs at Stage 5."* 🚀
+**Document Status:** 📋 DRAFT — v10.0-aligned Full-Production companion. Stages: S1 (built first) → S2 (DE/AE) → S3 (Applied AI → FDE). One evolving system.
+**Last aligned:** v10.0 (2026 Market Realignment).
