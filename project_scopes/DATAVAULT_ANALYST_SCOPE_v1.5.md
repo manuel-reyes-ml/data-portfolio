@@ -31,7 +31,7 @@
 
 ## 1. Executive Summary
 
-**DataVault Analyst** is the **first AI-powered project** in my portfolio — designed to be completed quickly and published before the Operations-Demand-Intelligence and Attention-Flow Catalyst projects. It demonstrates the core GenAI engineering pattern that recruiters care about most in 2026: **taking a single business data source (Excel) and making it queryable through natural language with production-grade PII protections.**
+**DataVault Analyst** is the **first AI-powered project** in my portfolio — designed to be completed quickly and published before the Operations-Demand-Intelligence and Attention-Flow Catalyst projects. It demonstrates the core GenAI engineering pattern that its care about most in 2026: **taking a single business data source (Excel) and making it queryable through natural language with production-grade PII protections.**
 
 ### Why This Project First
 
