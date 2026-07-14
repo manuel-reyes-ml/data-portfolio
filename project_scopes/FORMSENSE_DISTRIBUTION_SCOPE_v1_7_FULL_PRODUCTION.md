@@ -1,17 +1,43 @@
-## 📄 FORMSENSE — Full Production Scope v1.7
+## 📄 FORMSENSE — Full Production Scope v2.0
 
 ## AI-Powered Autonomous Document-Operations Platform for Retirement Plan Distribution Processing
 ## "From Paper to Processing" — From Multimodal Form Reader to an Agentic Document-Operations Workflow
 
-**Document Version:** 1.8 (Full-Production companion to the Stage-1 scope `FORMSENSE_DISTRIBUTION_SCOPE_v1_6_STAGE1.md`. **Synced to roadmap v9.0.** Details all 5 stages — the Stage-1 multimodal extract→validate→route engine evolves into a **batch pipeline**, a **fine-tuned extraction model**, an **agentic workflow** (routing + evaluator-optimizer + human-in-the-loop), and a **production SaaS** with OnBase integration and A2A. Additive — Stage-1 build scope unchanged.) **Stage 2 explicitly includes containerized deployment to AWS ECS/Fargate** (app + async workers; Streamlit Cloud → ECS handoff), per roadmap Stage-2 cloud skills.
+**Document Version:** 2.0 (🎯 **v10.0 REALIGNMENT** — 5-stage model collapsed to the 3-stage arc; Supporting (production-grade); destination Applied AI Engineer → FDE. Excellent v1.8 Anthropic-taxonomy vocabulary (agentic *workflow* not multi-agent; layered exits) retained. Adds three-layer eval + Phoenix. Prior v1.8 note archived below.)
 
-> **📝 v1.8 changelog — architecture vocabulary reconciled (no scope/behavior change).** Stage 4 is now named precisely: an **agentic workflow** — i.e. an *agentic system* in Anthropic's parent-term sense, orchestrated through predefined code paths — **not** a "multi-agent" system or an autonomous agent. Three corrections, all grounded in Anthropic's *Building Effective Agents* taxonomy and the roadmap's v8.8 goal-loop / layered-exits note: (1) "multi-agent" and "agents" (for the Extractor/Validator/Router steps) → **agentic-workflow steps**; (2) the mislabeled Stage-4 "parallelization of Extractor‖Validator‖Router" (they are *sequential* dependencies) → parallelism relocated to where it actually exists — **multi-source concurrent extraction** (email body ‖ form image) and **batch-level concurrency** (SQS workers); (3) the evaluator-optimizer re-extraction loop given **layered exits** (primary stop = verifier, with a max-iteration cap as a *safety backstop*, not the primary stopping mechanism). Adds a new **§6.0 "Agentic Workflow, not Autonomous Agent"** callout that doubles as CCA-F Domain-1 revision material. The `FormExtraction`/`ValidationResult`/`EscalationEmail`/`ProcessingTicket` contract is untouched.
+> **📝 v1.8 changelog — architecture vocabulary reconciled (no scope/behavior change).** S3 is now named precisely: an **agentic workflow** — i.e. an *agentic system* in Anthropic's parent-term sense, orchestrated through predefined code paths — **not** a "multi-agent" system or an autonomous agent. Three corrections, all grounded in Anthropic's *Building Effective Agents* taxonomy and the roadmap's v8.8 goal-loop / layered-exits note: (1) "multi-agent" and "agents" (for the Extractor/Validator/Router steps) → **agentic-workflow steps**; (2) the mislabeled Stage-4 "parallelization of Extractor‖Validator‖Router" (they are *sequential* dependencies) → parallelism relocated to where it actually exists — **multi-source concurrent extraction** (email body ‖ form image) and **batch-level concurrency** (SQS workers); (3) the evaluator-optimizer re-extraction loop given **layered exits** (primary stop = verifier, with a max-iteration cap as a *safety backstop*, not the primary stopping mechanism). Adds a new **§6.0 "Agentic Workflow, not Autonomous Agent"** callout that doubles as CCA-F Domain-1 revision material. The `FormExtraction`/`ValidationResult`/`EscalationEmail`/`ProcessingTicket` contract is untouched.
 **Last Updated:** July 6, 2026
-**Status:** 📋 DRAFT — Future Vision (Stages 2–5 require progressive skill acquisition)
+**Status:** 📋 DRAFT — v10.0-aligned; S2–S3 layers build progressively across the 3-stage model.
 **Author:** Manuel Reyes
-**Stages Covered:** 1 (foundation, built first) → 2 (Data Engineer) → 3 (ML Engineer) → 4 (Agentic AI Engineer) → 5 (Senior LLM Engineer)
+**Stages Covered (v10.0):** S1 (foundation, built first) → S2 (DE/AE hardening) → S3 (Applied AI → FDE). One evolving system — ML is an embedded literacy module inside S3.
 **Predecessor:** FormSense Stage 1 (Multimodal extract → validate → route — `..._v1_6_STAGE1.md`)
 **Strategic Priority:** 📄 DOCUMENT INTELLIGENCE → ⚙️ BATCH PIPELINE → 🤖 AUTONOMOUS DOCUMENT OPERATIONS
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🧩 **Supporting** (production-grade; size ≠ tier) — Applied-AI **document-ops** evidence; partly reinforces the AI-focused-DE angle (unstructured-data ETL feeding downstream). In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Multimodal extract → validate → route — concurrent **email-body ‖ form-image** extraction with field-level reconciliation; structured outputs (**GEval schema adherence ≥ 0.85**); synthetic ERISA forms. |
+| **S2** | DE/AE hardening | Document-ops pipeline — batch extraction → structured outputs **landed + dbt models** (SLA/exception analytics) + contracts + SQS/Airflow concurrency + Docker/ECS + monitoring. |
+| **S3** | Applied AI (RAG/agentic + eval) | **Agentic workflow** (Anthropic taxonomy — routing + evaluator-optimizer + HITL, layered exits) + MCP (email/ticket tools) + Form-History RAG + three-layer eval + Phoenix. (v1.8 taxonomy vocabulary retained.) |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -34,7 +60,7 @@
 15. [Security & Compliance](#15-security--compliance)
 16. [Project Structure](#16-project-structure)
 17. [Development Phases](#17-development-phases)
-18. [Project Evolution (5 Stages)](#18-project-evolution-5-stages)
+18. [Project Evolution (3 Stages)](#18-project-evolution-5-stages)
 19. [Success Metrics](#19-success-metrics)
 20. [Risk Mitigation](#20-risk-mitigation)
 21. [Skills Required (Roadmap Alignment)](#21-skills-required-roadmap-alignment)
@@ -45,7 +71,7 @@
 
 **FormSense (Full Production)** is the all-stages elaboration of the Stage-1 multimodal distribution-form validator. The Stage-1 system reads a distribution request that arrives as an **email body plus an attached PDF/image form**, extracts 15+ fields **concurrently from both sources** into one `FormExtraction` schema with field-level reconciliation, validates against ERISA-aware business rules, and routes: complete forms generate an operations `ProcessingTicket`; incomplete forms generate an `EscalationEmail` to the advisor; low-confidence fields flag for human review. This document carries that foundation through four more stages into an **autonomous (unattended-capable) document-operations platform** — a batch pipeline, a fine-tuned extraction model, an **agentic workflow** with a self-correcting validator loop, and a production SaaS that integrates directly with OnBase and coordinates across compliance/payroll agents via A2A.
 
-The signature technical arc is **single-form, single-pass extraction → an agentic workflow (routing + evaluator-optimizer) with concurrent multi-source extraction**. At Stage 1 the work is sequential (read → reconcile → validate → route). At Stage 4 the same chain gains a **self-correcting validator loop**: the Validator can **trigger re-extraction** on low-confidence fields before a human is ever involved — a measurable accuracy lift that keeps the human-review queue small. Throughput comes not from running the sequential Extractor→Validator→Router steps "in parallel" (they are dependent — you cannot validate before you extract), but from the two places genuine concurrency lives: **multi-source extraction** (email body and form image read concurrently into one `FormExtraction`) and **batch-level concurrency** (many forms processed at once by SQS workers).
+The signature technical arc is **single-form, single-pass extraction → an agentic workflow (routing + evaluator-optimizer) with concurrent multi-source extraction**. At Stage 1 the work is sequential (read → reconcile → validate → route). At S3 the same chain gains a **self-correcting validator loop**: the Validator can **trigger re-extraction** on low-confidence fields before a human is ever involved — a measurable accuracy lift that keeps the human-review queue small. Throughput comes not from running the sequential Extractor→Validator→Router steps "in parallel" (they are dependent — you cannot validate before you extract), but from the two places genuine concurrency lives: **multi-source extraction** (email body and form image read concurrently into one `FormExtraction`) and **batch-level concurrency** (many forms processed at once by SQS workers).
 
 ### Stage 1 vs Full Production
 
@@ -73,14 +99,14 @@ STAGE 1 (NOW):     "Read this form + email, tell me what's missing, route it."  
   │
   │   + AWS S3 + SQS batch + PostgreSQL ticket tracking (Stage 2)
   │   + fine-tuned extraction model + form-type classification (Stage 3)
-  │   + agentic workflow (routing + evaluator-optimizer re-extraction) + MCP actions (Stage 4)
-  │   + OnBase integration, real-time, multi-form-type, A2A, LLMOps (Stage 5)
+  │   + agentic workflow (routing + evaluator-optimizer re-extraction) + MCP actions (S3)
+  │   + OnBase integration, real-time, multi-form-type, A2A, LLMOps (S3)
   ▼
-STAGE 5 (GOAL):    "Process the day's distribution intake end-to-end — extracted, validated,
+STAGE 3 (GOAL):    "Process the day's distribution intake end-to-end — extracted, validated,
                     cross-referenced, routed, audited — surfacing only what needs a human."  (Autonomous)
 ```
 
-The product promise sharpens but never changes character: **accurate extraction, honest about confidence, a human on anything uncertain.** Stage 1 proves the extract-validate-route contract on single forms. Stage 5 proves it holds at production volume, across form types, integrated into the system of record (OnBase) — the difference between "a form-OCR demo" and "document operations a retirement-plan recordkeeper runs on."
+The product promise sharpens but never changes character: **accurate extraction, honest about confidence, a human on anything uncertain.** Stage 1 proves the extract-validate-route contract on single forms. S3 proves it holds at production volume, across form types, integrated into the system of record (OnBase) — the difference between "a form-OCR demo" and "document operations a retirement-plan recordkeeper runs on."
 
 ---
 
@@ -114,7 +140,7 @@ flowchart TB
         REC --> CLS[Form-type classifier - Stage 3<br/>distribution / loan / rollover]
     end
 
-    subgraph Reason[🤖 Agentic Workflow - Stage 4]
+    subgraph Reason[🤖 Agentic Workflow - S3]
         CLS --> VAL[Validator<br/>ERISA business rules]
         VAL --> CHK{Confidence OK?}
         CHK -->|low-confidence field| EX
@@ -123,14 +149,14 @@ flowchart TB
         HIST[(Form-history RAG<br/>vector, NOT graph)] --> VAL
     end
 
-    subgraph Act[⚙️ Actions - Stage 4/5 - MCP]
+    subgraph Act[⚙️ Actions - S3 - MCP]
         ROUTE --> TICKET[🎫 create_ticket → OnBase]
         ESC --> EMAIL[📧 send_advisor_email]
         EMAIL --> REPLY[Read advisor reply → reconcile → re-validate]
         REPLY --> VAL
     end
 
-    subgraph Serve[🌐 Serving - Stage 5]
+    subgraph Serve[🌐 Serving - S3]
         TICKET --> API[FastAPI + A2A]
         REPLY --> API
         API --> COMP[Compliance-Agent]
@@ -138,7 +164,7 @@ flowchart TB
     end
 ```
 
-Each stage slots in behind a stable interface: the **batch queue** (Stage 2) feeds an unchanged extractor; the **classifier + fine-tuned model** (Stage 3) swap in behind the same `FormExtraction` output; the **agentic-workflow steps + evaluator-optimizer loop** (Stage 4) wrap validation without changing the routing contract; the **MCP action tools + A2A** (Stage 4/5) turn generated objects into real, audited actions.
+Each stage slots in behind a stable interface: the **batch queue** (Stage 2) feeds an unchanged extractor; the **classifier + fine-tuned model** (Stage 3) swap in behind the same `FormExtraction` output; the **agentic-workflow steps + evaluator-optimizer loop** (S3) wrap validation without changing the routing contract; the **MCP action tools + A2A** (S3) turn generated objects into real, audited actions.
 
 ---
 
@@ -204,7 +230,7 @@ Extractor→Validator→Router are **sequential dependencies** and cannot be par
 > - **Layered exits (roadmap v8.8):** primary exit = **verifier goal met**; safety backstops = **max-escalation-round cap** (prevents advisor-email ping-pong) + **max re-extraction-iteration cap** on the inner loop + **no-progress detection** (confidence not improving across iterations → stop). ⚠️ Per CCA-F Domain-1 guidance, the iteration cap is a *backstop*, **not** the primary stopping mechanism — never the main way the loop decides it's "done."
 > - **Autonomy:** runs **unattended** — extraction, validation, and routing are verifiable and non-irreversible. A **human-review gate on low-confidence fields** and the layered exits above are the only brakes. **No financial/irreversible action → no live sign-off gate** (the key autonomy difference from Crucible's live-trade path). The MCP action tools (send email, create ticket) are reversible and approval-gated.
 
-### 6.2 A2A cross-team coordination (Stage 5) — the one genuinely agentic tier
+### 6.2 A2A cross-team coordination (S3) — the one genuinely agentic tier
 
 > ✅ **This is the *one* place in FormSense where a true agent legitimately belongs.** The Stage-4 core stays a deterministic agentic workflow (the reliable, auditable spine). At the **cross-team boundary**, dynamic model-driven decisions actually earn their keep: a hardship distribution *might* need a compliance check before a payroll action, and *which* peers to involve can depend on the case. That kind of open-ended, "the path isn't knowable in advance" coordination is where agent autonomy pays off.
 
@@ -234,7 +260,7 @@ At production scale, the **FormSense coordinator** discovers and coordinates wit
 
 ## 8. MCP Server (Email + Ticket Tools)
 
-Stage 1 generates the `EscalationEmail` and `ProcessingTicket` as objects. Stage 4 exposes the *actions* as MCP tools so the routing actually happens — each write tool reversible and approval-gated.
+Stage 1 generates the `EscalationEmail` and `ProcessingTicket` as objects. S3 exposes the *actions* as MCP tools so the routing actually happens — each write tool reversible and approval-gated.
 
 | Tool | Stage | Type | Notes |
 |------|-------|------|-------|
@@ -377,10 +403,10 @@ formsense/
     classify/      # form-type classifier (Stage 3)
     model/         # fine-tuned extraction model + training (Stage 3)
     validate/      # ERISA rule engine (YAML rules · severity)
-    workflow/      # agentic workflow: chaining + routing + evaluator-optimizer loop · LangGraph (Stage 4)
-    history/       # form-history RAG (vector; NOT graph) (Stage 4)
-    mcp_server/    # MCP — read tools + approval-gated email/ticket actions (Stage 4)
-    integrations/  # OnBase · A2A peers (Stage 5)
+    workflow/      # agentic workflow: chaining + routing + evaluator-optimizer loop · LangGraph (S3)
+    history/       # form-history RAG (vector; NOT graph) (S3)
+    mcp_server/    # MCP — read tools + approval-gated email/ticket actions (S3)
+    integrations/  # OnBase · A2A peers (S3)
     eval/          # GEval accuracy · labeled sets · regression gates
     guardrails/
     schemas/       # FormExtraction · ValidationResult · EscalationEmail · ProcessingTicket · ProcessingMetrics
@@ -403,19 +429,20 @@ formsense/
 
 ---
 
-## 18. Project Evolution (5 Stages)
+## 18. Project Evolution (3 Stages — v10.0)
 
-| Stage | Role | FormSense Enhancements |
-|-------|------|------------------------|
-| **1** | Data Analyst | ✅ Multimodal extraction (form **+ email body, read concurrently on intake**, field-level reconciliation) + ERISA validation + routing (complete→ticket / incomplete→advisor email) + advisor-reply reconciliation (FOUNDATION SCOPE) |
-| **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, **SQS queue**, scheduled batch processing for high-volume intake, **containerized deployment to AWS ECS/Fargate** (app + async workers, migrating off Stage-1 Streamlit Cloud). |
-| **3** | ML Engineer | **Custom fine-tuned extraction model** + **form classification** (distribution vs loan vs rollover); accuracy improvement measured vs off-the-shelf baseline. |
-| **4** | Agentic AI Engineer | **Agentic workflow** (not a multi-agent system) composing three Anthropic workflow patterns — **prompt chaining** (extract→validate→route), **routing** (confidence/completeness branch), and **evaluator-optimizer** (Validator triggers re-extraction on low confidence). Throughput from concurrency at the **multi-source extraction** and **batch** levels (not from parallelizing the dependent core). **MCP integration** for email sending + ticket creation (approval-gated). **Form-history RAG** (vector, **not** GraphRAG) for cross-referencing previous distributions. |
-| **5** | Senior LLM Engineer | Production SaaS: **OnBase integration**, real-time processing, multi-form-type support, LLMOps evaluation pipeline. **A2A protocol** for cross-system collaboration (FormSense-Agent ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent) — agents from different teams discover and coordinate via the standard protocol. |
+*One evolving system across the roadmap's 3 stages. The retired v9.2 "ML Engineer / Senior LLM Engineer" tiers collapse into **Stage 3**; the fine-tuned extractor/classifier is an embedded literacy module governed by the earned-overlay rule (ships only if it beats the off-the-shelf baseline).*
 
-> 🚫 **No-GraphRAG note:** FormSense is structured extraction, not corpus retrieval — there is no entity ontology to traverse. The Stage-4 form-history RAG is plain vector retrieval for cross-referencing prior distributions, never a knowledge graph. (GraphRAG belongs to AFC/PolicyPulse, where the problem is genuinely graph-shaped.)
+| Stage | Role (v10.0) | FormSense layer & production deliverables | Exit criteria |
+|---|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Multimodal extract → validate → route — **email-body ‖ form-image** concurrent extraction + field-level reconciliation + ERISA YAML rule engine + advisor-reply reconciliation. **GEval schema adherence ≥ 0.85**. Synthetic ERISA forms; **frozen schema contract** (`FormExtraction`/`ValidationResult`/`EscalationEmail`/`ProcessingTicket`). | GEval baseline measured; routing correctness; schema contract frozen. |
+| **S2** | DE/AE hardening | Document-ops pipeline — landed structured outputs + **dbt models** (SLA/exception analytics) + **data contracts** (Great Expectations) + AWS S3/**SQS** batch + PostgreSQL audit + **Docker → ECS/Fargate** (app + async workers, Terraform) + monitoring + postmortem. | Batch SLA met (SQS auto-scaling); contracts enforced in CI; ECS deploy live. |
+| **S3** | Applied AI (agentic workflow + eval) | **Agentic workflow** (Anthropic taxonomy — prompt-chaining + routing + evaluator-optimizer with **layered exits**; verifier primary, max-iteration cap = backstop) + **MCP** (email/ticket action tools — reversible + **approval-gated**) + Form-History **vector RAG** (not GraphRAG) + optional fine-tuned extractor/classifier (**earned-overlay**) + **three-layer eval** + **Arize Phoenix** trajectory tracing. | Re-extraction loop lowers human-review rate; fine-tune beats baseline **or is dropped**; MCP tools audited reversible + approval-gated. |
 
----
+> **Optional beyond-portfolio extension (S3 stretch, earned-overlay gated):** OnBase integration + A2A cross-system coordination (formerly the v9.2 "S3"). Build only if a real integration need justifies it.
+
+> 🚫 **No-GraphRAG note:** FormSense is structured extraction, not corpus retrieval — no entity ontology to traverse. Form-history RAG stays plain vector. (GraphRAG belongs to AFC/PolicyPulse, where the problem is genuinely graph-shaped.)
+
 
 ## 19. Success Metrics
 
@@ -443,25 +470,26 @@ formsense/
 
 ---
 
-## 21. Skills Required (Roadmap Alignment)
+## 21. Skills Required (Roadmap Alignment — v10.0)
 
-| Skill | Roadmap Stage | How FormSense Uses It |
-|-------|---------------|------------------------|
-| Python, pandas, Pydantic | Stage 1 ✅ | Schemas, structured outputs, reconciliation |
-| Multimodal LLM SDK (Gemini Vision; Claude/GPT-4o fallback) | Stage 1 ✅ | Form reading (checkboxes, handwriting, layout) |
-| Business-rule / validation engineering | Stage 1 ✅ | ERISA-aware YAML rule engine |
-| GEval, DeepEval | Stage 1 ✅ | Extraction-accuracy evaluation |
-| AWS (S3, SQS, RDS, ECS/Fargate) | Stage 2 | Form storage, async batch queue, ticket tracking, containerized app + worker deployment |
-| PostgreSQL | Stage 2 | Production data + audit layer |
-| Fine-tuning / model training | Stage 3 | Domain extraction model |
-| Classification (scikit-learn / PyTorch) | Stage 3 | Form-type classifier |
-| **LangGraph** | **Stage 4** | **Agentic-workflow orchestration: chaining + routing + evaluator-optimizer loop with layered exits** |
-| **MCP** | **Stage 4** | **Email-send + ticket-create action tools** |
-| RAG (vector) | Stage 4 | Form-history cross-referencing (not GraphRAG) |
-| Pre-processing Unstructured Data; Document AI | Stage 4 | Messy scans/PDFs → clean LLM-ready inputs → structured JSON |
-| **LLMOps Evaluation** | **Stage 5** | **CI accuracy gates, per-field A/B, regression tracking** |
-| **A2A protocol** | **Stage 5** | **FormSense ↔ Compliance ↔ OnBase ↔ Payroll** |
-| FastAPI, System Design, Production Monitoring | Stage 5 | SaaS backend, OnBase integration, observability |
+| Skill | Stage | How FormSense Uses It |
+|-------|-------|------------------------|
+| Python, pandas, Pydantic | S1 ✅ | Schemas, structured outputs, reconciliation |
+| Multimodal LLM SDK (Gemini Vision; Claude/GPT-4o fallback) | S1 ✅ | Form reading (checkboxes, handwriting, layout) |
+| Business-rule / validation engineering | S1 ✅ | ERISA-aware YAML rule engine |
+| GEval, DeepEval | S1 ✅ | Extraction-accuracy evaluation |
+| **dbt + data contracts (Great Expectations)** | **S2** | **SLA/exception analytics models; quality gates on landed extractions** |
+| **Airflow, Terraform** | **S2** | **Scheduled batch; reproducibly-provisioned infra** |
+| AWS (S3, SQS, RDS, ECS/Fargate), Docker | S2 | Form storage, async batch queue, containerized app + worker deployment |
+| PostgreSQL | S2 | Production data + audit layer |
+| **LangGraph agentic-workflow (chaining + routing + evaluator-optimizer, layered exits)** | **S3** | **The extract → validate → route loop with verifier-primary exits** |
+| **MCP (email-send + ticket-create action tools)** | **S3** | **Reversible, approval-gated actions** |
+| RAG (vector) | S3 | Form-history cross-referencing (not GraphRAG) |
+| Pre-processing Unstructured Data; Document AI | S3 | Messy scans/PDFs → clean LLM-ready inputs → structured JSON |
+| Fine-tuning / classification (earned-overlay) | S3 | Domain extractor + form-type classifier — only if it beats baseline |
+| **Three-layer eval + Arize Phoenix observability** | **S3** | **Per-field accuracy + trajectory tracing + drift vs frozen set** |
+| FastAPI, System Design, Production Monitoring | S3 | Backend, architecture, observability |
+
 
 ---
 
@@ -472,14 +500,14 @@ formsense/
 - [ ] Agentic-workflow framing confirmed (chaining + routing + evaluator-optimizer; NOT "multi-agent"/autonomous agent)
 - [ ] Concurrency correctly located (multi-source extract + batch level; sequential core not "parallelized")
 - [ ] Evaluator-optimizer loop layered exits approved (verifier primary; caps as backstop; no-progress detection)
-- [ ] A2A (Stage 5) as the single genuinely-agentic tier, earned-overlay gated
+- [ ] A2A (S3) as the single genuinely-agentic tier, earned-overlay gated
 - [ ] GraphRAG confirmed N/A; form-history RAG is vector-only
 - [ ] MCP write tools confirmed reversible + approval-gated; no live sign-off gate (no money moves)
 - [ ] Fine-tuned model + classifier must beat labeled baselines before adoption
 - [ ] OnBase integration + A2A provenance scoped
 - [ ] LLMOps accuracy regression gates defined
 - [ ] All roadmap v8.9 skills mapped to product features
-- [ ] v8.9 course alignment reflected (MCP primer available from Stage 1; Document AI deep-dives at Stage 4)
+- [ ] v8.9 course alignment reflected (MCP primer available from Stage 1; Document AI deep-dives at S3)
 
 ---
 
@@ -496,18 +524,18 @@ formsense/
 │     • Field-level reconciliation; per-field confidence (<0.8 →   │
 │       review); Gemini Vision → fine-tuned model (Stage 3)        │
 ├─────────────────────────────────────────────────────────────────┤
-│  🤖 AGENTIC WORKFLOW (Stage 4) — NOT multi-agent                  │
+│  🤖 AGENTIC WORKFLOW (S3) — NOT multi-agent                  │
 │     • Chained extract→validate→route + routing                   │
 │     • Evaluator-optimizer: Validator re-extracts                 │
 │     • Concurrency: multi-source extract + batch level            │
 │     • Layered exits: verifier primary; caps = backstop           │
 │     • Unattended; low-confidence→human; NO sign-off gate         │
 ├─────────────────────────────────────────────────────────────────┤
-│  ⚙️ MCP ACTIONS (Stage 4)                                        │
+│  ⚙️ MCP ACTIONS (S3)                                        │
 │     • send_advisor_email · create_ticket (reversible, approval)  │
 │     • lookup_form_history (vector RAG — NOT GraphRAG)            │
 ├─────────────────────────────────────────────────────────────────┤
-│  🌐 PLATFORM (Stage 5)                                           │
+│  🌐 PLATFORM (S3)                                           │
 │     • OnBase integration · real-time · multi-form-type           │
 │     • A2A: FormSense ↔ Compliance ↔ OnBase ↔ Payroll            │
 │     • FastAPI + AWS ECS · SQS · S3 · PostgreSQL                 │
@@ -526,29 +554,27 @@ formsense/
 
 ---
 
-## 📚 Courses & Certifications (take in this order)
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Quick reference, synced with roadmap **v8.9**. Same course names as the roadmap; listed top-to-bottom in the order to take them for FormSense (Full Production). Focus notes are project-specific.*
+*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs are noted.*
 
-| # | Course (roadmap name) | Stage | Focus for FormSense |
-|---|---|---|---|
-| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + LLM control — foundation for the vision/extraction layer |
-| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured (Pydantic) outputs + multimodal calls (provider-agnostic; project uses Gemini Vision) |
-| 3 | 🆕 v8.9 — MCP: Build Rich-Context AI Apps with Anthropic (Elie Schoppik, free) | Stage 1 (primer) | Learn the MCP protocol early; it primes the Stage-4 email/ticket action tools |
-| 4 | Pre-processing Unstructured Data for LLM Applications | Stage 4 | Getting messy scans/PDFs into clean, LLM-ready inputs |
-| 5 | Document AI: From OCR to Agentic Doc Extraction | Stage 4 | The core: scanned forms/PDFs → structured JSON with field schemas |
-| 6 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Observability/traces + LLM-as-judge for the extract/validate loop |
-| 7 | Automated Testing for LLMOps (DeepLearning.AI) | Stage 5 | CI accuracy gates / regression tests for the production pipeline |
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** AI Python for Beginners (Andrew Ng) · Building with the Claude API (Anthropic Academy — structured outputs + multimodal) · Pre-processing Unstructured Data for LLM Applications · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer (DeepLearning.AI) · Docker for Beginners · 30 Days of Streamlit
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
-**Focus thread:** multimodal multi-source extraction (handwriting, checkboxes, email body), field-level confidence + reconciliation, ERISA business-rule routing (complete→ticket / incomplete→advisor email), GEval accuracy, MCP action tools, form-history vector RAG.
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals (HashiCorp) — AWS SQS/batch patterns absorbed via AWS DEA-C01 prep
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
-> **MCP-primer placement (v8.9):** the primer is available from Stage 1 so the protocol is understood before FormSense's Stage-4 MCP action tools are built; the Document AI deep-dives stay at Stage 4 where extraction maturity is the focus.
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** Document AI: From OCR to Agentic Doc Extraction (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full)
+- **Certifications:** **Anthropic CCA-F** ($125 — agentic orchestration / MCP source-of-truth) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks Certified GenAI Engineer Associate** ($200 — optional, for the agentic-workflow signal)
+
+**Focus thread:** multimodal multi-source extraction (handwriting, checkboxes, email body) · field-level confidence + reconciliation · ERISA business-rule routing (complete→ticket / incomplete→advisor email) · GEval accuracy · MCP action tools · form-history vector RAG.
+
+> **Cert discipline (v10.0):** the shipped, production-grade project is the primary hiring signal; certs are tiebreakers. Committed canon = **DP-700 + AWS DEA-C01** (S2) and the S3 GenAI set. Platform certs (SnowPro Core / DP-750 / Databricks DE / dbt AE) are a **conditional menu — take exactly ONE**, matched to a concrete apply-list's stack. Keyword-density is a negative signal.
 
 ---
 
-**Document Status:** 📋 DRAFT — Full-Production companion to FormSense Stage 1 (`..._v1_6_STAGE1.md`)
-**Date:** June 30, 2026
-**Stages Covered:** 1 → 5
-**Strategic Role:** Document Intelligence → Batch Pipeline → Autonomous Document Operations
-
-*"Accurate extraction, honest about confidence, a human on anything uncertain — proven on single forms at Stage 1, and holding at production volume, across form types, integrated into OnBase at Stage 5."* 🚀
+**Document Status:** 📋 DRAFT — v10.0-aligned Full-Production companion. Stages: S1 (built first) → S2 (DE/AE) → S3 (Applied AI → FDE). One evolving system.
+**Last aligned:** v10.0 (2026 Market Realignment).
