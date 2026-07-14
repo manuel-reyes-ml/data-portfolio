@@ -1,13 +1,39 @@
-# 📋 POLICYPULSE — Complete Project Scope v1.5
+# 📋 POLICYPULSE — Stage 1 Project Scope v1.6
 
 ## AI-Powered HR Policy RAG Chatbot for Enterprise Workforce Self-Service
 ## "Ask Your Policies" — Natural Language Access to Company Knowledge
 
-**Document Version:** 1.5 (Synced to roadmap v8.6 — added **GraphRAG / Knowledge-Graph (Neo4j)** as a Stage 2/3 evolution upgrade path in §16, plus 2 graph courses (DeepLearning.AI intro + Neo4j GraphAcademy cert) to §Courses. ChromaDB remains the Stage 1 backbone; graph is an additive relationship-reasoning layer. Additive only — no Stage 1 build-scope changes from v1.4.)  
+**Document Version:** 1.6 (🎯 **v10.0 ALIGNMENT** — Stage-1 foundation of the Applied-AI flagship; 3-stage model, destination Applied AI Engineer → FDE. "Gateway to S3" corrected to "Stage 3" [PROTECT] Prior v1.5 note archived below.)
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
-**Strategic Priority:** 🧠 RAG FOUNDATION PROJECT — Gateway to Stage 4 Vector DB + LangChain Skills
+**Strategic Priority:** 🧠 RAG FOUNDATION (Stage 1 of the Applied-AI flagship) — evolves to GraphRAG + agentic + eval/observability in Stage 3.
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🏁 **Flagship (lead)** — Stage 1 of the **Applied-AI flagship**. In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | RAG chatbot — ChromaDB + FastMCP + blocking eval gates (RAGAS/DeepEval); synthetic policy corpus. |
+| **S2** | DE/AE hardening | Embedding/vector pipeline as **data infrastructure** — Airflow ingest, doc-metadata **dbt models** + contracts, Docker/ECS, monitoring. |
+| **S3** | Applied AI (RAG/agentic + eval) | GraphRAG (Neo4j + ChromaDB) + agentic evaluator-optimizer + access-control retrieval + three-layer eval + Phoenix + MCP. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -28,7 +54,7 @@
 13. [Success Metrics](#13-success-metrics)
 14. [Risk Mitigation](#14-risk-mitigation)
 15. [Timeline Summary](#15-timeline-summary)
-16. [Project Evolution (5 Stages)](#16-project-evolution-5-stages)
+16. [Project Evolution (3 Stages)](#16-project-evolution-5-stages)
 
 ---
 
@@ -36,14 +62,14 @@
 
 **PolicyPulse** is an AI-powered chatbot that enables employees to ask natural language questions about company policies (PTO, overtime, holidays, benefits, etc.) and receive accurate, cited answers grounded in the company's actual policy documents. When the AI cannot find the answer in the knowledge base, it automatically generates an escalation ticket routed to HR for human follow-up.
 
-This is a **RAG (Retrieval-Augmented Generation) foundation project** — the most in-demand enterprise AI pattern in 2026. It introduces core concepts (document chunking, embeddings, semantic search, context injection) that directly prepare for Stage 4 vector database and LangChain/LangGraph skills.
+This is a **RAG (Retrieval-Augmented Generation) foundation project** — the most in-demand enterprise AI pattern in 2026. It introduces core concepts (document chunking, embeddings, semantic search, context injection) that directly prepare for S3 vector database and LangChain/LangGraph skills.
 
 ### Why This Project Matters
 
 | Factor | Why It Wins for Portfolio |
 |--------|--------------------------|
 | **#1 enterprise AI use case** | HR policy RAG is the most validated enterprise GenAI pattern (DoorDash, LinkedIn, Harvard all built similar) |
-| **RAG gateway** | Introduces embeddings, chunking, semantic search — Stage 4 prerequisites |
+| **RAG gateway** | Introduces embeddings, chunking, semantic search — S3 prerequisites |
 | **Directly applicable** | Can be deployed at Daybright Financial for real HR policy access |
 | **Simpler than AFC/ODI** | Focused scope: documents in → questions answered → tickets escalated |
 | **Human-in-the-loop** | Ticket escalation shows mature AI design (not just "chatbot answers everything") |
@@ -107,7 +133,7 @@ PORTFOLIO PROJECT ECOSYSTEM (Stage 1)
 3. PolicyPulse 🧠 RAG FOUNDATION (THIS SCOPE)
    └─ Skills: Embeddings, chunking, semantic search, RAG, ticket workflows
    └─ AI Pattern: Document → Embedding → Retrieval → Generation pipeline
-   └─ NEW SKILL: Introduces RAG concepts early (Stage 4 prerequisite)
+   └─ NEW SKILL: Introduces RAG concepts early (S3 prerequisite)
 
 4. FormSense 📄 DOCUMENT INTELLIGENCE (NEXT)
    └─ Skills: Multimodal LLM, form extraction, validation, email automation
@@ -116,7 +142,7 @@ PORTFOLIO PROJECT ECOSYSTEM (Stage 1)
 5. Operations-Demand-Intelligence 📊 ENTERPRISE ANALYTICS
    └─ Reuses: AI layer from DataVault Analyst + RAG from PolicyPulse
 
-6. Attention-Flow Catalyst 🚀 FLAGSHIP
+6. Attention-Flow Catalyst 🧩 SUPPORTING (production-grade)
    └─ Reuses: All shared AI patterns from above projects
 ```
 
@@ -903,7 +929,7 @@ policypulse/
 | **Irrelevant chunks retrieved** | Similarity threshold filtering (< 0.5 excluded) + top-K limit |
 | **AI hallucinates policy details** | Source grounding prompt + confidence scoring + escalation fallback |
 | **Embedding API limits** | Batch embedding during ingestion (one-time cost), cache queries |
-| **ChromaDB performance** | Lightweight for 200 chunks; upgrade path to Pinecone/Weaviate in Stage 4 |
+| **ChromaDB performance** | Lightweight for 200 chunks; upgrade path to Pinecone/Weaviate in S3 |
 | **Provider lock-in** | Provider-agnostic abstraction layer (swap via config) |
 | **AI cost overruns** | Token budget per response (2,000 max), caching frequent queries |
 
@@ -1055,15 +1081,13 @@ Tests            Quality Tests    Chat Page
 
 ---
 
-## 16. Project Evolution (5 Stages)
+## 16. Project Evolution (3 Stages)
 
 | Stage | Role | PolicyPulse Enhancements |
 |-------|------|--------------------------|
-| **1** | Data Analyst | ✅ RAG chatbot + ChromaDB + Streamlit (THIS SCOPE) |
-| **2** | Data Engineer | AWS S3 document storage, PostgreSQL ticket tracking, scheduled re-ingestion. 🆕 **GraphRAG upgrade path (intro):** evolve to a hybrid retriever — **Neo4j knowledge graph** (policies, sections, roles, effective-dates → typed relationships) **+ ChromaDB vectors** — to fix multi-hop policy questions where vector-only retrieval stitches the wrong chunks together. Vector stays the backbone (~80% of queries); the graph is the additive layer (~15–20%). |
-| **3** | ML Engineer | Fine-tuned embedding model for HR domain, re-ranking model for better retrieval. 🆕 **GraphRAG (deepen):** mature the Neo4j knowledge graph — entity-extraction pipeline, graph-quality monitoring, dual-channel (graph-path + vector) retrieval fusion; targets multi-hop hallucination and improves explainability/groundedness. |
-| **4** | LLM Specialist | LangChain/LangGraph orchestration (**evaluator-optimizer pattern**: retriever → verifier → responder loop), Pinecone vector DB migration, voice interface, **MCP server expanded** with policy update + ticket creation tools |
-| **5** | Senior LLM | Production SaaS: multi-tenant, RBAC, Slack/Teams integration, LLMOps evaluation pipeline, A/B testing retrieval strategies, **A2A protocol** for HR-Agent ↔ IT-Agent ↔ Payroll-Agent collaboration in cross-functional employee questions |
+| **S1** | Foundation (GenAI-first core) | ✅ RAG chatbot + ChromaDB + FastMCP read tools + Streamlit + blocking eval gates (THIS SCOPE) |
+| **S2** | DE/AE hardening | AWS S3 storage, PostgreSQL, Airflow-scheduled re-ingestion, doc-metadata **dbt models + contracts**, Docker→ECS. 🆕 **GraphRAG on-ramp:** hybrid retriever — **Neo4j knowledge graph + ChromaDB vectors** — for multi-hop policy questions. Vector stays the backbone (~80%); graph additive (~15–20%). |
+| **S3** | Applied AI (RAG/agentic + eval) | Fine-tuned HR embeddings + re-ranker (**earned-overlay**). Mature GraphRAG (entity extraction, graph-quality monitoring, dual-channel fusion). LangGraph **evaluator-optimizer** loop, expanded **approval-gated MCP** write tools, **per-document access-control retrieval**, three-layer eval + **Phoenix**. *Optional beyond-portfolio: multi-tenant SaaS, RBAC, A2A cross-team routing.* |
 
 > 🕸️ **GraphRAG note (roadmap v8.6):** the knowledge-graph layer is an *additive* relationship-reasoning upgrade, not a replacement. A vector pipeline stands up in days; a knowledge graph is weeks of ontology work — so add it for multi-hop / relationship-heavy policy questions, not because it's trendy. Practitioner + peer-reviewed evidence (e.g. FinanceBench-style multi-hop tests) shows GraphRAG cutting hallucinations and token usage versus vector-only on connected-reasoning queries, at the cost of ~1.5–1.8× infra and entity-pipeline maintenance. The two on-ramp courses are listed in §Courses below.
 
@@ -1076,7 +1100,7 @@ Tests            Quality Tests    Chat Page
 - [ ] Sample policy documents strategy approved (6 realistic HR policies)
 - [ ] Escalation workflow defined (confidence < 0.7 → generate ticket)
 - [ ] AI guardrails comprehensive (8 guardrails with test strategy)
-- [ ] ChromaDB appropriate for Stage 1 (upgrade path to Pinecone in Stage 4)
+- [ ] ChromaDB appropriate for Stage 1 (upgrade path to Pinecone in S3)
 - [ ] **FastMCP server scoped (~50 LOC, 2 tools exposed)**
 - [ ] **Anthropic SDK as primary provider confirmed (Gemini fallback via config)**
 - [ ] **SelfCheckGPT integrated alongside DeepEval RAG metrics**
@@ -1090,7 +1114,7 @@ Tests            Quality Tests    Chat Page
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │            POLICYPULSE v1.0                                     │
-│     🧠 RAG FOUNDATION — Gateway to Stage 4 Skills              │
+│     🧠 RAG FOUNDATION — Gateway to S3 Skills              │
 │     AI-Powered HR Policy Chatbot with Ticket Escalation         │
 ├─────────────────────────────────────────────────────────────────┤
 │  📚 DOCUMENT PIPELINE                                           │
@@ -1133,7 +1157,7 @@ Tests            Quality Tests    Chat Page
 │     • Phase 2: RAG Chat + Escalation (Weeks 3-4)               │
 ├─────────────────────────────────────────────────────────────────┤
 │  🎯 PORTFOLIO STRATEGY                                          │
-│     • RAG foundation project (Stage 4 prerequisite)             │
+│     • RAG foundation project (S3 prerequisite)             │
 │     • Introduces embeddings, chunking, semantic search early    │
 │     • Reusable RAG patterns for all future projects             │
 │     • Live demo on Streamlit Cloud for recruiter access         │
@@ -1180,7 +1204,7 @@ flowchart LR
 **Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
 **Date:** April 03, 2026  
 **Total Timeline:** 4 weeks  
-**Strategic Role:** RAG Foundation Project — Gateway to Stage 4 Vector DB + LangChain Skills
+**Strategic Role:** RAG Foundation Project — Gateway to S3 Vector DB + LangChain Skills
 
 *"Document ingestion + Semantic search + RAG generation + Citation verification + Ticket escalation = Enterprise-grade AI policy assistant that HR teams actually trust"* 🚀
 ---
@@ -1197,6 +1221,27 @@ flowchart LR
 | 4 | Vector Databases: from Embeddings to Applications | Stage 2 | Embeddings + vector store (ChromaDB), semantic search, similarity scoring |
 | 5 | 🆕 Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | GraphRAG on-ramp — fuse a knowledge graph + vector index into a hybrid retriever (Cypher + LangChain); maps directly to the §16 Stage 2 GraphRAG upgrade path |
 | 6 | 🆕 Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — build KGs from unstructured policy docs, fuse vector + graph retrieval end-to-end |
-| 7 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | The FastMCP server that exposes retrieval as MCP tools |
+| 7 | MCP: Build Rich-Context AI Apps with Anthropic | S3 | The FastMCP server that exposes retrieval as MCP tools |
 
 **Focus thread:** document → chunk → embed → retrieve → generate, cited answers, confidence-based HR escalation, RAGAS/DeepEval evaluation, MCP tool exposure.
+
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** IBM Generative AI Engineering PC (RAG/LangChain spine) · Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications · MCP primer (DL.AI, Elie Schoppik — before the FastMCP build) · Docker for Beginners · 30 Days of Streamlit
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + Advanced · Astronomer Academy (Airflow) · Terraform Fundamentals · Pre-processing Unstructured Data · Vector Databases: from Embeddings to Applications · Knowledge Graphs for RAG (GraphRAG on-ramp)
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional (take ONE):* SnowPro Core / DP-750
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** MCP full · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · HuggingFace NLP + LLM · Neo4j GraphAcademy · NVIDIA DLI Building RAG Agents
+- **Certifications:** **Neo4j Certified Professional** (FREE) · **NVIDIA NCA-GENL** ($125) · **Databricks GenAI Associate** ($200) · **AI-103** (employer) · **Anthropic CCA-F** ($125)
+
+**Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · access-control retrieval · RAGAS/SelfCheckGPT eval · MCP read→approval-gated write.
