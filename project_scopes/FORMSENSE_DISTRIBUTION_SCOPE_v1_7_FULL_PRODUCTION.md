@@ -1,10 +1,12 @@
 ## 📄 FORMSENSE — Full Production Scope v1.7
 
 ## AI-Powered Autonomous Document-Operations Platform for Retirement Plan Distribution Processing
-## "From Paper to Processing" — From Multimodal Form Reader to Multi-Agent Document Operations
+## "From Paper to Processing" — From Multimodal Form Reader to an Agentic Document-Operations Workflow
 
-**Document Version:** 1.7 (Full-Production companion to the Stage-1 scope `FORMSENSE_DISTRIBUTION_SCOPE_v1_6_STAGE1.md`. Version reconciled to **v1.7** to match FormSense's current revision — the Stage-1 title already reads v1.7 (Agentic Loop Spec added per roadmap v8.8); the "1.6" in its version field was stale drift. **Synced to roadmap v8.9.** Details all 5 stages — the Stage-1 multimodal extract→validate→route engine evolves into a **batch pipeline**, a **fine-tuned extraction model**, a **multi-agent parallelized + evaluator-optimizer** system, and a **production SaaS** with OnBase integration and A2A. Additive — Stage-1 build scope unchanged.) **Stage 2 explicitly includes containerized deployment to AWS ECS/Fargate** (app + async workers; Streamlit Cloud → ECS handoff), per roadmap v8.9 Stage-2 cloud skills.
-**Last Updated:** June 30, 2026
+**Document Version:** 1.8 (Full-Production companion to the Stage-1 scope `FORMSENSE_DISTRIBUTION_SCOPE_v1_6_STAGE1.md`. **Synced to roadmap v9.0.** Details all 5 stages — the Stage-1 multimodal extract→validate→route engine evolves into a **batch pipeline**, a **fine-tuned extraction model**, an **agentic workflow** (routing + evaluator-optimizer + human-in-the-loop), and a **production SaaS** with OnBase integration and A2A. Additive — Stage-1 build scope unchanged.) **Stage 2 explicitly includes containerized deployment to AWS ECS/Fargate** (app + async workers; Streamlit Cloud → ECS handoff), per roadmap Stage-2 cloud skills.
+
+> **📝 v1.8 changelog — architecture vocabulary reconciled (no scope/behavior change).** Stage 4 is now named precisely: an **agentic workflow** — i.e. an *agentic system* in Anthropic's parent-term sense, orchestrated through predefined code paths — **not** a "multi-agent" system or an autonomous agent. Three corrections, all grounded in Anthropic's *Building Effective Agents* taxonomy and the roadmap's v8.8 goal-loop / layered-exits note: (1) "multi-agent" and "agents" (for the Extractor/Validator/Router steps) → **agentic-workflow steps**; (2) the mislabeled Stage-4 "parallelization of Extractor‖Validator‖Router" (they are *sequential* dependencies) → parallelism relocated to where it actually exists — **multi-source concurrent extraction** (email body ‖ form image) and **batch-level concurrency** (SQS workers); (3) the evaluator-optimizer re-extraction loop given **layered exits** (primary stop = verifier, with a max-iteration cap as a *safety backstop*, not the primary stopping mechanism). Adds a new **§6.0 "Agentic Workflow, not Autonomous Agent"** callout that doubles as CCA-F Domain-1 revision material. The `FormExtraction`/`ValidationResult`/`EscalationEmail`/`ProcessingTicket` contract is untouched.
+**Last Updated:** July 6, 2026
 **Status:** 📋 DRAFT — Future Vision (Stages 2–5 require progressive skill acquisition)
 **Author:** Manuel Reyes
 **Stages Covered:** 1 (foundation, built first) → 2 (Data Engineer) → 3 (ML Engineer) → 4 (Agentic AI Engineer) → 5 (Senior LLM Engineer)
@@ -41,9 +43,9 @@
 
 ## 1. Executive Summary
 
-**FormSense (Full Production)** is the all-stages elaboration of the Stage-1 multimodal distribution-form validator. The Stage-1 system reads a distribution request that arrives as an **email body plus an attached PDF/image form**, extracts 15+ fields **concurrently from both sources** into one `FormExtraction` schema with field-level reconciliation, validates against ERISA-aware business rules, and routes: complete forms generate an operations `ProcessingTicket`; incomplete forms generate an `EscalationEmail` to the advisor; low-confidence fields flag for human review. This document carries that foundation through four more stages into an **autonomous document-operations platform** — a batch pipeline, a fine-tuned extraction model, a multi-agent parallelized system with a self-correcting validator loop, and a production SaaS that integrates directly with OnBase and coordinates across compliance/payroll agents via A2A.
+**FormSense (Full Production)** is the all-stages elaboration of the Stage-1 multimodal distribution-form validator. The Stage-1 system reads a distribution request that arrives as an **email body plus an attached PDF/image form**, extracts 15+ fields **concurrently from both sources** into one `FormExtraction` schema with field-level reconciliation, validates against ERISA-aware business rules, and routes: complete forms generate an operations `ProcessingTicket`; incomplete forms generate an `EscalationEmail` to the advisor; low-confidence fields flag for human review. This document carries that foundation through four more stages into an **autonomous (unattended-capable) document-operations platform** — a batch pipeline, a fine-tuned extraction model, an **agentic workflow** with a self-correcting validator loop, and a production SaaS that integrates directly with OnBase and coordinates across compliance/payroll agents via A2A.
 
-The signature technical arc is **single-form, single-pass extraction → multi-agent parallelized extraction with an evaluator-optimizer validator loop**. At Stage 1 the work is sequential (read → reconcile → validate → route). At Stage 4 the Extractor, Validator, and Router run concurrently for throughput, and the Validator can **trigger re-extraction** on low-confidence fields before a human is ever involved — a measurable accuracy lift that keeps the human-review queue small.
+The signature technical arc is **single-form, single-pass extraction → an agentic workflow (routing + evaluator-optimizer) with concurrent multi-source extraction**. At Stage 1 the work is sequential (read → reconcile → validate → route). At Stage 4 the same chain gains a **self-correcting validator loop**: the Validator can **trigger re-extraction** on low-confidence fields before a human is ever involved — a measurable accuracy lift that keeps the human-review queue small. Throughput comes not from running the sequential Extractor→Validator→Router steps "in parallel" (they are dependent — you cannot validate before you extract), but from the two places genuine concurrency lives: **multi-source extraction** (email body and form image read concurrently into one `FormExtraction`) and **batch-level concurrency** (many forms processed at once by SQS workers).
 
 ### Stage 1 vs Full Production
 
@@ -52,7 +54,7 @@ The signature technical arc is **single-form, single-pass extraction → multi-a
 | **Extraction** | Off-the-shelf vision LLM (Gemini Vision), per-form | Fine-tuned domain extraction model + form-type classifier |
 | **Processing mode** | One form at a time, interactive | Async batch via SQS queue; scheduled high-volume intake |
 | **AI Role** | "Here's what I extracted and where it's missing" | "I re-extracted the low-confidence fields myself, then routed it" |
-| **Loop** | Sequential extract → validate → route | Parallelized Extractor‖Validator‖Router + evaluator-optimizer re-extraction |
+| **Loop** | Sequential extract → validate → route | Agentic workflow: chained extract→validate→route + **routing** + **evaluator-optimizer** re-extraction (parallelism at multi-source extract + batch level) |
 | **Cross-referencing** | None | Form-history RAG (vector) — link to a participant's prior distributions |
 | **Routing actions** | Email/ticket generated as objects | MCP tools actually send the advisor email + create the OnBase ticket (approval-gated) |
 | **Form types** | Distribution forms | Distribution · Loan · Rollover · multi-form-type (classified) |
@@ -71,7 +73,7 @@ STAGE 1 (NOW):     "Read this form + email, tell me what's missing, route it."  
   │
   │   + AWS S3 + SQS batch + PostgreSQL ticket tracking (Stage 2)
   │   + fine-tuned extraction model + form-type classification (Stage 3)
-  │   + multi-agent parallelization + evaluator-optimizer re-extraction + MCP actions (Stage 4)
+  │   + agentic workflow (routing + evaluator-optimizer re-extraction) + MCP actions (Stage 4)
   │   + OnBase integration, real-time, multi-form-type, A2A, LLMOps (Stage 5)
   ▼
 STAGE 5 (GOAL):    "Process the day's distribution intake end-to-end — extracted, validated,
@@ -112,7 +114,7 @@ flowchart TB
         REC --> CLS[Form-type classifier - Stage 3<br/>distribution / loan / rollover]
     end
 
-    subgraph Reason[🤖 Agentic Loop - Stage 4]
+    subgraph Reason[🤖 Agentic Workflow - Stage 4]
         CLS --> VAL[Validator<br/>ERISA business rules]
         VAL --> CHK{Confidence OK?}
         CHK -->|low-confidence field| EX
@@ -136,7 +138,7 @@ flowchart TB
     end
 ```
 
-Each stage slots in behind a stable interface: the **batch queue** (Stage 2) feeds an unchanged extractor; the **classifier + fine-tuned model** (Stage 3) swap in behind the same `FormExtraction` output; the **parallelized agents + evaluator-optimizer loop** (Stage 4) wrap validation without changing the routing contract; the **MCP action tools + A2A** (Stage 4/5) turn generated objects into real, audited actions.
+Each stage slots in behind a stable interface: the **batch queue** (Stage 2) feeds an unchanged extractor; the **classifier + fine-tuned model** (Stage 3) swap in behind the same `FormExtraction` output; the **agentic-workflow steps + evaluator-optimizer loop** (Stage 4) wrap validation without changing the routing contract; the **MCP action tools + A2A** (Stage 4/5) turn generated objects into real, audited actions.
 
 ---
 
@@ -166,30 +168,47 @@ Stage 3 swaps the generic vision LLM for a **fine-tuned domain extraction model*
 
 ---
 
-## 6. Agentic AI System Design
+## 6. Agentic Workflow Design (Not an Autonomous Agent)
 
-The Stage-4 upgrade implements two of Anthropic's "Building Effective Agents" patterns — **parallelization** (for throughput) and **evaluator-optimizer** (for accuracy).
+### 6.0 Architecture stance: agentic *workflow*, not autonomous agent
 
-### 6.1 Parallelization + the self-correcting validator loop
+> 🧭 **The one-sentence framing (interview- and CCA-F-defensible):** FormSense is an **agentic workflow** — an *agentic system* in Anthropic's parent-term sense, but one where **the control flow lives in predefined code, not in the model.** It is deliberately **not** a fully autonomous agent, because the task structure is fully known and the domain (ERISA distribution processing) demands auditability and reproducibility.
+>
+> **Who owns the control flow?** In FormSense, *we do*: `if confidence < 0.8 → review`, `if incomplete → escalate`, `if complete → ticket` are branches written in code. The LLM reasons *inside* each step (reading the form, judging a rule) but never decides *what to do next*. That is the textbook definition of a **workflow**. A true **agent** would be the model dynamically choosing its next tool call from environment feedback ("I'll check history, then maybe re-read the form, then perhaps email the rep"). FormSense doesn't need that — and shouldn't have it.
+>
+> **Why the label matters (CCA-F Domain 1 — Agentic Architecture & Orchestration, ~27%).** The exam's central discriminator is exactly this: *model-driven decision-making vs. pre-configured decision trees / tool sequences*, and *prompt chaining (predictable task) vs. dynamic adaptive decomposition (unpredictable task)*. FormSense's distribution intake is the **predictable** case, so a workflow is the *correct* answer, not a compromise. Naming the three steps "agents" would be the precise over-claim the exam (and Anthropic's guidance) flags.
+>
+> **This is the deliberate autonomy contrast with Crucible.** FormSense runs unattended because its actions are verifiable and reversible; Crucible's live-trade path is irreversible and therefore keeps a mandatory human sign-off gate + kill-switch. Same portfolio, two correctly-different autonomy postures — a senior-level judgment signal.
+
+### 6.1 The agentic workflow: chaining, routing, and the self-correcting validator loop
+
+The Stage-4 upgrade composes three of Anthropic's *Building Effective Agents* **workflow** patterns: **prompt chaining** (extract → validate → route), **routing** (the confidence/completeness branch directs each case to ticket / escalation / human review), and **evaluator-optimizer** (the Validator triggers targeted re-extraction). Concurrency is *not* one of these patterns applied to the sequential core — it lives at the multi-source and batch levels (see §6.1.1).
 
 ```
-Extractor ‖ Validator ‖ Router  (run concurrently for throughput)
+extract → validate → route   (a chained, dependent sequence — NOT run in parallel)
    Validator detects a low-confidence or rule-failing field
-      → triggers re-extraction of just that field (evaluator-optimizer)
+      → triggers re-extraction of just that field (evaluator-optimizer inner loop)
       → re-validates
          ├─ now complete            → Router → create_ticket (OnBase)
          ├─ genuinely incomplete    → send_advisor_email → read reply → reconcile → re-validate
          └─ still low-confidence    → human-review queue
 ```
 
-> 🔁 **Agentic Loop Spec (roadmap v8.8):**
-> - **Loop type:** *goal-loop* — intake → reconcile → validate → route → (if incomplete) escalate → read advisor reply → reconcile → re-validate, until the case is complete or the round-cap is hit; plus an inner evaluator-optimizer re-extraction loop on low-confidence fields.
-> - **Verifier:** ERISA business-rule validation + per-field **confidence threshold** (the loop's "can say no"); cross-source agreement raises confidence.
-> - **Autonomy:** runs **unattended** — extraction, validation, and routing are verifiable and non-irreversible. A **human-review gate on low-confidence fields** and a **max-escalation-round cap** (to prevent email ping-pong) are the only brakes. **No financial/irreversible action → no live sign-off gate** (this is the key autonomy difference from Crucible's live-trade path). The MCP action tools (send email, create ticket) are reversible and approval-gated.
+#### 6.1.1 Where the real parallelism is
 
-### 6.2 A2A cross-team coordination (Stage 5)
+Extractor→Validator→Router are **sequential dependencies** and cannot be parallelized (you can't validate before you extract, or route before you validate). Genuine concurrency — the actual throughput lever — lives in two places, and the scope names them explicitly so the "parallelization" claim is accurate: (1) **multi-source extraction** — the email body and the attached form image are read *concurrently* into one `FormExtraction` (this is Anthropic's *sectioning* form of parallelization, and it is already the Stage-1 signature move); (2) **batch-level concurrency** — many independent forms processed at once by SQS workers on ECS/Fargate (Stage 2).
 
-At production scale, FormSense's agent discovers and coordinates with peers over A2A: `FormSense-Agent ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent`. A hardship distribution, for example, may need a compliance check and a payroll downstream action — each agent owns its domain; FormSense assembles the verified result with per-step provenance.
+> 🔁 **Agentic-Workflow Loop Spec (roadmap v8.8 goal-loop + layered exits):**
+> - **Loop type:** *goal-loop, workflow-controlled* — intake → reconcile → validate → route → (if incomplete) escalate → read advisor reply → reconcile → re-validate, until the case is complete or a stop condition fires; plus an inner evaluator-optimizer re-extraction loop on low-confidence fields. The loop is driven by **code branching on the verifier's output**, not by the model choosing its own next step.
+> - **Verifier (the primary stop):** ERISA business-rule validation + per-field **confidence threshold** (the loop's "can say no"); cross-source agreement raises confidence. The loop terminates because the **verifier is satisfied**, not because a counter ran out.
+> - **Layered exits (roadmap v8.8):** primary exit = **verifier goal met**; safety backstops = **max-escalation-round cap** (prevents advisor-email ping-pong) + **max re-extraction-iteration cap** on the inner loop + **no-progress detection** (confidence not improving across iterations → stop). ⚠️ Per CCA-F Domain-1 guidance, the iteration cap is a *backstop*, **not** the primary stopping mechanism — never the main way the loop decides it's "done."
+> - **Autonomy:** runs **unattended** — extraction, validation, and routing are verifiable and non-irreversible. A **human-review gate on low-confidence fields** and the layered exits above are the only brakes. **No financial/irreversible action → no live sign-off gate** (the key autonomy difference from Crucible's live-trade path). The MCP action tools (send email, create ticket) are reversible and approval-gated.
+
+### 6.2 A2A cross-team coordination (Stage 5) — the one genuinely agentic tier
+
+> ✅ **This is the *one* place in FormSense where a true agent legitimately belongs.** The Stage-4 core stays a deterministic agentic workflow (the reliable, auditable spine). At the **cross-team boundary**, dynamic model-driven decisions actually earn their keep: a hardship distribution *might* need a compliance check before a payroll action, and *which* peers to involve can depend on the case. That kind of open-ended, "the path isn't knowable in advance" coordination is where agent autonomy pays off.
+
+At production scale, the **FormSense coordinator** discovers and coordinates with peers over A2A: `FormSense ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent`. Each peer owns its domain; FormSense assembles the verified result with per-step provenance. Per the portfolio's **earned-overlay rule**, this agentic coordination layer ships only if it demonstrably beats a fixed, hard-coded coordination path on a labeled set — autonomy is added because it's *justified*, not by default. This gives the defensible senior narrative: *"deterministic workflow for the regulated core, a bounded agent only at the coordination boundary — and I can tell you exactly why each is where it is."*
 
 ---
 
@@ -203,7 +222,7 @@ At production scale, FormSense's agent discovers and coordinates with peers over
 | Advisor-reply reconciliation | 1 | Read the reply, reconcile new fields, re-validate to completion |
 | AWS S3 + SQS batch + PostgreSQL | 2 | Async high-volume intake; scheduled batch; durable ticket tracking |
 | Fine-tuned extraction model + form-type classifier | 3 | Domain accuracy lift; distribution/loan/rollover auto-routing |
-| Parallelized agents + evaluator-optimizer | 4 | Concurrent Extractor‖Validator‖Router; validator triggers re-extraction |
+| Agentic workflow (chaining + routing + evaluator-optimizer) | 4 | Chained extract→validate→route; validator triggers re-extraction; concurrency at multi-source extract + batch level |
 | MCP action tools | 4 | `send_advisor_email`, `create_ticket` (approval-gated, reversible) |
 | Form-history RAG (vector) | 4 | Cross-reference a participant's prior distributions for context/consistency |
 | OnBase integration + real-time | 5 | System-of-record integration; live intake processing |
@@ -247,6 +266,7 @@ The Stage-1 guardrail set (10 guardrails — confidence, PII, financial validati
 | Financial-field validation | 1 | Routing/account numbers, withholding %, amounts range-checked |
 | ERISA completeness rules | 1 | Required fields per distribution type enforced (critical severity) |
 | Max-escalation-round cap | 4 | Prevents advisor-email ping-pong; routes to human after N rounds |
+| Re-extraction loop layered exits | 4 | Inner evaluator-optimizer loop stops on **verifier satisfied (primary)**; **max-iteration cap** + **no-progress detection** are safety backstops, never the primary stop (per CCA-F Domain-1 guidance) |
 | MCP action approval | 4 | Email send / ticket create require approval; reversible |
 | Form-type rule-set match | 3/5 | Validation uses the rule set for the *classified* form type |
 | Cross-agent provenance | 5 | A2A-assembled outcomes carry per-step source attribution |
@@ -259,7 +279,7 @@ The Stage-1 guardrail set (10 guardrails — confidence, PII, financial validati
 |-------|---------|-----------------|
 | Vision / extraction | Gemini Vision (primary); Claude/GPT-4o Vision fallback | Fine-tuned domain extraction model + form-type classifier |
 | LLM SDK | Provider-agnostic (multimodal abstraction) | Same abstraction; routing by confidence/cost |
-| Orchestration | Sequential | Multi-agent parallelization + evaluator-optimizer (LangGraph) |
+| Orchestration | Sequential | Agentic workflow: chaining + routing + evaluator-optimizer (LangGraph) |
 | Tool protocol | — (objects generated) | MCP (read + approval-gated write actions) |
 | Cross-reference | — | Form-history RAG (vector store) |
 | Queue / batch | — | AWS SQS async batch; scheduled processing |
@@ -357,7 +377,7 @@ formsense/
     classify/      # form-type classifier (Stage 3)
     model/         # fine-tuned extraction model + training (Stage 3)
     validate/      # ERISA rule engine (YAML rules · severity)
-    agent/         # parallelization + evaluator-optimizer loop · LangGraph (Stage 4)
+    workflow/      # agentic workflow: chaining + routing + evaluator-optimizer loop · LangGraph (Stage 4)
     history/       # form-history RAG (vector; NOT graph) (Stage 4)
     mcp_server/    # MCP — read tools + approval-gated email/ticket actions (Stage 4)
     integrations/  # OnBase · A2A peers (Stage 5)
@@ -378,7 +398,7 @@ formsense/
 | Foundation | 1 | Multimodal multi-source extraction + reconciliation + ERISA validation + routing | Live Streamlit demo; GEval accuracy measured; advisor-reply reconciliation working |
 | Pipeline | 2 | AWS S3 + SQS batch + PostgreSQL ticket tracking; scheduled processing; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff) | High-volume async intake working; durable ticket tracking; app + workers running on ECS/Fargate |
 | Intelligence | 3 | Fine-tuned extraction model + form-type classifier | Fine-tuned model beats off-the-shelf baseline; classifier above threshold |
-| Agentic | 4 | Parallelized agents + evaluator-optimizer re-extraction; MCP actions; form-history RAG | Re-extraction loop measurably cuts human-review rate; write actions approval-gated |
+| Agentic Workflow | 4 | Agentic workflow (chaining + routing + evaluator-optimizer re-extraction); MCP actions; form-history RAG | Re-extraction loop measurably cuts human-review rate; layered exits enforced (verifier primary, caps as backstop); write actions approval-gated |
 | Platform | 5 | OnBase integration, real-time, multi-form-type, A2A, LLMOps CI | OnBase round-trip working; A2A outcome with provenance; accuracy regression gates green |
 
 ---
@@ -390,7 +410,7 @@ formsense/
 | **1** | Data Analyst | ✅ Multimodal extraction (form **+ email body, read concurrently on intake**, field-level reconciliation) + ERISA validation + routing (complete→ticket / incomplete→advisor email) + advisor-reply reconciliation (FOUNDATION SCOPE) |
 | **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, **SQS queue**, scheduled batch processing for high-volume intake, **containerized deployment to AWS ECS/Fargate** (app + async workers, migrating off Stage-1 Streamlit Cloud). |
 | **3** | ML Engineer | **Custom fine-tuned extraction model** + **form classification** (distribution vs loan vs rollover); accuracy improvement measured vs off-the-shelf baseline. |
-| **4** | Agentic AI Engineer | Multi-agent system implementing the **parallelization pattern** (Extractor + Validator + Router run concurrently for throughput) + **evaluator-optimizer** (Validator triggers re-extraction on low confidence). **MCP integration** for email sending + ticket creation (approval-gated). **Form-history RAG** (vector, **not** GraphRAG) for cross-referencing previous distributions. |
+| **4** | Agentic AI Engineer | **Agentic workflow** (not a multi-agent system) composing three Anthropic workflow patterns — **prompt chaining** (extract→validate→route), **routing** (confidence/completeness branch), and **evaluator-optimizer** (Validator triggers re-extraction on low confidence). Throughput from concurrency at the **multi-source extraction** and **batch** levels (not from parallelizing the dependent core). **MCP integration** for email sending + ticket creation (approval-gated). **Form-history RAG** (vector, **not** GraphRAG) for cross-referencing previous distributions. |
 | **5** | Senior LLM Engineer | Production SaaS: **OnBase integration**, real-time processing, multi-form-type support, LLMOps evaluation pipeline. **A2A protocol** for cross-system collaboration (FormSense-Agent ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent) — agents from different teams discover and coordinate via the standard protocol. |
 
 > 🚫 **No-GraphRAG note:** FormSense is structured extraction, not corpus retrieval — there is no entity ontology to traverse. The Stage-4 form-history RAG is plain vector retrieval for cross-referencing prior distributions, never a knowledge graph. (GraphRAG belongs to AFC/PolicyPulse, where the problem is genuinely graph-shaped.)
@@ -435,7 +455,7 @@ formsense/
 | PostgreSQL | Stage 2 | Production data + audit layer |
 | Fine-tuning / model training | Stage 3 | Domain extraction model |
 | Classification (scikit-learn / PyTorch) | Stage 3 | Form-type classifier |
-| **LangGraph** | **Stage 4** | **Parallelization + evaluator-optimizer loop** |
+| **LangGraph** | **Stage 4** | **Agentic-workflow orchestration: chaining + routing + evaluator-optimizer loop with layered exits** |
 | **MCP** | **Stage 4** | **Email-send + ticket-create action tools** |
 | RAG (vector) | Stage 4 | Form-history cross-referencing (not GraphRAG) |
 | Pre-processing Unstructured Data; Document AI | Stage 4 | Messy scans/PDFs → clean LLM-ready inputs → structured JSON |
@@ -449,7 +469,10 @@ formsense/
 
 - [ ] Stage-1 schema contract confirmed frozen (`FormExtraction`/`ValidationResult`/`EscalationEmail`/`ProcessingTicket`)
 - [ ] Multi-source concurrent extraction + reconciliation preserved across stages
-- [ ] Parallelization + evaluator-optimizer loop spec + autonomy/escalation gate approved
+- [ ] Agentic-workflow framing confirmed (chaining + routing + evaluator-optimizer; NOT "multi-agent"/autonomous agent)
+- [ ] Concurrency correctly located (multi-source extract + batch level; sequential core not "parallelized")
+- [ ] Evaluator-optimizer loop layered exits approved (verifier primary; caps as backstop; no-progress detection)
+- [ ] A2A (Stage 5) as the single genuinely-agentic tier, earned-overlay gated
 - [ ] GraphRAG confirmed N/A; form-history RAG is vector-only
 - [ ] MCP write tools confirmed reversible + approval-gated; no live sign-off gate (no money moves)
 - [ ] Fine-tuned model + classifier must beat labeled baselines before adoption
@@ -473,10 +496,12 @@ formsense/
 │     • Field-level reconciliation; per-field confidence (<0.8 →   │
 │       review); Gemini Vision → fine-tuned model (Stage 3)        │
 ├─────────────────────────────────────────────────────────────────┤
-│  🤖 AGENTIC LOOP (Stage 4)                                       │
-│     • Parallelized Extractor ‖ Validator ‖ Router               │
-│     • Evaluator-optimizer: Validator triggers re-extraction      │
-│     • Unattended; low-confidence → human; NO live sign-off gate  │
+│  🤖 AGENTIC WORKFLOW (Stage 4) — NOT multi-agent                  │
+│     • Chained extract→validate→route + routing                   │
+│     • Evaluator-optimizer: Validator re-extracts                 │
+│     • Concurrency: multi-source extract + batch level            │
+│     • Layered exits: verifier primary; caps = backstop           │
+│     • Unattended; low-confidence→human; NO sign-off gate         │
 ├─────────────────────────────────────────────────────────────────┤
 │  ⚙️ MCP ACTIONS (Stage 4)                                        │
 │     • send_advisor_email · create_ticket (reversible, approval)  │
