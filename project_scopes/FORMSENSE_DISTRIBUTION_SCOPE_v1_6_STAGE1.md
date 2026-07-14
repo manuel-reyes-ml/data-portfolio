@@ -1,13 +1,39 @@
-# 📄 FORMSENSE — Complete Project Scope v1.7
+# 📄 FORMSENSE — Stage 1 Project Scope v1.8
 
 ## AI-Powered Distribution Form Validator for Retirement Plan Operations
 ## "From Paper to Processing" — Intelligent Document Extraction with Automated Escalation
 
-**Document Version:** 1.6 (Added **Multi-Source Extraction** — a distribution request arrives as an **email with the form attached**, so the **email body and the PDF/image form are read concurrently at initial intake** (transaction fields may live in the body, the form, or both), with field-level **reconciliation** on overlap/conflict; the same mechanism also covers a later advisor escalation reply. Structured extraction, **not** GraphRAG/graph retrieval (which stays N/A for FormSense). Additive — extends the existing extract→validate→route workflow; Phase 2 (§8) renamed and extended to cover advisor-reply reconciliation (inbound email); synced to roadmap v8.6. **v1.7:** added **Agentic Loop Spec** (§2 intro — loop type · verifier · autonomy) per roadmap v8.8's Loop Engineering addition.)  
+**Document Version:** 1.8 (🎯 **v10.0 ALIGNMENT** — Stage-1 foundation of the (Supporting) FormSense project; 3-stage model; destination Applied AI Engineer → FDE. Prior v1.6/1.7 note archived below.)
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Strategic Priority:** 📄 DOCUMENT INTELLIGENCE — Multimodal AI for Financial Services Operations
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🧩 **Supporting** (production-grade) — Stage 1 of the FormSense document-ops project. In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Multimodal extract → validate → route — concurrent email-body ‖ form-image extraction + field-level reconciliation; GEval ≥ 0.85; synthetic ERISA forms. |
+| **S2** | DE/AE hardening | Document-ops pipeline — landed structured outputs + **dbt models** (SLA/exception analytics) + contracts + Airflow/SQS + Docker/ECS + monitoring. |
+| **S3** | Applied AI (RAG/agentic + eval) | Agentic workflow (routing + evaluator-optimizer + HITL) + MCP (email/ticket) + Form-History RAG + three-layer eval + Phoenix. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -28,7 +54,7 @@
 13. [Success Metrics](#13-success-metrics)
 14. [Risk Mitigation](#14-risk-mitigation)
 15. [Timeline Summary](#15-timeline-summary)
-16. [Project Evolution (5 Stages)](#16-project-evolution-5-stages)
+16. [Project Evolution (3 Stages)](#16-project-evolution-5-stages)
 
 ---
 
@@ -128,7 +154,7 @@ PORTFOLIO PROJECT ECOSYSTEM (Stage 1)
 6. StreamSmart Optimizer 💰 CONSUMER AI APP
    └─ Skills: API integration, rotation planning, cost optimization
 
-7. Attention-Flow Catalyst 🚀 FLAGSHIP
+7. Attention-Flow Catalyst 🧩 SUPPORTING (production-grade)
    └─ Reuses: All shared AI patterns from above projects
 ```
 
@@ -1100,15 +1126,13 @@ Tests        Accuracy     Tests        Queue Page   Video
 
 ---
 
-## 16. Project Evolution (5 Stages)
+## 16. Project Evolution (3 Stages)
 
 | Stage | Role | FormSense Enhancements |
 |-------|------|------------------------|
-| **1** | Data Analyst | ✅ Multimodal extraction (form **+ email body, read concurrently on intake**, with field-level reconciliation) + validation + routing (THIS SCOPE) |
-| **2** | Data Engineer | AWS S3 form storage, PostgreSQL ticket tracking, SQS queue, scheduled batch processing |
-| **3** | ML Engineer | Custom fine-tuned extraction model, form classification (distribution vs loan vs rollover), accuracy improvement |
-| **4** | LLM Specialist | Multi-agent system implementing **parallelization pattern** (Extractor + Validator + Router run concurrently for throughput) + **evaluator-optimizer** (Validator triggers re-extraction on low confidence). MCP integration for email sending + ticket creation. Form history RAG for cross-referencing previous distributions. |
-| **5** | Senior LLM | Production SaaS: OnBase integration, real-time processing, multi-form-type support, LLMOps evaluation pipeline. **A2A protocol** for cross-system collaboration (FormSense-Agent ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent) — agents from different teams discover and coordinate via standard protocol. |
+| **S1** | Foundation (GenAI-first core) | ✅ Multimodal extraction (form **+ email body, concurrent**, field-level reconciliation) + ERISA validation + routing (THIS SCOPE) |
+| **S2** | DE/AE hardening | AWS S3 storage, PostgreSQL, **SQS** queue, scheduled batch, **dbt** SLA/exception models + **contracts**, Docker→ECS |
+| **S3** | Applied AI (agentic workflow + eval) | **Agentic workflow** (chaining + routing + evaluator-optimizer, **layered exits**); **MCP** email/ticket action tools (reversible, approval-gated); form-history **vector RAG**; optional fine-tuned extractor + classifier (**earned-overlay**); three-layer eval + **Phoenix**. *Optional beyond-portfolio: OnBase integration, A2A.* |
 
 ---
 
@@ -1230,7 +1254,28 @@ flowchart LR
 |---|---|---|---|
 | 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + LLM control — foundation for the vision/extraction layer |
 | 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured (Pydantic) outputs + multimodal calls (provider-agnostic; project uses Gemini Vision) |
-| 3 | Pre-processing Unstructured Data for LLM Applications | Stage 4 | Getting messy scans/PDFs into clean, LLM-ready inputs |
-| 4 | Document AI: From OCR to Agentic Doc Extraction | Stage 4 | The core: scanned forms/PDFs → structured JSON with field schemas |
+| 3 | Pre-processing Unstructured Data for LLM Applications | S3 | Getting messy scans/PDFs into clean, LLM-ready inputs |
+| 4 | Document AI: From OCR to Agentic Doc Extraction | S3 | The core: scanned forms/PDFs → structured JSON with field schemas |
 
 **Focus thread:** multimodal extraction (handwriting, checkboxes), field-level confidence scoring, Pydantic validation, business-rule routing (complete → ticket, incomplete → advisor email).
+
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** AI Python for Beginners · Building with the Claude API (structured outputs + multimodal) · Pre-processing Unstructured Data · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer · Docker · 30 Days of Streamlit
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + Advanced · Astronomer Academy (Airflow) · Terraform Fundamentals — AWS SQS/batch absorbed via AWS DEA-C01 prep
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** Document AI (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · MCP full
+- **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** (employer) · **Databricks GenAI Associate** ($200 — optional)
+
+**Focus thread:** multimodal multi-source extraction → field-level confidence + reconciliation → ERISA rule routing → GEval accuracy → MCP action tools → form-history vector RAG.
