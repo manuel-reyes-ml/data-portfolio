@@ -1,12 +1,38 @@
-# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v8.7
+# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v9.0
 
 ## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
 ## A Defensible Research System with Statistical Rigor
 
-**Document Version:** 8.6 (Synced to roadmap v8.6 — added **GraphRAG / Financial Knowledge-Graph (Neo4j)** to §16 Stage 2 evolution: a hybrid retriever over SEC filings, plus 2 graph courses to §Courses. Also reconciles the prior version/filename drift — v8.5 added **T6 — Squeeze Context** §4.7 + `signalcore` short-interest primitives; both carried forward unchanged. **v8.7:** added **Agentic Loop Spec** (§2 intro — read-only research loop · eval-suite verifier · unattended/read-only autonomy) per roadmap v8.8's Loop Engineering addition. Additive only.)  
+**Document Version:** 9.0 (🎯 **v10.0 REALIGNMENT** — **downgraded from flagship to Supporting** (production-grade; size ≠ tier); 3-stage arc (S1 eval-first core → S2 financial-data lakehouse + signalcore → S3 GraphRAG research loop); destination Applied AI Engineer → FDE. "All 5 stages / Senior LLM Engineer" framing retired. Prior v8.6/8.7 note archived below.)
 **Last Updated:** June 16, 2026  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🧩 **Supporting** (production-grade; size ≠ tier) — read-only **GraphRAG financial-research** + **faithfulness ≥ 0.9** eval showcase. **Corrects the prior "flagship" self-label.** In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Eval-first core (the **AFC Eval-First slice**) — SEC-grounded faithfulness benchmark: filing retrieval + LLM analyst + three-method eval + controlled-perturbation catalog, as a portable benchmark repo. |
+| **S2** | DE/AE hardening | Financial-data lakehouse — EDGAR ingestion + PIT data + **signalcore** primitives + **dbt models** over filings/short-interest + contracts + orchestration (the DE/AE layer beneath the research system). |
+| **S3** | Applied AI (RAG/agentic + eval) | **GraphRAG financial-KG hybrid** (Neo4j + ChromaDB) + read-only agentic research loop + eval-suite verifier + faithfulness ≥ 0.9 + Phoenix observability. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -27,7 +53,7 @@
 13. [CI/CD Pipeline](#13-cicd-pipeline)
 14. [Logging & Debugging](#14-logging--debugging) ⭐ NEW
 15. [Project Structure](#15-project-structure)
-16. [Project Evolution (5 Stages)](#16-project-evolution-5-stages)
+16. [Project Evolution (3 Stages)](#16-project-evolution-5-stages)
 17. [Success Metrics](#17-success-metrics)
 18. [Risk Mitigation](#18-risk-mitigation)
 19. [Timeline Summary](#19-timeline-summary)
@@ -36,7 +62,7 @@
 
 ## 1. Executive Summary
 
-**Attention-Flow Catalyst** is a flagship project that evolves through all 5 stages of my career transition from Data Analyst to Senior LLM Engineer. It is designed as a **defensible research system**—not just a dashboard—with proper statistical methodology, bias controls, and reproducibility.
+**Attention-Flow Catalyst** is a **Supporting** project (production-grade — size, not quality, distinguishes it from the lead flagships) that evolves through the **3 stages** toward **Applied AI Engineer → FDE**. It is designed as a **defensible research system**—not just a dashboard—with proper statistical methodology, bias controls, and reproducibility.
 
 ### What Makes This Project Different
 
@@ -68,7 +94,7 @@
 ---
 
 > 🔁 **Agentic Loop Spec (roadmap v8.8):**
-> - **Loop type:** *read-only research / goal-loop* — screen → trigger-detect (T1–T6) → label (+10%-in-3-days) → score → leaderboard; Stage 4 wraps this as the **Agentic Trading Assistant**.
+> - **Loop type:** *read-only research / goal-loop* — screen → trigger-detect (T1–T6) → label (+10%-in-3-days) → score → leaderboard; S3 wraps this as the **Agentic Trading Assistant**.
 > - **Verifier:** the eval suite — **DeepEval ≥0.9 faithfulness**, SelfCheckGPT / FActScore on SEC-grounded claims; PIT / leakage tests gate the backtest.
 > - **Autonomy:** safe to run **unattended** because the system is **read-only** (no orders, no execution). The **"behind the Wall"** rule (LLM sees only aggregated in-sample stats) is the governance that keeps the loop honest. Layered exits: verifier pass + max-iteration cap + token budget.
 
@@ -1263,15 +1289,13 @@ attention-flow-catalyst/
 
 ---
 
-## 16. Project Evolution (5 Stages)
+## 16. Project Evolution (3 Stages)
 
 | Stage | Role | Enhancements |
 |-------|------|--------------|
-| 1 | Data Analyst | Backtest engine + AI dashboard |
-| 2 | Data Engineer | AWS S3, Airflow, 500+ tickers. 🆕 **Financial Knowledge Graph + Vector DB (GraphRAG capstone):** ingest SEC filings (PDFs) → extract entities into a **Neo4j knowledge graph** (companies, filings, officers/insiders, holdings, dates → typed relationships) + a **vector index** (Pinecone/Qdrant) for semantic breadth, served via a **hybrid retriever** for multi-hop, explainable reasoning. Makes the "knowledge graph" real (not just SQL tables) and directly targets multi-hop hallucination — reinforcing the 0.9 faithfulness standard. Honest caveat: vector stays the backbone (~80%); the graph is weeks of ontology work added for relationship reasoning, not trend. |
-| 3 | ML Engineer | XGBoost, LSTM, MLflow |
-| 4 | LLM Specialist | RAG + **Multi-agent system** implementing Anthropic's "Building Effective Agents" patterns: **orchestrator-workers** (Researcher routes to specialized Analyst workers) + **sequential** (Risk Manager gates Executor) + **evaluator-optimizer** (self-correction loop). Each worker calls SEC/Yahoo/news APIs via **MCP servers**. Voice interface. |
-| 5 | Senior LLM | Production deployment, monetization, **A2A protocol** for multi-tenant SaaS where institutional users' agents collaborate (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent), LLMOps evaluation pipeline at scale |
+| S1 | Foundation (GenAI-first core) | Backtest engine + AI dashboard + **eval-first faithfulness core** |
+| S2 | DE/AE hardening | EDGAR ingestion, Airflow, 500+ tickers, **signalcore** primitives, **dbt models + contracts**. 🆕 **Financial Knowledge Graph + Vector DB (GraphRAG capstone):** SEC filings → **Neo4j KG** (companies, filings, insiders, holdings, dates) + vector index, served via a **hybrid retriever** for multi-hop explainable reasoning. Vector stays the backbone (~80%); the graph adds relationship reasoning. |
+| S3 | Applied AI (GraphRAG + agentic + eval) | ML triggers (XGBoost/LSTM/MLflow — **earned-overlay**). GraphRAG financial-KG hybrid + **read-only agentic research loop** (orchestrator-workers → Analyst workers; Risk-Manager gate; evaluator-optimizer self-correction) calling SEC/market APIs via **MCP**; **faithfulness ≥ 0.9** + **Phoenix**. *Optional beyond-portfolio: multi-tenant SaaS, A2A.* |
 
 ---
 
@@ -1518,13 +1542,36 @@ flowchart LR
 | 4 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | Faithfulness/groundedness for AI-generated trigger insights |
 | 5 | 🆕 Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | **Perfect domain fit** — builds a knowledge graph from SEC filings (AFC's exact domain) + a vector index into a hybrid retriever (Cypher + LangChain); the direct on-ramp to the §16 Stage 2 Financial-KG capstone |
 | 6 | 🆕 Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — KGs from unstructured filings, fuse vector + graph retrieval, end-to-end GraphRAG pipelines |
-| 7 | Agentic AI (Andrew Ng) | Stage 4 | Design patterns for the Stage 4 Agentic Trading Assistant |
-| 8 | MCP: Build Rich-Context AI Apps with Anthropic | Stage 4 | Agents call SEC/market-data sources via MCP tools |
-| 9 | AI Agents in LangGraph | Stage 4 | Multi-agent architecture for the Stage 4 assistant |
-| 10 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Agent evaluation/observability |
+| 7 | Agentic AI (Andrew Ng) | S3 | Design patterns for the S3 Agentic Trading Assistant |
+| 8 | MCP: Build Rich-Context AI Apps with Anthropic | S3 | Agents call SEC/market-data sources via MCP tools |
+| 9 | AI Agents in LangGraph | S3 | Multi-agent architecture for the S3 assistant |
+| 10 | Evaluating AI Agents (DeepLearning.AI) | S3 | Agent evaluation/observability |
 
-**Focus thread:** read-only swing research → AI dashboard (Phase 1B) → ML triggers → Stage 4 agentic assistant; SEC/EDGAR-grounded, 0.9 faithfulness threshold.
+**Focus thread:** read-only swing research → AI dashboard (Phase 1B) → ML triggers → S3 agentic assistant; SEC/EDGAR-grounded, 0.9 faithfulness threshold.
 
 > The **eval-first slice** (`AFC_EVAL_FIRST_CORE_SCOPE`) carries its own §15 course map for the SEC-grounded faithfulness benchmark sub-project — build that first.
 
 **Honest gap (no roadmap cert):** trading/backtesting methodology (walk-forward, bootstrap CI, de-clustering) — hands-on + domain self-study; formal path is Georgia Tech / OMSCS later.
+
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which AFC needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** Building with the Claude API · Building & Evaluating Advanced RAG · Improving the Accuracy of LLM Applications · IBM Generative AI Engineering PC (RAG modules) · Pre-processing Unstructured Data for LLM Applications
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals — for the EDGAR/filings lakehouse + signalcore primitives
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · Knowledge Graphs for RAG (DL.AI × Neo4j) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · LangChain Academy · Automated Testing for LLMOps
+- **Certifications:** **Neo4j Certified Professional** (FREE — backs the GraphRAG layer) · **NVIDIA NCA-GENL** ($125) · **Anthropic CCA-F** ($125) · **Databricks GenAI Engineer Associate** ($200 — optional)
+
+**Focus thread:** EDGAR filing retrieval → LLM analyst → faithfulness eval + perturbation catalog → GraphRAG financial-KG read-only research loop.
+
+> **Honest gap:** trading/backtesting methodology has no matching roadmap cert — the benchmark repo + eval results are the signal.
