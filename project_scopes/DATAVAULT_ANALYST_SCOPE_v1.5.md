@@ -1,13 +1,41 @@
-# 🔐 DATAVAULT ANALYST — Complete Project Scope v1.5
+# 🔐 DATAVAULT / 1099 DATA PLATFORM — Complete Project Scope v2.0  (🏁 DE/AE FLAGSHIP)
 
 ## AI-Powered PII-Safe Data Intelligence for Retirement Plan Operations
 ## "Chat With Your Data" — Production-Grade Natural Language Analytics
 
-**Document Version:** 1.5 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to DataVault: PandasAI natural-language analytics, no graph retrieval. Course-reference note updated to v8.6. Additive; no functional scope changes from v1.4.)  
+**Document Version:** 2.0 (🎯 **v10.0 REALIGNMENT** — reframed as the **DataVault / 1099 Data Platform**, the DE/AE flagship. The reconciliation core (Matrix + Relius → normalize → reconcile → 1099-R tax codes) is S1–S2; the PandasAI "chat with your data" Analyst is folded in as the **S3 Applied-AI layer** over the marts. 3-stage model; destination Applied AI Engineer → FDE. Prior v1.5 note archived below.)
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
-**Strategic Priority:** ⭐ FIRST AI PROJECT TO PUBLISH — GenAI Portfolio Launchpad
+**Strategic Priority:** 🏁 DE/AE FLAGSHIP — production financial **reconciliation** platform (deployed at Daybright); dual-labeled Data Engineer / Analytics Engineer for keyword coverage.
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🏁 **Flagship (lead)** — the **Data Engineering / Analytics Engineering flagship**; retains scheduling priority (feeds the first external move). In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Reconciliation core — ingest distribution-transaction reports from **Matrix + Relius**, normalize to one transaction model, reconcile across sources, derive & validate **1099-R tax codes**, flag corrections by transaction type × week/month. |
+| **S2** | DE/AE hardening | Full DE/AE platform — staging + reconciliation + tax-rule **dbt models with tests** (assert totals reconcile; quarantine unmatched) · warehouse (Postgres/DuckDB → Snowflake) · Airflow (idempotent weekly/monthly) · Docker/ECS · monitoring + postmortem · **semantic/metrics layer** (the AE story). |
+| **S3** | Applied AI (RAG/agentic + eval) | Applied-AI layer — the **folded-in DataVault *Analyst***: natural-language querying + AI-assisted corrections/exception explanation over the reconciliation marts (text-to-SQL / RAG, PII-safe, structured outputs, HITL); faithfulness ≥ 0.9 on financial answers + Phoenix tracing. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
+
+**Fold-in note:** the former standalone *DataVault Analyst* (PandasAI "chat with your data") is now the **Stage-3 Applied-AI layer of this platform**, not a separate project — one coherent flagship arc (reconciliation → DE/AE platform → AI query/agentic layer). **Public repo = synthetic-data reconstruction**; the deployed Daybright system (real 450+ bad-tax-code catch) is the résumé line and stays private.
 
 ---
 
@@ -31,7 +59,7 @@
 
 ## 1. Executive Summary
 
-**DataVault Analyst** is the **first AI-powered project** in my portfolio — designed to be completed quickly and published before the Operations-Demand-Intelligence and Attention-Flow Catalyst projects. It demonstrates the core GenAI engineering pattern that its care about most in 2026: **taking a single business data source (Excel) and making it queryable through natural language with production-grade PII protections.**
+**DataVault Analyst** is the **first AI-powered project** in my portfolio — designed to be completed quickly and published before the Operations-Demand-Intelligence and Attention-Flow Catalyst projects. It demonstrates the core GenAI engineering pattern that recruiters care about most in 2026: **taking a single business data source (Excel) and making it queryable through natural language with production-grade PII protections.**
 
 ### Why This Project First
 
@@ -88,11 +116,11 @@ This project directly delivers on **3 critical roadmap objectives**:
 PORTFOLIO PROJECT ECOSYSTEM (Stage 1)
 ═══════════════════════════════════════
 
-1. 1099 Reconciliation Pipeline ✅ DEPLOYED
+1. 1099 / DataVault Data Platform ✅ DE/AE FLAGSHIP (this scope — reconciliation core deployed at Daybright)
    └─ Skills: Python, Pandas, ETL, pytest, CI/CD
    └─ Impact: $15K/year savings, 95% time reduction
 
-2. DataVault Analyst ⭐ FIRST AI PROJECT (THIS SCOPE)
+2. DataVault Analyst → folded into THIS platform as its Stage-3 Applied-AI layer
    └─ Skills: LLM SDK, PandasAI, Streamlit, PII handling, structured outputs
    └─ Impact: Natural language data access for non-technical users
    └─ AI Pattern: Establishes SDK-first architecture for all future projects
@@ -101,7 +129,7 @@ PORTFOLIO PROJECT ECOSYSTEM (Stage 1)
    └─ Skills: Enterprise analytics, demand forecasting, AI insights
    └─ Reuses: AI layer from DataVault Analyst (same SDK patterns)
 
-4. Attention-Flow Catalyst 📅 FLAGSHIP
+4. Attention-Flow Catalyst 🧩 SUPPORTING (production-grade)
    └─ Skills: Statistical backtesting, alternative data, trading domain
    └─ Reuses: AI layer from DataVault Analyst (same SDK patterns)
 ```
@@ -970,3 +998,24 @@ flowchart LR
 | 3 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured outputs + tool use — the SDK pattern behind "chat with your data" |
 
 **Hands-on, no roadmap cert (build & document instead):** PandasAI code-transparency, governance-as-code PII guardrails, DeepEval on the chat layer.
+
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which the 1099 / DataVault DE-AE flagship needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API · Mode SQL Tutorial · Docker for Beginners · 30 Days of Streamlit · Pre-processing Unstructured Data (for exception-doc parsing)
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Apache Kafka 101 (Confluent) · Terraform Fundamentals · Databricks Academy (Spark) · Snowflake Data Engineering Professional Certificate · BigQuery Basics
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) / DP-750 Azure Databricks / dbt Analytics Engineering
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full) — text-to-SQL / RAG-over-marts patterns
+- **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks GenAI Engineer Associate** ($200 — optional; "also reads as a DE cert")
+
+**Focus thread:** Matrix + Relius ingest → dbt reconciliation + tax-code models (tests, contracts) → marts + semantic layer → NL query / AI-assisted corrections.
