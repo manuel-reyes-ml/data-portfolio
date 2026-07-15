@@ -1,14 +1,40 @@
-# 📺 STREAMSMART OPTIMIZER — Stage 1 Project Scope v1.5
+# 📺 STREAMSMART OPTIMIZER — Stage 1 Project Scope v1.6
 
 ## AI-Powered Streaming Subscription Rotation Advisor
 ## "Spend Less, Watch More" — Intelligent Subscription Optimization Dashboard
 
-**Document Version:** 1.5 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to StreamSmart Stage 1: consumer optimizer + API content search, no graph retrieval. Course-reference note updated to v8.6. Additive; no functional scope changes from v1.4.)  
+**Document Version:** 1.6 (🎯 **v10.0 ALIGNMENT** — Stage-1 foundation; Supporting/backlog; 3-stage model; destination Applied AI Engineer → FDE. Prior v1.5 note archived below.)
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
-**Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
+**Stage:** 1 (Foundation) — evolves S1 → S2 → S3 within the v10.0 3-stage model.
 **Strategic Priority:** ⭐ CONSUMER-FACING AI PROJECT — Real-World Pain Point + Personal Finance Domain
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🧩 **Supporting — backlog** (production-grade) — Stage 1 of StreamSmart; consumer/personal-finance domain. In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Advisory dashboard — content/pricing-API ingestion + subscription-optimization advisor. |
+| **S2** | DE/AE hardening | Data platform — dbt models over content/pricing feeds, cost-optimization marts, Airflow, contracts, Docker/ECS. |
+| **S3** | Applied AI (RAG/agentic + eval) | Agentic subscription manager — autonomous rotation with HITL + eval + Phoenix. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -28,7 +54,7 @@
 12. [Success Metrics](#12-success-metrics)
 13. [Risk Mitigation](#13-risk-mitigation)
 14. [Timeline Summary](#14-timeline-summary)
-15. [Project Evolution (5 Stages)](#15-project-evolution-5-stages)
+15. [Project Evolution (3 Stages)](#15-project-evolution-5-stages)
 
 ---
 
@@ -762,19 +788,17 @@ Cache        Tests       Filters   Outputs      Chat         README
 
 ---
 
-## 15. Project Evolution (5 Stages)
+## 15. Project Evolution (3 Stages)
 
-This project is designed to evolve through all 5 stages of the career roadmap:
+This project evolves through the roadmap's **3 stages (v10.0)** — one system, never rebuilt per stage:
 
-| Stage | Role | Enhancements |
+| Stage | Role (v10.0) | Enhancements |
 |-------|------|--------------|
-| **1 (THIS SCOPE)** | GenAI-First Data Analyst | Advisory dashboard + AI rotation planner + content search |
-| **2** | GenAI Data Engineer | AWS deployment, PostgreSQL, Airflow for price monitoring, vector DB for content similarity |
-| **3** | ML Engineer | ML-based viewing prediction, churn models, personalized recommendations with collaborative filtering |
-| **4** | Agentic AI Engineer | **Full automation implementing orchestrator-workers pattern**: orchestrator agent routes to specialized workers (cancel-worker, resubscribe-worker, content-scout-worker) via LangGraph. **Sequential pattern**: human checkpoint gates execution. **MCP tool integration** for streaming service APIs (Netflix, Hulu, etc.) and browser automation (Playwright MCP). |
-| **5** | Senior LLM Engineer | Production SaaS, LLMOps evaluation, monetization, mobile app, user accounts. **A2A protocol** for multi-tenant scenarios where household members' agents collaborate (Mom-Agent ↔ Kid-Agent on parental controls + shared subscriptions). |
+| **S1 (THIS SCOPE)** | Foundation (GenAI-first core) | Advisory dashboard + AI rotation planner + content search |
+| **S2** | DE/AE hardening | AWS deployment, PostgreSQL, **dbt models + contracts**, Airflow price-monitoring pipeline, Kafka ingestion, vector DB for content similarity |
+| **S3** | Applied AI (agentic + eval) | Agentic rotation via **LangGraph orchestrator-workers** (cancel / resubscribe / content-scout) with **mandatory human checkpoint before any action**; **MCP** + Playwright browser automation; LLM-as-judge eval gate + Phoenix tracing. ML prediction (churn / collaborative-filtering) folds in here as an **earned-overlay**. **Never stores credentials, never enters payment.** *Optional beyond-portfolio: multi-tenant SaaS, monetization, mobile.* |
 
-### Stage 1 → Stage 4-5 Bridge
+### Stage 1 → S3 Evolution (3-stage model)
 
 ```
 STAGE 1 (NOW):          "Tell me what to do" (Advisory AI)
@@ -782,7 +806,7 @@ STAGE 1 (NOW):          "Tell me what to do" (Advisory AI)
   │   Skills to build: AWS, Vector DBs, RAG, ML, LangGraph, MCP, A2A
   │
   ▼
-STAGE 4-5 (FUTURE):     "Do it for me" (Agentic AI)
+STAGE 3 (FUTURE):       "Do it for me" — agentic, with mandatory human approval
 ```
 
 **The Stage 1 advisory version seeds every future capability.** The rotation planning logic, content data pipeline, and savings models all carry forward into the full agentic platform.
@@ -797,7 +821,7 @@ STAGE 4-5 (FUTURE):     "Do it for me" (Agentic AI)
 - [ ] Guardrails scoped (financial disclaimers, price validation, scope limits)
 - [ ] Stage 1 boundary clear: advisory only, no account automation
 - [ ] Timeline realistic (6 weeks at 25 hrs/week)
-- [ ] Scope appropriately focused (not creeping into Stage 4-5 features)
+- [ ] Scope appropriately focused on Stage 1 (S2/S3 layers deferred, not built now)
 
 ---
 
@@ -888,7 +912,7 @@ flowchart LR
 
 **Document Status:** 📋 DRAFT (v1.2 — SDK-First AI Architecture + pyproject.toml + 2026 Production Patterns)  
 **Date:** April 03, 2026  
-**Stage:** 1 — GenAI-First Data Analyst & AI Engineer  
+**Stage:** 1 (Foundation) — evolves S1 → S2 → S3 within the v10.0 3-stage model.
 **Total Timeline:** 6 weeks
 
 *"Real consumer pain point + Finance domain expertise + SDK-first AI + Structured outputs + Live content APIs = Portfolio project that recruiters AND users actually care about"* 🚀
@@ -906,3 +930,24 @@ flowchart LR
 **Focus thread:** httpx async to Watchmode/TMDB, Pydantic models, financial-disclaimer guardrails, LangSmith tracing, DeepEval.
 
 > Production-scale courses (optimization + observability) are listed in the Full-Production scope.
+
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** Building with the Claude API · 30 Days of Streamlit · Docker for Beginners
+- **Certifications:** Employer-track **AI-901 / AB-620** (shared with the lead projects; nothing StreamSmart-specific)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** dbt Fundamentals · Astronomer Academy (Airflow) · Terraform Fundamentals · Apache Kafka 101 (Confluent)
+- **Certifications:** Committed **DP-700 + AWS DEA-C01** carry over (shared)
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps · *(optional)* AI Engineer Agentic Track
+- **Certifications:** **Anthropic CCA-F** (optional; shared — not required for a backlog project)
+
+**Focus thread:** content/pricing ingestion → cost-optimization marts → agentic rotation with mandatory HITL → LLM-as-judge eval gate; never stores credentials, never enters payment.
