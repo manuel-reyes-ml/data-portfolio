@@ -1,12 +1,38 @@
-# 🧪 AFC — Eval-First Core Slice — Scope v1.1 (OFFICIAL)
+# 🧪 AFC — Eval-First Core Slice — Scope v1.3 (OFFICIAL)
 
 ## SEC-Grounded Faithfulness Benchmark for Small-Cap Filing Analysis
 
-**Document Version:** 1.2 (OFFICIAL — adds §14 sub-note: the FINRA / verifiable-quantitative source category. Future-work only; v1.x build scope unchanged.)
+**Document Version:** 1.3 (🎯 **v10.0 ALIGNMENT** — parent AFC scope repointed to **v9.0** (now Supporting, 3-stage, Applied AI Engineer → FDE). This vertical slice = AFC's Stage-1 eval-first core; still additive, build scope unchanged. Prior v1.2 note archived below.)
 **Last Updated:** June 10, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
-**Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v8_4.md` (v8.4) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.4.
+**Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` (v9.0, Supporting) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.4.
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🧩 **Supporting** — the **Stage-1 eval-first core** of AFC (itself Supporting). Portable SEC-grounded faithfulness benchmark. In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Filing retrieval + LLM analyst + three-method eval + controlled-perturbation catalog → published benchmark repo (this slice). |
+| **S2** | DE/AE hardening | Feeds AFC's S2 financial-data lakehouse (EDGAR ingest + signalcore + dbt models + contracts). |
+| **S3** | Applied AI (RAG/agentic + eval) | Feeds AFC's S3 GraphRAG research loop; the eval harness becomes the **verifier** and the faithfulness-≥0.9 showcase. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
 
 ---
 
@@ -365,7 +391,7 @@ Focus: **Python-for-AI + evaluation** — only what's needed to ship this slice.
 | Statistics with Python (Michigan) | Stage 1 | precision / recall / F1, confidence framing for the benchmark | ✅ |
 | Docker for Beginners (KodeKloud) | Stage 1 | containerization deliverable (#1, §9) | ✅ |
 
-> Stage 4's SelfCheckGPT + FActScore are already in your roadmap as *concepts*; this slice pulls them forward. No separate course exists for them — they're learned from their papers/docs.
+> S3's SelfCheckGPT + FActScore are already in your roadmap as *concepts*; this slice pulls them forward. No separate course exists for them — they're learned from their papers/docs.
 
 ### 15.2 New / better — researched June 2026, recommend adding to roadmap
 
@@ -416,3 +442,24 @@ Design approved (June 10, 2026):
 - [ ] Lock analyst prompt contract (summary + atomic-claim extraction)
 - [ ] Confirm EDGAR rate-limit / caching policy
 - [ ] Pick the initial filing set (tickers + accession numbers) for the dataset
+
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which this AFC eval-first slice needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications (eval-from-scratch) · Pre-processing Unstructured Data for LLM Applications
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals — feeds AFC's S2 EDGAR/filings lakehouse + signalcore
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) *(shared with parent AFC scope)*
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** Neo4j GraphAcademy (GraphRAG) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · Automated Testing for LLMOps
+- **Certifications:** **NVIDIA NCA-GENL** ($125) · **Neo4j Certified Professional** (FREE) · **Anthropic CCA-F** ($125)
+
+**Focus thread:** SEC filing retrieval → LLM analyst → three-method faithfulness eval + controlled-perturbation catalog → published benchmark repo.s
