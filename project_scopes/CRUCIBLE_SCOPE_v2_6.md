@@ -1,13 +1,43 @@
-# 🔥 CRUCIBLE — Complete Project Scope v2.0 (OFFICIAL)
+# 🔥 CRUCIBLE — Stage 1 Project Scope v3.1 (OFFICIAL)
+
+> **Companion:** `CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md` — the S1→S3 end-state architecture (market-data lakehouse, paper→live agent, HITL + kill-switch safety architecture). **This document is the Stage-1 build sheet: Phase 1 (backtest engine + integrity spine).** Phases 2–3 are retained here as forward context; the Full-Production scope is authoritative for their architecture.
 
 ## Strategy-Agnostic Multi-Timeframe Research-to-Execution Platform
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
-**Document Version:** 2.6 (OFFICIAL — added **Agentic Loop Spec** (§2 intro): Crucible's two-speed execution loop, its verifier (3-gate promotion + engine-parity + sealed OOS vault + overfitting ledger), and autonomy — **paper unattended; LIVE keeps a mandatory human sign-off + kill-switch** — per roadmap v8.8's Loop Engineering addition. — v2.5: re-synced course reference to roadmap v8.6. The v8.6 GraphRAG/Neo4j additions are intentionally **N/A for Crucible** — liquid intraday universe, no knowledge-graph retrieval (per the AFC↔Crucible boundary). v8.5 local-first toolchain (Qwen3/Ollama) already reflected in §11.1. No functional scope changes from v2.4.)
+**Document Version:** 3.1 (🎯 **STAGE-1 REFOCUS** — repositioned as the Stage-1 build sheet; Phase 1 (backtest engine + integrity spine) is the S1 deliverable. S2 lakehouse and S3 paper→live agent architecture move to the Full-Production companion. Prior v3.0 note follows.) — v3.0 note: (🎯 **v10.0 REALIGNMENT** — restored **lead Flagship**; 3-stage arc (S1 backtest/integrity → S2 market-data lakehouse + signalcore-as-library → S3 paper→live agent w/ HITL + kill-switch). Destination Applied AI Engineer → FDE. "First project" framing retired; intraday-vs-swing identity flagged for roadmap reconciliation. Prior v2.6 note archived below.)
 **Last Updated:** June 16, 2026
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
 **Codename:** **Crucible** — the vessel where raw material is subjected to extreme heat until only what's pure survives. Every strategy must survive the crucible of backtest → paper → live before it touches real money.
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🏁 **Flagship (lead)** — autonomous **execution-safety** flagship for NY-fintech FDE demand. In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Backtest engine + integrity spine — The Wall, sealed OOS vault, overfitting ledger, PIT data, walk-forward CV, engine-parity gate, 3-gate pipeline (swing-first on-ramp). |
+| **S2** | DE/AE hardening | Market-data lakehouse — PIT ingestion → medallion layers → feature/universe **dbt models with tests** + contracts + Airflow; **signalcore** as a versioned, tested primitives library (the DE/AE evidence under the trading system). |
+| **S3** | Applied AI (RAG/agentic + eval) | Paper → live agent — mandatory **human sign-off + kill-switch**, **"LLM behind the Wall"**, verifier agent before the HITL gate, published agentic evals (Tool Correctness = 1.0, Task Completion > 0.8) + Phoenix trajectory tracing. |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
+
+**Identity note (v10.0):** roadmap v10.0 labels Crucible an *intraday* execution platform; this scope's v2.0 **multi-timeframe, swing-first** on-ramp is retained as the lower-risk Phase-1 path, with intraday plugins as later phases. Recommend reconciling the roadmap wording to **"multi-timeframe (swing → intraday)"** (see roadmap-change note). **Priority order:** DataVault → PolicyPulse → Crucible (Crucible is a lead flagship, not the first build).
 
 ---
 
@@ -54,7 +84,7 @@ This scope describes **one flagship project with three build phases**:
 
 > ⚠️ **Terminology guard.** "Phase 1/2/3" here are *build phases of this project*. They are **not** the same as your career-roadmap **Stages 1–5**. Section 17 maps the two so they don't collide.
 
-> 🧭 **Coaching note (read once, then move on).** You've decided to make this your first project and learn the supporting courses alongside it. That's your call and I respect it. This document is written to *support* that decision while protecting you from the two ways it can go wrong: (1) building something fragile because the fundamentals aren't in place yet, and (2) being fooled by an overfit backtest. The architecture below is designed specifically to de-risk both. Starting with **swing** lowers the Phase 1 engineering burden (daily data, EOD cadence, no sub-second loop, PDT moot) — your instinct to start there is the lower-risk on-ramp. Section 17 tells you which roadmap courses to pull forward.
+> 🧭 **Coaching note (read once, then move on).** In v10.0 this is a **lead flagship** built in priority order **DataVault → PolicyPulse → Crucible** (not the first build); its supporting courses are pulled forward per phase. That's your call and I respect it. This document is written to *support* that decision while protecting you from the two ways it can go wrong: (1) building something fragile because the fundamentals aren't in place yet, and (2) being fooled by an overfit backtest. The architecture below is designed specifically to de-risk both. Starting with **swing** lowers the Phase 1 engineering burden (daily data, EOD cadence, no sub-second loop, PDT moot) — your instinct to start there is the lower-risk on-ramp. Section 17 tells you which roadmap courses to pull forward.
 
 ---
 
@@ -362,7 +392,7 @@ Machine learning is an **overlay you earn, never a foundation you need.** The de
 
 ---
 
-## 7. Phase 1 — Backtesting Engine + AI Research Loop
+## 7. Stage 1 — Phase 1: Backtesting Engine + AI Research Loop  ⭐ THIS SCOPE
 
 **Goal:** A strategy-agnostic, multi-timeframe engine producing *trustworthy* out-of-sample verdicts, with **SW-A v3 and SW-B** as the first two validated (or rejected) strategies, proving the plugin abstraction and exercising the cross-sectional stage.
 
@@ -404,7 +434,7 @@ Machine learning is an **overlay you earn, never a foundation you need.** The de
 
 ---
 
-## 8. Phase 2 — Autonomous Paper-Trading Agent
+## 8. Phase 2 — Autonomous Paper-Trading Agent  *(S3 — see Full-Production scope)*
 
 **Goal:** An autonomous multi-agent system trades an *approved* strategy on a **paper account**; confirm paper results match backtest within tolerance before any real money.
 
@@ -451,7 +481,7 @@ The live behavior of "monitor A+/A setups by factor, drop the decayed ones, exec
 
 ---
 
-## 9. Phase 3 — Autonomous Live Agent (Micro-Sizing)
+## 9. Phase 3 — Autonomous Live Agent (Micro-Sizing)  *(S3 — see Full-Production scope; HITL + kill-switch mandatory)*
 
 **Goal:** The *same* agent system trades live at **micro size**, autonomously — a final real-world validation, explicitly **not** an income plan.
 
@@ -671,7 +701,7 @@ Treat durations as gates, not deadlines.
 | Phase 1 cross-sectional + stats | Cross-sectional ranking, walk-forward, bootstrap CI, multiple-comparisons, **parallel-tag attribution** | Statistics with Python Specialization (Michigan) |
 | Phase 1 AI loop | LLM SDK, structured outputs, evaluation, guardrails | IBM GenAI Engineering, Building & Evaluating Advanced RAG, DeepEval docs |
 | Phase 1 local LLM | Ollama, quantization, running Qwen3 locally | Stage 3 "Local LLM Specialist" (pulled forward — bonus) |
-| Phase 2 agents | Multi-agent orchestration, LangGraph | Stage 4 agentic courses (pulled way forward — hardest stretch) |
+| Phase 2 agents | Multi-agent orchestration, LangGraph | S3 agentic courses (pulled way forward — hardest stretch) |
 | Phase 2 engine | Event-driven systems, NautilusTrader | Self-driven + Nautilus docs |
 | Phase 2–3 infra / live | Orchestration, monitoring, reconciliation, real-time systems | Stage 2 DE material, Docker/K8s; self-driven |
 | Forecasting wing (Stage 3) | Applied ML, time-series/purged CV, deep learning, financial-ML methodology | Statistics w/ Python → ML Specialization → DL Specialization; López de Prado *Advances in Financial ML* |
@@ -766,11 +796,69 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 | 1 | Building with the Claude API (Anthropic Academy) | Stage 1 | SDK foundation for the cloud fallback providers (Gemini → Anthropic → OpenAI) |
 | 2 | Fine-Tuning LLMs with PEFT (DeepLearning.AI) | Stage 3 | Local model customization (LoRA/QLoRA) for the Qwen3 analyst |
 | 3 | Fast & Efficient LLM Inference with vLLM (DeepLearning.AI) | Stage 3 | Local-first inference + quantization (nearest cert to the Ollama/Qwen3 layer) |
-| 4 | Agentic AI (Andrew Ng) | Stage 4 | Agent design patterns + disciplined evals — underpins "the Wall" + oversight |
-| 5 | AI Agents in LangGraph | Stage 4 | The LangGraph agent crew (analyst → risk-manager → trader) |
-| 6 | Multi-AI Agent Systems with crewAI (DeepLearning.AI) | Stage 4 | Multi-agent oversight + risk-manager veto patterns |
-| 7 | Evaluating AI Agents (DeepLearning.AI) | Stage 4 | Agent evaluation/observability for the autonomous paper/live loop |
+| 4 | Agentic AI (Andrew Ng) | S3 | Agent design patterns + disciplined evals — underpins "the Wall" + oversight |
+| 5 | AI Agents in LangGraph | S3 | The LangGraph agent crew (analyst → risk-manager → trader) |
+| 6 | Multi-AI Agent Systems with crewAI (DeepLearning.AI) | S3 | Multi-agent oversight + risk-manager veto patterns |
+| 7 | Evaluating AI Agents (DeepLearning.AI) | S3 | Agent evaluation/observability for the autonomous paper/live loop |
 
 **Focus thread:** local-first serving, the LLM "behind the Wall" (reads aggregates, never raw rows), deterministic core owns every trade, multi-agent oversight, agent evals.
 
 **Honest gap (no roadmap cert):** trading/backtesting infrastructure (NautilusTrader, Optuna, event-driven harness) — hands-on + docs; formal path is Georgia Tech / OMSCS later.
+
+
+---
+
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python 3.11+, SQL | S1 ✅ | Core engine + research queries |
+| pandas, numpy | S1 ✅ | Bar data, signal computation |
+| Own backtest harness | S1 ✅ | You own fill/look-ahead logic — the integrity story you can defend in interview |
+| **PIT data discipline, walk-forward CV, engine-parity gate** | **S1 ✅** | **The Wall, sealed OOS vault, overfitting ledger — the anti-overfitting spine** |
+| DuckDB + partitioned Parquet | S1 ✅ | Data spine (shared with AFC) |
+| Free-first data (Stooq, Alpha Vantage, Finnhub, SEC EDGAR) | S1 ✅ | Price, fundamentals, dilution/8-K events |
+| Pydantic v2 | S1 ✅ | Config + structured LLM outputs |
+| Streamlit | S1 ✅ | Research dashboard + live monitor |
+| Ollama / local open-weight LLM | S1 ✅ | **Privacy routing — "LLM behind the Wall"; trading data never leaves the machine** |
+| DeepEval + pytest | S1 ✅ | CI eval gate |
+| Docker, GitHub Actions | S1 ✅ | Production standard |
+| **dbt + tests** | **S2** | **Feature/universe models over PIT market data** |
+| **Data contracts (Great Expectations)** | **S2** | **Quality gates on ingested market/fundamental data** |
+| **Airflow** | **S2** | **Idempotent PIT ingestion → medallion layers** |
+| **`signalcore` versioned, tested primitives library** | **S2** | **The DE/AE evidence beneath the trading system (shared with AFC)** |
+| **Medallion lakehouse (bronze→silver→gold)** | **S2** | **Market-data platform architecture** |
+| **Terraform + AWS** | **S2** | **Reproducible infra** |
+| NautilusTrader (LGPL-3.0) | S2 → S3 | Event-driven engine; backtest→live with no code change (true parity) |
+| scikit-learn, statsmodels, SHAP | S3 | Calibrated classifier / factor importance — **earned-overlay only** (ships only if it beats base-rate) |
+| Alpaca (paper → live), Schwab/TOS | S3 | Execution adapters; paper and live share one API |
+| **LangGraph** | **S3** | **Paper → live agent orchestration + verifier agent before the gate** |
+| **HITL sign-off + kill-switch** | **S3** | **MANDATORY — the one genuinely irreversible path in the portfolio** |
+| **Agentic evals (Tool Correctness = 1.0, Task Completion > 0.8) + Arize Phoenix** | **S3** | **Published trajectory tracing — the execution-safety proof** |
+
+
+> **Honest gap:** trading/backtesting infrastructure has **no matching roadmap certification** — the defensible artifact (integrity spine + published evals + kill-switch) *is* the signal. Build it; don't look for a cert.
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which Crucible needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API · Improving the Accuracy of LLM Applications (eval) · Docker for Beginners
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals · Databricks Academy (Spark) — for the PIT market-data lakehouse + signalcore library
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** AI Agents in LangGraph (HITL pattern behind the mandatory sign-off gate) · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps
+- **Certifications:** **Anthropic CCA-F** ($125 — agentic orchestration source-of-truth) · **Databricks GenAI Engineer Associate** ($200 — optional)
+
+**Focus thread:** PIT market-data lakehouse → signalcore tested library → backtest → paper → live agent with human sign-off + kill-switch + verifier.
+
+> **Honest gap:** trading/backtesting infrastructure has no matching roadmap cert — build & document it instead (the portfolio artifact is the signal).
