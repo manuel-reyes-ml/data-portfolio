@@ -1,4 +1,4 @@
-# 🧪 AFC — Eval-First Core Slice — Scope v1.3 (OFFICIAL)
+## 🧪 AFC — Eval-First Core Slice — Scope v1.3 (OFFICIAL)
 
 ## SEC-Grounded Faithfulness Benchmark for Small-Cap Filing Analysis
 
@@ -446,6 +446,30 @@ Design approved (June 10, 2026):
 
 ---
 
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python 3.11+, pandas | S1 ✅ | Slice tooling |
+| SEC EDGAR retrieval | S1 ✅ | Filing corpus — the grounding source |
+| LLM SDK (provider-agnostic) | S1 ✅ | The analyst under evaluation |
+| Pydantic v2 | S1 ✅ | Structured analyst output (the eval target) |
+| **RAGAS (RAG Triad)** | **S1 ✅** | **Faithfulness / answer-relevancy / context-precision per query** |
+| **SelfCheckGPT** | **S1 ✅** | **Self-consistency hallucination detection** |
+| **DeepEval / GEval** | **S1 ✅** | **CI-blocking eval gate** |
+| **Controlled-perturbation catalog** | **S1 ✅** | **Injected-error detection — proves the harness actually works** |
+| **Frozen golden set** | **S1 ✅** | **Drift baseline reused by every later stage** |
+| Docker, pytest, ruff, mypy, GitHub Actions | S1 ✅ | Production standard |
+| dbt, Airflow, `signalcore` | S2 *(via parent AFC)* | This slice feeds AFC's financial-data lakehouse |
+| Neo4j + ChromaDB, LangGraph, MCP, Arize Phoenix | S3 *(via parent AFC)* | The harness becomes the **verifier** inside the GraphRAG research loop |
+
+
+> **Why this slice exists:** it's the smallest publishable artifact that proves eval competence — the scarcest, most-cited skill in 2026 Applied-AI hiring. Ship it early; it folds back into AFC v9.0.
+
+---
+
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which this AFC eval-first slice needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
@@ -462,4 +486,4 @@ Design approved (June 10, 2026):
 - **Courses:** Neo4j GraphAcademy (GraphRAG) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · Automated Testing for LLMOps
 - **Certifications:** **NVIDIA NCA-GENL** ($125) · **Neo4j Certified Professional** (FREE) · **Anthropic CCA-F** ($125)
 
-**Focus thread:** SEC filing retrieval → LLM analyst → three-method faithfulness eval + controlled-perturbation catalog → published benchmark repo.s
+**Focus thread:** SEC filing retrieval → LLM analyst → three-method faithfulness eval + controlled-perturbation catalog → published benchmark repo.
