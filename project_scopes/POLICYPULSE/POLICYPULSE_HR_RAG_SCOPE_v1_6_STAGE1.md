@@ -1228,6 +1228,32 @@ flowchart LR
 
 ---
 
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python, pandas, Pydantic v2 | S1 ✅ | Data models, structured cited answers |
+| LLM SDK (Anthropic primary), Streamlit | S1 ✅ | RAG generation + chat UI |
+| **RAG (chunking, embeddings, semantic search)** | **S1 ✅** | **The retrieval foundation — THIS SCOPE** |
+| ChromaDB | S1 ✅ | Vector store |
+| **FastMCP** | **S1 ✅** | **Read-tool MCP server** |
+| **RAGAS, SelfCheckGPT, DeepEval** | **S1 ✅** | **Blocking groundedness gates** |
+| Docker, pytest, ruff, mypy, GitHub Actions | S1 ✅ | Production standard |
+| dbt + data contracts (Great Expectations) | S2 | Doc-metadata models — vector pipeline as **data infrastructure** |
+| Airflow, Terraform | S2 | Scheduled re-ingestion; reproducible infra |
+| AWS (S3, RDS, ECS/Fargate), PostgreSQL, Redis | S2 | Production storage + deployment |
+| **GraphRAG / Neo4j** | **S2 → S3** | **Hybrid retriever — the signature differentiator** |
+| LangGraph + evaluator-optimizer loop | S3 | Agentic retrieve → verify → re-retrieve (iteration-capped) |
+| MCP (deep) + access-control retrieval | S3 | Approval-gated writes; per-document RBAC |
+| Three-layer eval + Arize Phoenix | S3 | Per-query + trajectory + drift |
+
+
+> **Stage-1 lens:** only the S1 ✅ rows are built in this scope. S2/S3 rows are shown so you know what this foundation must *support* — see the Full-Production scope for the end-state architecture.
+
+---
+
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
