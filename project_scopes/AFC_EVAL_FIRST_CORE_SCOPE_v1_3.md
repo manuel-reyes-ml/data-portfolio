@@ -1,4 +1,4 @@
-## 🧪 AFC — Eval-First Core Slice — Scope v1.3 (OFFICIAL)
+# 🧪 AFC — Eval-First Core Slice — Scope v1.3 (OFFICIAL)
 
 ## SEC-Grounded Faithfulness Benchmark for Small-Cap Filing Analysis
 
