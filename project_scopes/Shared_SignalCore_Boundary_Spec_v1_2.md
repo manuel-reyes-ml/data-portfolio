@@ -1,4 +1,4 @@
-# SHARED SIGNAL-PRIMITIVES LIBRARY — BOUNDARY SPEC v1.2
+# SHARED SIGNAL-PRIMITIVES LIBRARY — BOUNDARY SPEC v1.3
 
 *The dependency contract between **AFC** (Attention-Flow Catalyst) and **Crucible**. Defines exactly which code is shared, which stays project-specific, and the rules that keep the boundary from rotting.*
 
@@ -9,6 +9,17 @@
 > **v1.1 change:** added `signalcore.shortinterest` (float / short-interest primitives) to support AFC's **T6 Squeeze Context** trigger. Primitives only — the squeeze *thresholds* and *trigger logic* stay in AFC.
 >
 > **v1.2 change:** added a §7 anti-pattern guarding the GraphRAG boundary — the **knowledge-graph / Neo4j entity model** (introduced in roadmap v8.6 as AFC's Stage 2 Financial-KG capstone) is project logic, never a `signalcore` primitive. Clarification only; no code-ownership changes.
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT — AUTHORITATIVE
+
+> **This block governs** where anything below conflicts.
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**. Underpins **AFC (Supporting)** and **Crucible (lead Flagship)**; boundary contract unchanged.
+
+This is a **shared, versioned primitives library** — the tested data-library layer beneath **AFC** and **Crucible**'s Stage-2 DE/AE work. It is not a stage-evolution project of its own; it has no flagship/supporting tier. The boundary contract below is **status-neutral and already v10.0-consistent** (it defines code ownership, not portfolio rank), so no functional change is required beyond this alignment note. AFC is now **Supporting** and Crucible a **lead Flagship** in v10.0 — the boundary is unaffected.
 
 ---
 
