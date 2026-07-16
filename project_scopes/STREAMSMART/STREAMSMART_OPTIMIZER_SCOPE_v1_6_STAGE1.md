@@ -934,6 +934,30 @@ flowchart LR
 
 ---
 
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python, pandas, Pydantic v2 | S1 ✅ | Core models, analytics engine |
+| LLM SDK, Streamlit | S1 ✅ | Advisory dashboard + rotation planner |
+| Content/pricing API ingestion (Watchmode/TMDB) | S1 ✅ | The data source |
+| Ollama (local LLM) | S1 ✅ | Privacy-preserving recommendations |
+| Docker, pytest, ruff, mypy, GitHub Actions | S1 ✅ | Production standard |
+| dbt + data contracts | S2 | Content/pricing models + cost-optimization marts |
+| Airflow, Kafka, Terraform | S2 | Content-monitoring pipeline; ingestion; reproducible infra |
+| AWS (S3, ECS, RDS), PostgreSQL, Redis | S2 | Cloud infra + production data layer |
+| Vector DB (Pinecone), RAG | S2 | Content similarity |
+| LangGraph orchestrator-workers + **mandatory HITL** | S3 | Rotation agent — human approves **every** action |
+| MCP + Playwright (approval-gated browser actions) | S3 | Cancel/resubscribe with screenshot audit; **never enters payment** |
+| LLM-as-judge eval + LangSmith/Phoenix tracing | S3 | CI eval gate + trajectory debugging |
+
+
+> **Stage-1 lens:** only the S1 ✅ rows are built here. **Backlog project** — sequence behind the lead trio (DataVault → PolicyPulse → Crucible).
+
+---
+
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
