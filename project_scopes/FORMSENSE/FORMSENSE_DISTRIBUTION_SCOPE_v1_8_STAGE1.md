@@ -1262,6 +1262,33 @@ flowchart LR
 
 ---
 
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python, pandas, Pydantic v2 | S1 ✅ | Frozen schema contract, reconciliation |
+| **Multimodal LLM SDK (Gemini Vision; Claude/GPT-4o fallback)** | **S1 ✅** | **Form reading — checkboxes, handwriting, layout** |
+| **Concurrent email-body ‖ form-image extraction** | **S1 ✅** | **Field-level reconciliation across two sources — THIS SCOPE** |
+| **ERISA business-rule / validation engineering** | **S1 ✅** | **YAML rule engine — the domain edge** |
+| **GEval, DeepEval** | **S1 ✅** | **Schema-adherence ≥ 0.85** |
+| Synthetic ERISA forms | S1 ✅ | Public-repo safety |
+| Docker, pytest, ruff, mypy, GitHub Actions | S1 ✅ | Production standard |
+| dbt + data contracts | S2 | SLA/exception analytics over landed extractions |
+| Airflow, SQS, Terraform | S2 | Scheduled batch; async workers; reproducible infra |
+| AWS (S3, RDS, ECS/Fargate), PostgreSQL | S2 | Storage, audit layer, deployment |
+| LangGraph agentic workflow (chaining + routing + evaluator-optimizer, layered exits) | S3 | Verifier-primary re-extraction loop |
+| MCP (email-send + ticket-create) | S3 | Reversible, **approval-gated** actions |
+| Vector RAG | S3 | Form-history cross-referencing (**not** GraphRAG) |
+| Fine-tuned extractor / classifier | S3 | **Earned-overlay only** |
+| Three-layer eval + Arize Phoenix | S3 | Per-field accuracy + trajectory + drift |
+
+
+> **Stage-1 lens:** only the S1 ✅ rows are built here. The frozen schema contract set at S1 is what lets S2/S3 layer on without a rewrite.
+
+---
+
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
