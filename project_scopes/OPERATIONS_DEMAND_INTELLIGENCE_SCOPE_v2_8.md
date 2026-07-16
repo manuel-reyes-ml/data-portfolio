@@ -1,12 +1,40 @@
-# 🚀 OPERATIONS-DEMAND-INTELLIGENCE — Project Scope v2.8
+# 🚀 OPERATIONS-DEMAND-INTELLIGENCE — Project Scope v3.0
 
 ## AI-Powered Workflow Demand Analysis for Retirement Plan Operations
 
-**Document Version:** 2.8 (Re-synced to roadmap v8.6 — confirmed the v8.5/v8.6 additions (local-first toolchain, GraphRAG/Neo4j) do not apply to ODI: internal enterprise analytics, no agentic or graph retrieval scope. Course-reference note updated to v8.6. Additive; no functional scope changes from v2.7.)  
+**Document Version:** 3.0 (🎯 **v10.0 REALIGNMENT** — Supporting (production-grade); 3-stage arc (S1 analytics → S2 demand-analytics platform → S3 AI insights); destination Applied AI Engineer → FDE. Consolidation overlap with DataVault/1099-S3 flagged. Prior v2.8 note archived below.)
 **Last Updated:** June 16, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Data Coverage:** June 02, 2025 — Present (~8 months)  
+
+---
+
+
+## 🎯 v10.0 ROADMAP ALIGNMENT & STAGE-EVOLUTION ARC — AUTHORITATIVE
+
+> **This block governs.** Where anything below it conflicts (old stage numbers, retired titles, pre-v10.0 portfolio lists), **this block wins.**
+
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**.
+
+**Governing model:** **3 stages, not 5.** The retired 14-month "ML Engineer" stage is now an **embedded ML-literacy module inside Stage 3** (earned-overlay — ships only if it beats the baseline). The destination title is **Applied AI Engineer → Forward Deployed Engineer (FDE)**; the retired "Senior LLM Engineer" title is dropped. **This project is ONE system that evolves across stages — never rebuilt per stage.**
+
+**Portfolio role:** 🧩 **Supporting** (production-grade; size ≠ tier) — internal enterprise **demand-analytics**. Overlaps the 1099-platform S3 Analyst layer & DataVault — candidate for consolidation (see note). In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
+
+**Stage-evolution arc:**
+
+| Stage | Theme | This project's layer |
+|---|---|---|
+| **S1** | Foundation (GenAI-first core) | Demand analytics — workflow-demand pipeline + analytics dashboard over retirement-plan operations data (synthetic public repo). |
+| **S2** | DE/AE hardening | Demand-analytics platform — **dbt models** over workflow data, time-series marts, Airflow, contracts, semantic/metrics layer, Docker/ECS. |
+| **S3** | Applied AI (RAG/agentic + eval) | AI insights — NL querying + forecast-narrative generation over the demand marts (structured outputs, HITL, eval). |
+
+- **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
+- **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits.
+
+**Consolidation note (v10.0):** ODI, the 1099-platform S3 Analyst layer, and DataVault all deliver internal NL analytics. Consider merging ODI's demand-analytics into the 1099 platform's mart/AI layer rather than maintaining a parallel project; keep ODI standalone only if the demand-forecasting angle is a distinct portfolio story.
 
 ---
 
@@ -979,3 +1007,54 @@ flowchart LR
 **Focus thread:** volume/demand pattern analysis, Distribution vs Loan segmentation, PandasAI chat with guardrails + code transparency, synthetic data for GitHub.
 
 **Hands-on, no roadmap cert:** OnBase workflow data modeling, Plotly dashboards.
+
+
+---
+
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python 3.11+, pandas | S1 ✅ | Workflow-demand pipeline |
+| SQL | S1 ✅ | Demand aggregation queries |
+| Pydantic v2 | S1 ✅ | Schema validation |
+| Synthetic data generation | S1 ✅ | Public-repo safety — real plan-operations data stays private |
+| Streamlit + Plotly | S1 ✅ | Demand-analytics dashboard |
+| LLM SDK (provider-agnostic) | S1 ✅ | Narrative insights over demand metrics |
+| Structured logging | S1 ✅ | Pipeline observability |
+| Docker, pytest, ruff, mypy, GitHub Actions | S1 ✅ | Production standard |
+| **dbt + tests** | **S2** | **Models over workflow data; time-series demand marts** |
+| **Data contracts (Great Expectations)** | **S2** | **Quality gates on operations feeds** |
+| **Airflow** | **S2** | **Scheduled demand pipeline** |
+| **PostgreSQL** | **S2** | **Production data layer** |
+| **Semantic / metrics layer** | **S2** | **Governed definitions of "demand", "backlog", "capacity"** |
+| **Terraform + AWS ECS** | **S2** | **Containerized deployment** |
+| **NL querying over demand marts** | **S3** | **Ask-your-operations-data interface** |
+| Time-series forecasting | S3 | Demand prediction — **earned-overlay only** (must beat a seasonal-naive baseline) |
+| **HITL** | **S3** | **Forecast narratives are advisory; humans decide staffing** |
+| **Eval + Arize Phoenix** | **S3** | **Per-query metrics + tracing** |
+
+
+> **Consolidation caution:** ODI's S2/S3 skills overlap almost entirely with the DataVault/1099 platform. If you consolidate, this project's distinct value is the *demand-forecasting* angle — not the NL-analytics layer.
+
+---
+
+## 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which ODI needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (GenAI-first core)
+- **Courses:** Python for Everybody · Building with the Claude API · Mode SQL Tutorial · 30 Days of Streamlit
+- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+
+### 🎓 Stage 2 — DE/AE hardening
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals
+- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+
+### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
+- **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps
+- **Certifications:** **Anthropic CCA-F** (optional; shared) · **AI-103** (employer-reimbursed; optional)
+
+**Focus thread:** workflow-demand pipeline → dbt time-series marts + semantic layer → NL query / forecast-narrative insights.
