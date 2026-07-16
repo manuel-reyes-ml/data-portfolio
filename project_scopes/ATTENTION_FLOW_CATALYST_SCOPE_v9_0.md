@@ -1556,6 +1556,37 @@ flowchart LR
 
 ---
 
+## Skills Required (Roadmap Alignment — v10.0)
+
+*Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
+
+| Skill | Stage | How this project uses it |
+|-------|-------|--------------------------|
+| Python 3.11+, pandas, numpy | S1 ✅ | Trigger framework, backtest engine |
+| SEC EDGAR retrieval | S1 ✅ | Filing ingestion — the grounding corpus |
+| DuckDB + partitioned Parquet lakehouse | S1 ✅ | Data spine (shared with Crucible) |
+| **PIT data + bias controls** | **S1 ✅** | **Survivorship/look-ahead defenses — the statistical-rigor story** |
+| LLM SDK (provider-agnostic) | S1 ✅ | The LLM analyst under evaluation |
+| **RAGAS + SelfCheckGPT + DeepEval (three-method eval)** | **S1 ✅** | **Faithfulness ≥ 0.9 on financial claims — the signature showcase** |
+| **Controlled-perturbation catalog** | **S1 ✅** | **Proves the eval detects injected errors — rare, high-signal evidence** |
+| Pydantic v2 | S1 ✅ | Structured analyst outputs |
+| Streamlit | S1 ✅ | Research dashboard |
+| Docker, pytest, ruff, mypy, GitHub Actions | S1 ✅ | Production standard |
+| **dbt + tests** | **S2** | **Models over filings / short-interest / attention data** |
+| **Data contracts (Great Expectations)** | **S2** | **Quality gates on EDGAR + market feeds** |
+| **Airflow** | **S2** | **Scheduled EDGAR ingestion (500+ tickers)** |
+| **`signalcore` primitives library** | **S2** | **Shared tested spine with Crucible — the DE/AE layer** |
+| **Neo4j + ChromaDB (GraphRAG hybrid)** | **S2 → S3** | **Financial KG (companies, filings, insiders, holdings) + vector index; multi-hop explainable retrieval** |
+| **LangGraph (read-only research loop)** | **S3** | **Orchestrator → Analyst workers; Risk-Manager gate; evaluator-optimizer self-correction** |
+| **MCP** | **S3** | **SEC/market API tools exposed to the research agent** |
+| XGBoost / LSTM / MLflow | S3 | ML triggers — **earned-overlay only** |
+| **Arize Phoenix** | **S3** | **Trajectory tracing + drift vs frozen golden set** |
+
+
+> **Read-only by design:** AFC never executes trades (that's Crucible's job). The safety story here is *epistemic* — faithfulness and non-hallucination — not execution risk.
+
+---
+
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which AFC needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
