@@ -9,6 +9,8 @@
 > **v1.1 change:** added `signalcore.shortinterest` (float / short-interest primitives) to support AFC's **T6 Squeeze Context** trigger. Primitives only — the squeeze *thresholds* and *trigger logic* stay in AFC.
 >
 > **v1.2 change:** added a §7 anti-pattern guarding the GraphRAG boundary — the **knowledge-graph / Neo4j entity model** (introduced in roadmap v8.6 as AFC's Stage 2 Financial-KG capstone) is project logic, never a `signalcore` primitive. Clarification only; no code-ownership changes.
+>
+> **v1.3 addendum (July 2026 — same version, additive):** recorded an **ADR log** for `signalcore` in §6 Governance, aligning the library with roadmap **v10.0 CORRECTION 8** (ADR + C4 added to the production standard). Primitive/boundary changes are already deliberate, semver'd events — this only formalizes *where the reasoning is written down*. The §5 dependency diagram already serves as the library's **C4 context-level view**; no README/demo-GIF standard applies (this is a pure-computation library, not a portfolio project). No code-ownership changes.
 
 ---
 
@@ -97,6 +99,7 @@ flowchart TD
 
 - **`signalcore` is its own versioned package** with its own test suite. Both projects pin a version.
 - **A change to a primitive is a deliberate, semver'd event.** Redefining `vdu_present` propagates to *both* consumers by design — that's the benefit — so breaking changes get a major bump and a note in both projects' changelogs. This is the same "change the canonical definition first, then propagate" discipline already in your swing docs.
+- **🆕 Decisions are logged as ADRs (roadmap v10.0 CORRECTION 8).** `signalcore` keeps a numbered, immutable `docs/adr/` log — every primitive redefinition, boundary ruling (e.g. "short-interest ratios are shared but only AFC consumes them"), and semver break is recorded as *context → decision → consequences*. Because a `signalcore` change propagates to **both** AFC and Crucible, the ADR is the single place the two projects' maintainers read to understand *why* a shared definition moved — superseded ADRs are marked, never deleted (same additive-only discipline as the anti-pattern list in §7). C4 **Context** for the library is the §5 dependency diagram; no Container/README/demo-GIF standard applies — this is a pure-computation library, not a stage-evolution portfolio project.
 - **Determinism + PIT are tested, not assumed.** `signalcore` ships leakage tests (assert no function returns data dated `> t`) and golden-value tests (assert stable outputs). The short-interest accessor gets an extra test: assert it never returns a position whose FINRA effective date is `> t` (the bi-monthly-lag trap). Both are CI gates — they protect *both* projects at once.
 - **Governance artifacts do NOT move into `signalcore`.** The validation *algorithms* (walk-forward, bootstrap) are shared; the *sealed OOS vault*, *overfitting ledger*, and *who is allowed to touch test data* stay in each project — they're audit trails, not computation.
 
