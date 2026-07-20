@@ -374,56 +374,6 @@ Still future work; the v1.x build scope is unchanged.
 
 ---
 
-## 15. Courses & Certifications (Learn-While-Building)
-
-Focus: **Python-for-AI + evaluation** — only what's needed to ship this slice. Pursue certificates *in parallel* with the 4 build weeks (learn-while-building). Two lists: courses already in your roadmap to pull forward, and researched 2026 additions worth updating *into* your roadmap.
-
-> These are recommendations. **`roadmap.html` (v8.4) is not modified** — updating it is your call.
-
-### 15.1 Already in your roadmap — pull forward for this slice
-
-| Course | Roadmap stage | Maps to AFC eval-first | Cert |
-|---|---|---|---|
-| Python for Everybody (Michigan) | Stage 1 | Python fundamentals (in progress) | ✅ |
-| AI Python for Beginners (Andrew Ng / DLAI) | Stage 1 | Python to *control* LLMs — analyst + SDK calls | ✅ |
-| Building & Evaluating Advanced RAG (DLAI) | Stage 1 | RAG Triad (groundedness/faithfulness) = **conceptual core of your eval** | ✅ |
-| IBM GenAI Engineering — esp. "Python for Data Science, AI & Dev" + "Building GenAI Apps with Python" | Stage 1 | SDK, structured GenAI apps | ✅ (full cert) |
-| Statistics with Python (Michigan) | Stage 1 | precision / recall / F1, confidence framing for the benchmark | ✅ |
-| Docker for Beginners (KodeKloud) | Stage 1 | containerization deliverable (#1, §9) | ✅ |
-
-> S3's SelfCheckGPT + FActScore are already in your roadmap as *concepts*; this slice pulls them forward. No separate course exists for them — they're learned from their papers/docs.
-
-### 15.2 New / better — researched June 2026, recommend adding to roadmap
-
-| Course | Platform | Cert / Cost | Why it beats what's in the roadmap for THIS slice |
-|---|---|---|---|
-| ⭐ **Automated Testing for LLMOps** | DeepLearning.AI | Free, cert | Builds a **CI workflow** running rules-based + model-graded evals for **hallucinations** — this *is* your CI eval gate (deliverables #9–12), taught directly. Your roadmap has no dedicated eval-in-CI course. |
-| ⭐ **Building with the Claude API** | Anthropic Academy | Free, **official LinkedIn cert** | Provider-source-of-truth training for the **exact Anthropic SDK** your analyst uses (deliverable #4). Certificate comes from the model-maker → real weight for AI-dev roles + fellowship signal. |
-| **Evaluating AI Agents** | DeepLearning.AI | Free (beta), cert | LLM-as-judge vs code-based evaluators, choosing metrics, traces/observability — deepens eval methodology beyond the RAG Triad. |
-| **Improving Accuracy of LLM Applications** | DeepLearning.AI | Free, cert | Build an eval framework from scratch, **deliberately simulate hallucinations**, define an eval score — mirrors your §4 perturbation methodology. |
-
-### 15.3 If you take only two (the picks)
-
-1. **Automated Testing for LLMOps** (DLAI) — most directly unblocks the build; it's the CI hallucination-eval gate.
-2. **Building with the Claude API** (Anthropic Academy) — the Python/SDK fluency the analyst needs, free official cert, fellowship-aligned.
-
-Keep the one roadmap course that is the conceptual spine either way: **Building & Evaluating Advanced RAG** (groundedness/faithfulness).
-
-### 15.4 Learn-while-building map (the 4 weeks)
-
-| Build week | Focus | Course alongside |
-|---|---|---|
-| 1 — setup, EDGAR retrieval | Python + async APIs, Docker | AI Python for Beginners; Docker for Beginners |
-| 2 — analyst, SDK, Pydantic | Claude SDK, structured outputs | **Building with the Claude API** (Anthropic Academy) |
-| 3 — eval harnesses + CI gate | hallucination eval, CI | **Automated Testing for LLMOps** + Building & Evaluating Advanced RAG |
-| 4 — benchmark stats + writeup | precision/recall, LLM-as-judge nuance | Statistics with Python (relevant modules); Evaluating AI Agents |
-
-### 15.5 Certification strategy note
-
-All §15.2 picks issue LinkedIn-addable certificates; Anthropic Academy's come from the model-maker, which carries more weight than generic completions. A separate, more formal credential — **Claude Certified Architect, Foundations** (announced March 12, 2026) — exists for production-Claude/solution-architect work; **not needed for this slice**, but worth keeping on the radar for later production credibility.
-
----
-
 ## ✅ Approval Status
 
 Design approved (June 10, 2026):
