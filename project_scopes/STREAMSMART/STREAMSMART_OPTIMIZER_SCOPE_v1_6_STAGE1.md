@@ -54,7 +54,7 @@
 12. [Success Metrics](#12-success-metrics)
 13. [Risk Mitigation](#13-risk-mitigation)
 14. [Timeline Summary](#14-timeline-summary)
-15. [Project Evolution (3 Stages)](#15-project-evolution-5-stages)
+15. [Project Evolution (3 Stages)](#15-project-evolution-3-stages)
 
 ---
 
@@ -916,22 +916,6 @@ flowchart LR
 **Total Timeline:** 6 weeks
 
 *"Real consumer pain point + Finance domain expertise + SDK-first AI + Structured outputs + Live content APIs = Portfolio project that recruiters AND users actually care about"* 🚀
----
-
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for StreamSmart (Stage 1 scope). Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for StreamSmart (Stage 1) |
-|---|---|---|---|
-| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + async API calls — foundation for the external-API layer |
-| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | The AI rotation-planner LLM layer + structured outputs |
-
-**Focus thread:** httpx async to Watchmode/TMDB, Pydantic models, financial-disclaimer guardrails, LangSmith tracing, DeepEval.
-
-> Production-scale courses (optimization + observability) are listed in the Full-Production scope.
-
-
 ---
 
 ## Skills Required (Roadmap Alignment — v10.0)
