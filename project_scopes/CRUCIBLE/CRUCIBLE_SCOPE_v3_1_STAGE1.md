@@ -787,27 +787,6 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 *Educational/operational specification only. Not investment, financial, or legal advice. This document defines process and execution logic; it makes no claim that any strategy has positive expectancy — that is what the crucible is for.*
 ---
 
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for Crucible. Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for Crucible |
-|---|---|---|---|
-| 1 | Building with the Claude API (Anthropic Academy) | Stage 1 | SDK foundation for the cloud fallback providers (Gemini → Anthropic → OpenAI) |
-| 2 | Fine-Tuning LLMs with PEFT (DeepLearning.AI) | Stage 3 | Local model customization (LoRA/QLoRA) for the Qwen3 analyst |
-| 3 | Fast & Efficient LLM Inference with vLLM (DeepLearning.AI) | Stage 3 | Local-first inference + quantization (nearest cert to the Ollama/Qwen3 layer) |
-| 4 | Agentic AI (Andrew Ng) | S3 | Agent design patterns + disciplined evals — underpins "the Wall" + oversight |
-| 5 | AI Agents in LangGraph | S3 | The LangGraph agent crew (analyst → risk-manager → trader) |
-| 6 | Multi-AI Agent Systems with crewAI (DeepLearning.AI) | S3 | Multi-agent oversight + risk-manager veto patterns |
-| 7 | Evaluating AI Agents (DeepLearning.AI) | S3 | Agent evaluation/observability for the autonomous paper/live loop |
-
-**Focus thread:** local-first serving, the LLM "behind the Wall" (reads aggregates, never raw rows), deterministic core owns every trade, multi-agent oversight, agent evals.
-
-**Honest gap (no roadmap cert):** trading/backtesting infrastructure (NautilusTrader, Optuna, event-driven harness) — hands-on + docs; formal path is Georgia Tech / OMSCS later.
-
-
----
-
 ## Skills Required (Roadmap Alignment — v10.0)
 
 *Maps roadmap **v10.0** skills to how **this specific project** uses them. ✅ = already in hand / built at this stage. Skills escalate **within** the project (S1→S2→S3) — the system is never rebuilt.*
