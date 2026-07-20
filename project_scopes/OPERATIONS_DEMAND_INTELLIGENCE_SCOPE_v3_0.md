@@ -793,7 +793,6 @@ operations-demand-intelligence/
 |----------|------|
 | GitHub | Clean README, live demo link |
 | LinkedIn | Project post with screenshots |
-| Upwork | Portfolio showcase |
 
 ---
 
@@ -986,29 +985,11 @@ flowchart LR
 
 ---
 
-**Document Status:** 📋 DRAFT (v2.6 — Roadmap v8.3 alignment confirmed; internal analytics tool, no agentic scope; provider-agnostic architecture preserved)  
 **Date:** May 07, 2026  
 **Data Coverage:** June 2025 — January 2026 (~8 months)  
 **Total Timeline:** 6 weeks
 
 *"Real business data + SDK-first AI architecture + Structured outputs + Production guardrails = Portfolio-ready project"* 🚀
----
-
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for Operations-Demand-Intelligence (ODI). Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for ODI |
-|---|---|---|---|
-| 1 | IBM Data Analyst Professional Certificate | Stage 1 | pandas + analytics + visualization foundation |
-| 2 | Statistics with Python Specialization (University of Michigan) | Stage 1 | Demand patterns, distributions, inference for staffing decisions |
-| 3 | Building with the Claude API (Anthropic Academy) | Stage 1 | The AI insights / chat layer (reuses the DataVault SDK skill) |
-
-**Focus thread:** volume/demand pattern analysis, Distribution vs Loan segmentation, PandasAI chat with guardrails + code transparency, synthetic data for GitHub.
-
-**Hands-on, no roadmap cert:** OnBase workflow data modeling, Plotly dashboards.
-
-
 ---
 
 ## Skills Required (Roadmap Alignment — v10.0)
