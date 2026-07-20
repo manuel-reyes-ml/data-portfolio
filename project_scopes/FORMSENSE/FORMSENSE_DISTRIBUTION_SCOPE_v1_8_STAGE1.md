@@ -54,7 +54,7 @@
 13. [Success Metrics](#13-success-metrics)
 14. [Risk Mitigation](#14-risk-mitigation)
 15. [Timeline Summary](#15-timeline-summary)
-16. [Project Evolution (3 Stages)](#16-project-evolution-5-stages)
+16. [Project Evolution (3 Stages)](#16-project-evolution-3-stages)
 
 ---
 
@@ -114,7 +114,7 @@ This is a **Multimodal AI project** — using vision-capable LLMs to understand 
 
 ## 2. Strategic Positioning
 
-### 2.1 Roadmap Alignment (Stage 1: GenAI-First Data Analyst & AI Engineer)
+### 2.1 Roadmap Alignment (Stage 1: GenAI-First Core → Applied AI)
 
 This project directly delivers on **4 critical roadmap objectives**:
 
@@ -1244,22 +1244,6 @@ flowchart LR
 **Strategic Role:** Document Intelligence Project — Multimodal AI for Financial Services
 
 *"Vision AI form reading + Business rule validation + Smart routing (email OR ticket) = Enterprise-grade document processing that operations teams actually deploy"* 🚀
----
-
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for FormSense. Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for FormSense |
-|---|---|---|---|
-| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + LLM control — foundation for the vision/extraction layer |
-| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured (Pydantic) outputs + multimodal calls (provider-agnostic; project uses Gemini Vision) |
-| 3 | Pre-processing Unstructured Data for LLM Applications | S3 | Getting messy scans/PDFs into clean, LLM-ready inputs |
-| 4 | Document AI: From OCR to Agentic Doc Extraction | S3 | The core: scanned forms/PDFs → structured JSON with field schemas |
-
-**Focus thread:** multimodal extraction (handwriting, checkboxes), field-level confidence scoring, Pydantic validation, business-rule routing (complete → ticket, incomplete → advisor email).
-
-
 ---
 
 ## Skills Required (Roadmap Alignment — v10.0)
