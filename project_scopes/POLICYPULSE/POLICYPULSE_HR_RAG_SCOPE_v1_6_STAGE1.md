@@ -54,7 +54,7 @@
 13. [Success Metrics](#13-success-metrics)
 14. [Risk Mitigation](#14-risk-mitigation)
 15. [Timeline Summary](#15-timeline-summary)
-16. [Project Evolution (3 Stages)](#16-project-evolution-5-stages)
+16. [Project Evolution (3 Stages)](#16-project-evolution-3-stages)
 
 ---
 
@@ -105,7 +105,7 @@ This is a **RAG (Retrieval-Augmented Generation) foundation project** — the mo
 
 ## 2. Strategic Positioning
 
-### 2.1 Roadmap Alignment (Stage 1: GenAI-First Data Analyst & AI Engineer)
+### 2.1 Roadmap Alignment (Stage 1: GenAI-First Core → Applied AI)
 
 This project directly delivers on **4 critical roadmap objectives**:
 
@@ -1207,25 +1207,6 @@ flowchart LR
 **Strategic Role:** RAG Foundation Project — Gateway to S3 Vector DB + LangChain Skills
 
 *"Document ingestion + Semantic search + RAG generation + Citation verification + Ticket escalation = Enterprise-grade AI policy assistant that HR teams actually trust"* 🚀
----
-
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for PolicyPulse. Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for PolicyPulse |
-|---|---|---|---|
-| 1 | IBM Generative AI Engineering Professional Certificate | Stage 1 | RAG + LangChain fundamentals (chunking, embeddings, retrieval) |
-| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (primary) + prompt caching for RAG synthesis |
-| 3 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | RAG Triad — Context Relevance, Groundedness, Answer Relevance — your eval backbone |
-| 4 | Vector Databases: from Embeddings to Applications | Stage 2 | Embeddings + vector store (ChromaDB), semantic search, similarity scoring |
-| 5 | 🆕 Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | GraphRAG on-ramp — fuse a knowledge graph + vector index into a hybrid retriever (Cypher + LangChain); maps directly to the §16 Stage 2 GraphRAG upgrade path |
-| 6 | 🆕 Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — build KGs from unstructured policy docs, fuse vector + graph retrieval end-to-end |
-| 7 | MCP: Build Rich-Context AI Apps with Anthropic | S3 | The FastMCP server that exposes retrieval as MCP tools |
-
-**Focus thread:** document → chunk → embed → retrieve → generate, cited answers, confidence-based HR escalation, RAGAS/DeepEval evaluation, MCP tool exposure.
-
-
 ---
 
 ## Skills Required (Roadmap Alignment — v10.0)
