@@ -935,27 +935,11 @@ flowchart LR
 
 ---
 
-**Document Status:** 📋 DRAFT (v1.3 — Roadmap v8.3 alignment confirmed; provider-agnostic architecture supports Anthropic/Gemini/OpenAI swap via config)  
 **Date:** May 07, 2026  
 **Total Timeline:** 4 weeks  
 **Strategic Role:** First AI project to publish — GenAI portfolio launchpad
 
 *"PII-safe data access + SDK-first AI + Structured outputs + Code transparency = Production-grade 'Chat With Your Data' that recruiters actually remember"* 🚀 
----
-
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them for DataVault. Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for DataVault |
-|---|---|---|---|
-| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python used to call and control LLMs — the foundation for the AI chat layer |
-| 2 | IBM Generative AI Engineering Professional Certificate | Stage 1 | Building GenAI-powered apps with Python; provider-agnostic SDK basics |
-| 3 | Building with the Claude API (Anthropic Academy) | Stage 1 | Structured outputs — the frozen `ExceptionExplanation` schema pattern |
-
-**Hands-on, no roadmap cert (build & document instead):** reconciliation-balance assertions, IRS 1099-R Box-7 rule encoding + tax-year pinning, governance-as-code PII boundary, DeepEval on the explanation layer.
-
-
 ---
 
 ## Skills Required (Roadmap Alignment — v10.0)
