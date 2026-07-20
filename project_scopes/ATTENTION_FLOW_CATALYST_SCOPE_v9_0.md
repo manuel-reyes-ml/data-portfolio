@@ -53,7 +53,7 @@
 13. [CI/CD Pipeline](#13-cicd-pipeline)
 14. [Logging & Debugging](#14-logging--debugging) ⭐ NEW
 15. [Project Structure](#15-project-structure)
-16. [Project Evolution (3 Stages)](#16-project-evolution-5-stages)
+16. [Project Evolution (3 Stages)](#16-project-evolution-3-stages)
 17. [Success Metrics](#17-success-metrics)
 18. [Risk Mitigation](#18-risk-mitigation)
 19. [Timeline Summary](#19-timeline-summary)
@@ -1524,36 +1524,9 @@ flowchart LR
 
 ---
 
-**Document Status:** ✅ UPDATED (v8.3 — Roadmap v8.3 alignment: Anthropic primary + agent patterns + advanced eval + A2A)  
 **Date:** May 07, 2026
 
 *"Defensible methodology + Modern stack + SDK-first AI with structured outputs & guardrails = Research system, not just a dashboard"* 🚀
----
-
-## 📚 Courses & Certifications (take in this order)
-
-*Quick reference, synced with roadmap v8.6. Same course names as the roadmap; listed top-to-bottom in the order to take them across AFC's multi-stage build. Focus notes are project-specific.*
-
-| # | Course (roadmap name) | Stage | Focus for Attention-Flow Catalyst |
-|---|---|---|---|
-| 1 | AI Python for Beginners (Andrew Ng) | Stage 1 | Python + LLM control — foundation for the AI dashboard layer |
-| 2 | Building with the Claude API (Anthropic Academy) | Stage 1 | Anthropic SDK (AFC's primary provider) + structured outputs |
-| 3 | Improving Accuracy of LLM Applications (DeepLearning.AI) | Stage 1 | Eval framework + hallucination simulation — pairs with the eval-first slice |
-| 4 | Building & Evaluating Advanced RAG (DeepLearning.AI) | Stage 1 | Faithfulness/groundedness for AI-generated trigger insights |
-| 5 | 🆕 Knowledge Graphs for RAG (intro to GraphRAG) — DeepLearning.AI (w/ Neo4j) | Stage 2 | **Perfect domain fit** — builds a knowledge graph from SEC filings (AFC's exact domain) + a vector index into a hybrid retriever (Cypher + LangChain); the direct on-ramp to the §16 Stage 2 Financial-KG capstone |
-| 6 | 🆕 Neo4j GraphAcademy: Knowledge Graphs & GraphRAG → Neo4j Certified Professional | Stage 3 | Deepen GraphRAG + recognized graph credential — KGs from unstructured filings, fuse vector + graph retrieval, end-to-end GraphRAG pipelines |
-| 7 | Agentic AI (Andrew Ng) | S3 | Design patterns for the S3 Agentic Trading Assistant |
-| 8 | MCP: Build Rich-Context AI Apps with Anthropic | S3 | Agents call SEC/market-data sources via MCP tools |
-| 9 | AI Agents in LangGraph | S3 | Multi-agent architecture for the S3 assistant |
-| 10 | Evaluating AI Agents (DeepLearning.AI) | S3 | Agent evaluation/observability |
-
-**Focus thread:** read-only swing research → AI dashboard (Phase 1B) → ML triggers → S3 agentic assistant; SEC/EDGAR-grounded, 0.9 faithfulness threshold.
-
-> The **eval-first slice** (`AFC_EVAL_FIRST_CORE_SCOPE`) carries its own §15 course map for the SEC-grounded faithfulness benchmark sub-project — build that first.
-
-**Honest gap (no roadmap cert):** trading/backtesting methodology (walk-forward, bootstrap CI, de-clustering) — hands-on + domain self-study; formal path is Georgia Tech / OMSCS later.
-
-
 ---
 
 ## Skills Required (Roadmap Alignment — v10.0)
