@@ -1278,7 +1278,7 @@ flowchart LR
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** AI Python for Beginners · Building with the Claude API (structured outputs + multimodal) · Pre-processing Unstructured Data · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer · Docker · 30 Days of Streamlit
+- **Courses:** AI Python for Beginners · Building with the Claude API (structured outputs + multimodal) · Pre-processing Unstructured Data · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer [Academy: Introduction to Model Context Protocol] · Docker · 30 Days of Streamlit
 - **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
 ### 🎓 Stage 2 — DE/AE hardening
@@ -1286,7 +1286,8 @@ flowchart LR
 - **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** Document AI (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · MCP full
+- **Courses:** Document AI (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · MCP full [Academy: MCP — Advanced Topics]
 - **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** (employer) · **Databricks GenAI Associate** ($200 — optional)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** multimodal multi-source extraction → field-level confidence + reconciliation → ERISA rule routing → GEval accuracy → MCP action tools → form-history vector RAG.
