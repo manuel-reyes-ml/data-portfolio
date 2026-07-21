@@ -559,7 +559,7 @@ formsense/
 *Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs are noted.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** AI Python for Beginners (Andrew Ng) · Building with the Claude API (Anthropic Academy — structured outputs + multimodal) · Pre-processing Unstructured Data for LLM Applications · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer (DeepLearning.AI) · Docker for Beginners · 30 Days of Streamlit
+- **Courses:** AI Python for Beginners (Andrew Ng) · Building with the Claude API (Anthropic Academy — structured outputs + multimodal) · Pre-processing Unstructured Data for LLM Applications · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer [Academy: Introduction to Model Context Protocol] (DeepLearning.AI) · Docker for Beginners · 30 Days of Streamlit
 - **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
 ### 🎓 Stage 2 — DE/AE hardening
@@ -567,8 +567,9 @@ formsense/
 - **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** Document AI: From OCR to Agentic Doc Extraction (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full)
+- **Courses:** Document AI: From OCR to Agentic Doc Extraction (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full) [Academy: MCP — Advanced Topics]
 - **Certifications:** **Anthropic CCA-F** ($125 — agentic orchestration / MCP source-of-truth) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks Certified GenAI Engineer Associate** ($200 — optional, for the agentic-workflow signal)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** multimodal multi-source extraction (handwriting, checkboxes, email body) · field-level confidence + reconciliation · ERISA business-rule routing (complete→ticket / incomplete→advisor email) · GEval accuracy · MCP action tools · form-history vector RAG.
 
