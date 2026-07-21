@@ -423,7 +423,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 *Synced to roadmap **v10.0**. ✅ = committed canon; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API (Anthropic Academy — structured outputs) · Improving the Accuracy of LLM Applications (eval) · Docker for Beginners
+- **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API (Anthropic Academy — structured outputs) · Improving the Accuracy of LLM Applications (eval) · Docker for Beginners · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
 - **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
 ### 🎓 Stage 2 — DE/AE hardening
@@ -431,8 +431,9 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 - **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (agentic + eval)
-- **Courses:** AI Agents in LangGraph (**HITL pattern** behind the mandatory sign-off gate) · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps
+- **Courses:** AI Agents in LangGraph (**HITL pattern** behind the mandatory sign-off gate) · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps [Academy: MCP — Advanced Topics]
 - **Certifications:** **Anthropic CCA-F** ($125 — agentic orchestration source-of-truth; **Domain 1 maps directly to the workflow-vs-agent distinction this project embodies**) · **Databricks GenAI Engineer Associate** ($200 — optional)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** PIT lakehouse → `signalcore` tested library → backtest behind The Wall → pre-registered gates → paper → live agent with verifier + human sign-off + tested kill-switch.
 
