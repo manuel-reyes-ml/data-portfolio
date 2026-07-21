@@ -979,7 +979,7 @@ flowchart LR
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which the 1099 / DataVault DE-AE flagship needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API · Mode SQL Tutorial · Docker for Beginners · 30 Days of Streamlit · Pre-processing Unstructured Data (for exception-doc parsing)
+- **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API · Mode SQL Tutorial · Docker for Beginners · 30 Days of Streamlit · Pre-processing Unstructured Data (for exception-doc parsing) · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
 - **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
 ### 🎓 Stage 2 — DE/AE hardening
@@ -989,5 +989,6 @@ flowchart LR
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full) — text-to-SQL / RAG-over-marts patterns
 - **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks GenAI Engineer Associate** ($200 — optional; "also reads as a DE cert")
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** Matrix + Relius ingest → dbt reconciliation + tax-code models (tests, contracts) → marts + semantic layer → NL query / AI-assisted corrections.
