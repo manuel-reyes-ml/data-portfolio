@@ -1,258 +1,209 @@
 # 📊 Data & AI Portfolio
 
-![GenAI-First](https://img.shields.io/badge/🤖_GenAI--First-Data_Analyst_&_AI_Engineer-blueviolet?style=for-the-badge)
+![AI-Focused](https://img.shields.io/badge/AI--Focused-Data_Engineering_→_Applied_AI-blueviolet?style=for-the-badge)
 
-**Manuel Reyes** | Production Systems • Real Business Impact • GenAI-Powered Analytics
+**Manuel Reyes** — Production systems, evaluation-gated, built in a regulated financial domain.
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-mr410-0077B5?logo=linkedin)](https://linkedin.com/in/mr410) 
-[![GitHub](https://img.shields.io/badge/GitHub-manuel--reyes--ml-181717?logo=github)](https://github.com/manuel-reyes-ml) 
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-mr410-0077B5?logo=linkedin)](https://linkedin.com/in/mr410)
+[![GitHub](https://img.shields.io/badge/GitHub-manuel--reyes--ml-181717?logo=github)](https://github.com/manuel-reyes-ml)
 [![Email](https://img.shields.io/badge/Email-Contact-D14836?logo=gmail)](mailto:manuelreyesv410@gmail.com)
-[![Roadmap](https://img.shields.io/badge/Roadmap-v8.9-28a745)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
+[![Roadmap](https://img.shields.io/badge/Roadmap-v10.0-28a745)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
 
 ---
 
-## 💼 What Makes Me Different
+## Positioning
 
-| Most Candidates | What I Bring |
-|:----------------|:-------------|
-| 🎓 Tutorial projects | ✅ **Production ETL system** (live, saving **$15K/year**) |
-| ❌ No domain expertise | ✅ **15+ years business data** + **6 years trading** experience |
-| 📦 Scattered portfolios | ✅ **8 production-grade projects** with skills progression (incl. **two flagships**: AFC + Crucible) |
-| 🤖 No AI integration | ✅ **GenAI-first** (LLM SDKs with **Anthropic primary** + **local-first Qwen3/Ollama + LM Studio**, RAG + **GraphRAG (Neo4j)**, **FastMCP server**, Multimodal AI, Pydantic structured outputs) |
-| 📉 No AI evaluation | ✅ **Evaluation-driven development** (DeepEval + pytest, RAGAS, **SelfCheckGPT**, Docker in every project) |
+This portfolio is organized around a single thesis: **proof over keywords.** Each project is a production-grade system with evaluation gates, most of them grounded in ERISA-regulated retirement-plan operations — the domain I've worked in for years. The evidence layer (shipped systems, eval thresholds, decision records) is the point; the credentials and titles are secondary.
 
----
+The through-line:
 
-## 📌 Project Pipeline — Skills Progression (Easy → Two Flagships)
+- **Real production impact** — a 1099 reconciliation platform running live at work (details below), not a tutorial clone.
+- **Domain depth as a moat** — ~15 years of business operations and financial-services work, applied to problems where correctness is regulated, not optional.
+- **Evaluation-first engineering** — DeepEval / RAGAS / SelfCheckGPT as *blocking* gates, faithfulness thresholds, synthetic data in every public repo.
+- **One system per project, evolved across stages** — projects are hardened S1 → S3, never rebuilt per stage.
 
-> Each project introduces new skills that build on the previous.
->
-> 🏗️ **Production Standard (v8.9):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table, demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC, Crucible) add advanced rigor — FastMCP server + hallucination detection (SelfCheckGPT/FActScore) for the research systems; sealed out-of-sample vault + overfitting-budget ledger + engine-parity gate for Crucible.
-
-| # | Project | Key Skills Added | Status |
-|---|---------|-----------------|--------|
-| 1 | 🧾 **[1099 Reconciliation Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** | ETL, pandas, pytest, CI/CD | ✅ **Production** |
-| 2 | 🔐 **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** | + LLM SDK, PandasAI, Pydantic, PII handling | 📅 Next |
-| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | + Embeddings, ChromaDB, RAG, semantic search, RAG Triad evaluation, **FastMCP server, Anthropic SDK primary** · *upgrade path:* **GraphRAG hybrid (Neo4j + ChromaDB)** | 📅 Planned |
-| 4 | 📄 **[FormSense](https://github.com/manuel-reyes-ml/formsense)** | + Multimodal AI (Gemini Vision), document processing | 📅 Planned |
-| 5 | 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** | + Enterprise real data, advanced analytics | 🚧 In Dev |
-| 6 | 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** | + External APIs, consumer UX, optimization | 📅 Planned |
-| 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | + Statistical methodology, DuckDB, async, multi-source (6 triggers incl. **T6 Squeeze-Context**), **Financial Knowledge Graph (Neo4j)**, **financial-grade eval (SelfCheckGPT + FActScore, 0.9 faithfulness)** | 🚧 Phase 1A |
-| 8 | 🔥 **[Crucible](https://github.com/manuel-reyes-ml/crucible)** 🚀 | + Own backtest harness → NautilusTrader, deterministic strategy plugins, sealed OOS vault + overfitting budget, **local-first LLM (Qwen3/Ollama)**, LangGraph multi-agent execution, Alpaca + Schwab/TOS, **human-in-the-loop sign-off + kill-switch on live** | 🚧 Phase 1 |
+Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) (3 stages, ~32 months).
 
 ---
 
-## 🏆 Production Highlight
+## 🗂️ Portfolio at a Glance
 
-### 🧾 [1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)
+**3 flagships + 2 supporting**, plus a backlog and shared tooling. *Flagship vs supporting denotes size and emphasis — not a quality tier. Every project carries the full production standard.*
 
-**✅ LIVE IN PRODUCTION** at Daybright Financial
+| Project | Role | Arc | What it demonstrates | Status |
+|---|---|---|---|---|
+| 🧾 **1099 / DataVault Data Platform** | 🚩 Flagship — Data Engineering | S1 → S3 | Production ETL + reconciliation → dbt-tested models (CI) → orchestration → an Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live in production** |
+| 📋 **PolicyPulse** | 🚩 Flagship — Applied AI (RAG) | S1 → S3 | RAG over plan documents → GraphRAG hybrid (Neo4j + ChromaDB) → agentic + eval/observability; exposes a FastMCP server | 🏗️ **S1 shipping** |
+| 🔥 **Crucible** | 🚩 Flagship — Autonomous trading research | S1 → S3 | Multi-timeframe (swing → intraday) backtest engine + integrity spine → agentic execution; **mandatory HITL sign-off + kill-switch** on the live path | 🏗️ **S1 in progress** |
+| 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | S1 → S3 | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
+| 📄 **FormSense** | Supporting — Document ops | S1 → S3 | Multimodal structured extraction from distribution forms; Pydantic frozen-schema contract; agentic workflow | 📅 Planned |
+| 📺 StreamSmart · 📊 ODI | Backlog | — | Production-grade when built; ODI is a consolidation candidate against the platform's mart/AI layer | 🗒️ Backlog |
+| 🧩 **Cadence** | Support tooling | — | Build-in-public content pipeline (a tool, not a portfolio flagship) | 🛠️ Tooling |
+| ⚙️ **signalcore** | Shared library | — | Point-in-time-safe primitives beneath AFC + Crucible (see the [boundary spec](project_scopes/CRUCIBLE/Shared_SignalCore_Boundary_Spec_v1_3.md)) | 📚 Library |
+
+Each project links to its scope document(s) in the [Repository Structure](#-repository-structure) section below.
+
+---
+
+## 🏆 Production Highlight — 1099 / DataVault Data Platform (S1 core)
+
+**✅ Live in production at Daybright Financial.** The Data-Engineering flagship's Stage-1 core: ingests Matrix + Relius sources into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics.
 
 | Metric | Impact |
-|--------|--------|
-| ⚡ Time Saved | **95% reduction** (4-6 hours → 15 min/week) |
-| 💰 Cost Savings | **$15,000+/year** in labor costs |
-| 📊 Scalability | **10x capacity** (300+ accounts vs 30 manual) |
-| ✅ Accuracy | **Zero errors** since deployment |
+|---|---|
+| ⚡ Time saved | ~95% reduction (hours → minutes per cycle) |
+| 💰 Cost savings | ~$15,000 / year in labor |
+| 📊 Scale | 10× capacity vs. the manual process |
+| ✅ Correctness | Caught a tax-code error a manual pass missed (Dec 2025) |
 
-**Tech:** Python • pandas • openpyxl • Matplotlib • pytest • GitHub Actions CI • faker
+**Stack:** Python · pandas · pytest · GitHub Actions CI · synthetic-data fixtures for the public build.
+
+> The public portfolio build uses synthetic data only — the production deployment runs internally on regulated data.
 
 ---
 
 ## 🚀 Project Summaries
 
-### 🔐 DataVault Analyst — *First AI Project*
-**"Chat With Your Data"** — PII-safe natural language analytics for retirement plan operations. Hybrid dashboards + LLM chat with AI guardrails and code transparency.
+### 🧾 1099 / DataVault Data Platform — *Data-Engineering flagship*
+One system across the arc, not two projects. **Stage 1:** the live 1099 reconciliation core (canonical model → reconcile → Box-7 derivation → corrections analytics). **Stage 2:** hardened into a data platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy (Docker/ECS), monitoring. **Stage 3:** the Applied-AI analyst layer — natural-language querying with **human-in-the-loop on every write**.
 
-**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Pydantic • DeepEval • Docker • GitHub Actions CI
-
----
-
-### 📋 PolicyPulse — *RAG Foundation*
-**"Ask Your Policies"** — RAG chatbot answering HR policy questions with cited sources. Auto-escalates to HR via structured tickets when confidence is low. **Exposes a FastMCP server** so Cursor/Claude Desktop can query the HR knowledge base directly.
-
-**Tech:** Python • **Anthropic SDK (primary, Gemini fallback)** • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • SelfCheckGPT • **FastMCP** • Docker • GitHub Actions CI
-
-**Upgrade path (Stage 2/3):** GraphRAG hybrid — **Neo4j knowledge graph + ChromaDB** — for multi-hop policy questions where vector-only retrieval stitches the wrong chunks together.
+**Stack:** Python · pandas · dbt · Great Expectations · Airflow · Snowflake · Docker · GitHub Actions CI · Anthropic SDK · Pydantic
 
 ---
 
-### 📄 FormSense — *Document Intelligence*
-**"From Paper to Processing"** — Multimodal AI reads retirement plan distribution forms (handwritten checkboxes, signatures), validates against ERISA business rules, and routes to operations or advisor.
+### 📋 PolicyPulse — *Applied-AI flagship (RAG)*
+Retrieval-augmented answering over retirement-plan documents with cited sources and confidence-gated escalation. Exposes a **FastMCP server** so an editor/assistant can query the knowledge base directly. Evolves from vector RAG (S1) to a **GraphRAG hybrid — Neo4j + ChromaDB** (S2/S3) for multi-hop questions vector-only retrieval stitches together wrong, then to agentic workflows with a three-layer eval spine.
 
-**Tech:** Python • Gemini Vision SDK • Streamlit • Pydantic • DeepEval • Docker • GitHub Actions CI
-
----
-
-### 📊 Operations-Demand-Intelligence — *Enterprise Analytics*
-**AI-Powered Workflow Demand Analysis** — 8+ months of OnBase enterprise data with AI chat interface for data-driven staffing decisions.
-
-**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Plotly • DeepEval • Docker • GitHub Actions CI
+**Stack:** Python · Anthropic SDK (primary) · ChromaDB · Neo4j (GraphRAG) · Gemini embeddings · FastMCP · Arize Phoenix · RAGAS · SelfCheckGPT · DeepEval · Streamlit · Pydantic · Docker
 
 ---
 
-### 📺 StreamSmart Optimizer — *Consumer AI App*
-**"Spend Less, Watch More"** — AI-powered streaming subscription rotation advisor with live content APIs, cost-per-view analytics, and savings forecasting.
+### 🔥 Crucible — *Autonomous trading-research flagship*
+A strategy-agnostic platform taking a strategy from **backtest → paper → live** through validation gates. **Multi-timeframe (swing → intraday)** — swing-first is the lower-risk on-ramp; intraday plugins follow once swing clears all three integrity gates. Strategies are plugins (Protocol + ABC + registry). Research-loop integrity is enforced by a sealed out-of-sample vault + an overfitting-budget ledger + an engine-parity gate. Live execution is the one genuinely irreversible path, so it is gated by **mandatory HITL sign-off + a kill-switch**; the LLM sits *behind the Wall* (proposes, never executes). Local-first inference keeps cost at zero and proprietary data on-machine.
 
-**Tech:** Python • httpx async • Watchmode/TMDB APIs • Streamlit • Gemini SDK • Pydantic • DeepEval • LangSmith • Docker • GitHub Actions CI
-
----
-
-### 📈 Attention-Flow Catalyst — 🚀 *Flagship #1*
-**AI-Powered Predictive Trigger Analysis for Small-Cap Stocks** — Defensible research system with walk-forward validation, survivorship bias controls, and alternative data from SEC, Wikipedia, and news sources across a 6-trigger framework (including a T6 squeeze-context signal). A Neo4j Financial Knowledge Graph anchors the capstone. Evolves through all 5 career stages.
-
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • **Neo4j (Financial Knowledge Graph capstone)** • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
-
----
-
-### 🔥 Crucible — 🚀 *Flagship #2 (started first)*
-**Autonomous Intraday Trading Research Platform** — Strategy-agnostic platform taking any intraday strategy from **backtest → paper → live** through validation gates. An LLM research analyst proposes strategy improvements that are *proved* by deterministic backtests behind a **sealed out-of-sample vault** (every peek logged in an overfitting-budget ledger). Strategies are plugins (Protocol + ABC + registry); IT-1 ORB + VWAP Reclaim ship first to prove the abstraction. **Distinct from AFC:** liquid *intraday execution* vs. illiquid small-cap *swing research* — ~70% shared engineering spine, two different hard problems. Phase 1 (backtest engine) is in Stage 1; autonomous paper/live agentic phases mature across Stages 3–4. Live execution is gated by **mandatory human-in-the-loop sign-off + a kill-switch** — irreversibility sets the safety bar. Local-first AI keeps cost at zero and data on-machine.
-
-**Tech:** Python • own event-driven backtest harness → **NautilusTrader** (LGPL, free) • Optuna • DuckDB • Parquet • **Ollama/Qwen3 (local-first)** → Gemini → Anthropic → OpenAI • Pydantic • LangGraph • **Alpaca** (paper + live) + **Schwab Trader API/TOS** (live) • DeepEval • Docker • GitHub Actions CI
+**Stack:** Python · own event-driven backtest harness → NautilusTrader · Optuna · DuckDB/Parquet · Ollama/Qwen (local-first) → cloud fallback · Pydantic · LangGraph · Alpaca (paper + live) · DeepEval · Docker
 
 > ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
 
 ---
 
-## 🛠️ Technical Skills (Stage 1)
+### 📈 Attention-Flow Catalyst (AFC) — *Supporting (research)*
+An eval-first research system on small-cap attention/accumulation signals. The Stage-1 deliverable is the smallest publishable high-signal artifact: a **SEC-grounded faithfulness benchmark + a controlled-perturbation catalog**. A Neo4j financial knowledge graph anchors the later GraphRAG work. Shares a thin primitives layer (`signalcore`) with Crucible — siblings, no merge.
 
-**Languages & Dev Tools**
+**Stack:** Python · DuckDB/Parquet · edgartools (SEC) · Neo4j · Anthropic SDK · SelfCheckGPT · FActScore · DeepEval · Streamlit · Docker
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![R](https://img.shields.io/badge/R-276DC3?style=flat-square&logo=r&logoColor=white)
-![SQL](https://img.shields.io/badge/SQL-4479A1?style=flat-square&logo=postgresql&logoColor=white)
-![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=flat-square&logo=jupyter&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
-![Bash](https://img.shields.io/badge/Bash/CLI-4EAA25?style=flat-square&logo=gnubash&logoColor=white)
+---
 
-**Data & Processing**
+### 📄 FormSense — *Supporting (document operations)*
+Multimodal structured extraction from retirement-plan distribution forms (checkboxes, signatures), validated against business rules and routed to operations. An **agentic workflow** (control flow in code, not a free-roaming multi-agent), with a **Pydantic frozen-schema contract** on the output.
 
-![pandas](https://img.shields.io/badge/pandas-150458?style=flat-square&logo=pandas&logoColor=white)
-![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white)
-![DuckDB](https://img.shields.io/badge/DuckDB-FFF000?style=flat-square&logo=duckdb&logoColor=black)
-![Parquet](https://img.shields.io/badge/Parquet-50ABF1?style=flat-square&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
-![Excel](https://img.shields.io/badge/Excel-217346?style=flat-square&logo=microsoftexcel&logoColor=white)
-![Google Sheets](https://img.shields.io/badge/Google_Sheets-34A853?style=flat-square&logo=googlesheets&logoColor=white)
+**Stack:** Python · Gemini Vision · Pydantic · DeepEval · Streamlit · Docker
 
-**Visualization & BI**
+---
 
-![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=flat-square&logo=plotly&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?style=flat-square&logoColor=white)
-![Seaborn](https://img.shields.io/badge/Seaborn-3776AB?style=flat-square&logoColor=white)
-![Power BI](https://img.shields.io/badge/Power_BI-F2C811?style=flat-square&logo=powerbi&logoColor=black)
-![Tableau](https://img.shields.io/badge/Tableau-E97627?style=flat-square&logo=tableau&logoColor=white)
+### 📺 StreamSmart · 📊 ODI — *Backlog*
+Production-grade when built, positioned last. StreamSmart is a consumer subscription-optimization app; ODI (Operations-Demand-Intelligence) is enterprise workflow-demand analytics, flagged as a consolidation candidate against the DataVault platform's mart/AI layer.
 
-**Data Collection**
+---
 
-![requests](https://img.shields.io/badge/requests-3776AB?style=flat-square&logo=python&logoColor=white)
-![httpx](https://img.shields.io/badge/httpx-3776AB?style=flat-square&logo=python&logoColor=white)
-![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-3776AB?style=flat-square&logo=python&logoColor=white)
-![XML](https://img.shields.io/badge/XML-FF6600?style=flat-square&logoColor=white)
-![JSON](https://img.shields.io/badge/JSON-000000?style=flat-square&logo=json&logoColor=white)
+## 🏗️ Production Standard (v10.0 — non-negotiable, all projects)
 
-**AI & GenAI**
+Every project ships with:
 
-![Anthropic SDK](https://img.shields.io/badge/Anthropic_SDK_(primary)-D97757?style=flat-square&logo=anthropic&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama_(local--first)-000000?style=flat-square&logo=ollama&logoColor=white)
-![LM Studio](https://img.shields.io/badge/LM_Studio_(local)-4A154B?style=flat-square&logoColor=white)
-![Qwen3](https://img.shields.io/badge/Qwen3_(local)-615CED?style=flat-square&logoColor=white)
-![Gemini SDK](https://img.shields.io/badge/Gemini_SDK-8E75B2?style=flat-square&logo=google&logoColor=white)
-![OpenAI API](https://img.shields.io/badge/OpenAI_API-412991?style=flat-square&logo=openai&logoColor=white)
-![FastMCP](https://img.shields.io/badge/FastMCP-7C3AED?style=flat-square&logoColor=white)
-![PandasAI](https://img.shields.io/badge/PandasAI-150458?style=flat-square&logo=pandas&logoColor=white)
-![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=white)
-![ChromaDB](https://img.shields.io/badge/ChromaDB-FF6F61?style=flat-square&logoColor=white)
-![Neo4j](https://img.shields.io/badge/Neo4j_(GraphRAG)-008CC1?style=flat-square&logo=neo4j&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=flat-square&logoColor=white)
-![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?style=flat-square&logoColor=white)
-![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?style=flat-square&logo=openai&logoColor=white)
-![Cursor](https://img.shields.io/badge/Cursor_AI-000000?style=flat-square&logoColor=white)
+- **Mermaid architecture diagram** · **C4 Context diagram** (+ Container view on lead flagships)
+- **`docs/adr/`** — numbered, immutable Architecture Decision Records (context → decision → consequences)
+- **Dockerfile** · **evaluation-metrics table** · 15–30s **demo GIF** · **"What I Learned"**
+- **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
+- `pyproject.toml` + `src/` layout + `py.typed` + ruff + mypy · Conventional Commits · file-by-file review before merge
 
-**Testing & CI/CD**
+*Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
 
-![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
+---
 
-**Containerization**
+## 🛠️ Technical Stack
 
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+**Languages & Core** — Python · SQL · pandas · Jupyter
 
-**AI Evaluation Frameworks**
+**Data Engineering** — dbt · Great Expectations · Airflow (Astronomer) · Snowflake · Terraform · DuckDB/Parquet · Docker
 
-![DeepEval](https://img.shields.io/badge/DeepEval-FF6B6B?style=flat-square&logoColor=white)
-![RAGAS](https://img.shields.io/badge/RAGAS-4CAF50?style=flat-square&logoColor=white)
-![SelfCheckGPT](https://img.shields.io/badge/SelfCheckGPT-FF9800?style=flat-square&logoColor=white)
-![FActScore](https://img.shields.io/badge/FActScore-F44336?style=flat-square&logoColor=white)
-![LangSmith](https://img.shields.io/badge/LangSmith-1C3C3C?style=flat-square&logoColor=white)
+**AI & GenAI** — Anthropic SDK (primary) · Ollama / Qwen (local-first) · LM Studio · Gemini SDK · FastMCP · LangGraph · Pydantic · ChromaDB · Neo4j (GraphRAG)
 
-**Trading & Backtesting (Crucible)**
+**Evaluation & Observability** — DeepEval · RAGAS · SelfCheckGPT · GEval · Arize Phoenix · LangSmith
 
-![NautilusTrader](https://img.shields.io/badge/NautilusTrader-00BFA5?style=flat-square&logoColor=white)
-![Optuna](https://img.shields.io/badge/Optuna-2196F3?style=flat-square&logo=optuna&logoColor=white)
-![Alpaca](https://img.shields.io/badge/Alpaca_API-FFD400?style=flat-square&logoColor=black)
-![Schwab](https://img.shields.io/badge/Schwab_Trader_API-009DDC?style=flat-square&logoColor=white)
+**Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy
 
-**APIs & Domain Expertise**
+**Trading & backtesting (Crucible)** — NautilusTrader · Optuna · Alpaca
 
-![edgartools](https://img.shields.io/badge/edgartools_(SEC)-002868?style=flat-square&logoColor=white)
-![yfinance](https://img.shields.io/badge/yfinance-7B1FA2?style=flat-square&logoColor=white)
-![Wikipedia API](https://img.shields.io/badge/Wikipedia_API-000000?style=flat-square&logo=wikipedia&logoColor=white)
-![Watchmode API](https://img.shields.io/badge/Watchmode_API-FF4500?style=flat-square&logoColor=white)
-![TMDB API](https://img.shields.io/badge/TMDB_API-01D277?style=flat-square&logoColor=white)
+**Data & domain APIs** — edgartools (SEC) · yfinance · Wikipedia API
 
-**Domain:** 15+ years business operations • 4 years financial services • 6 years active trading
+**Domain:** ~15 years business operations · financial services (ERISA-regulated) · active trading
 
 ---
 
 ## 📂 Repository Structure
 
-> **📌 Document Versions (June 2026):** All scope docs aligned with Roadmap v8.9. Filenames unchanged — version lives in each document's header.
+> **Document versions (2026):** scope docs aligned to **Roadmap v10.0**. Filenames unchanged — the version lives in each document's header. Each scope carries a Stage-1 build sheet and a Full-Production architecture doc where applicable.
 
 ```
 data-portfolio/
-├── README.md                                              # This file — Portfolio hub
-└── project_scopes/                                        # 📋 Architecture & scope documents
-    ├── ATTENTION_FLOW_CATALYST_SCOPE_v8.md                # 🚀 Flagship #1 — 5-stage research system
-    ├── CRUCIBLE_SCOPE_v1.0.md                             # 🔥 Flagship #2 — autonomous intraday (backtest→paper→live)
-    ├── DATAVAULT_ANALYST_SCOPE_v1.md                      # 🔐 First AI project — PII-safe analytics
-    ├── FORMSENSE_DISTRIBUTION_SCOPE_v1_STAGE1.md          # 📄 Document intelligence — Vision AI
-    ├── OPERATIONS_DEMAND_INTELLIGENCE_SCOPE_v2_3.md       # 📊 Enterprise analytics — OnBase data
-    ├── POLICYPULSE_HR_RAG_SCOPE_v1_STAGE1.md              # 📋 RAG foundation — HR chatbot
-    ├── STREAMSMART_OPTIMIZER_SCOPE_v1_FULL_PRODUCTION.md   # 📺 Full production — Stages 4-5
-    └── STREAMSMART_OPTIMIZER_SCOPE_v1_STAGE1.md            # 📺 Stage 1 — Consumer AI app
+├── README.md                                  # This file — portfolio hub
+├── project_scopes/
+│   ├── POLICYPULSE/                            # 🚩 Applied-AI flagship (RAG → GraphRAG → agentic)
+│   │   ├── POLICYPULSE_HR_RAG_SCOPE_v1_6_STAGE1.md
+│   │   └── POLICYPULSE_HR_RAG_SCOPE_v2_0_FULL_PRODUCTION.md
+│   ├── DATAVAULT/                              # 🚩 Data-Engineering flagship (1099 core → platform → AI layer)
+│   │   ├── DATAVAULT_1099_DATA_PLATFORM_SCOPE_v2_1_STAGE1.md
+│   │   └── DATAVAULT_1099_DATA_PLATFORM_SCOPE_v1_0_FULL_PRODUCTION.md
+│   ├── CRUCIBLE/                               # 🚩 Autonomous trading-research flagship
+│   │   ├── CRUCIBLE_SCOPE_v3_1_STAGE1.md
+│   │   ├── CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md
+│   │   └── Shared_SignalCore_Boundary_Spec_v1_3.md   # shared primitives (AFC ↔ Crucible)
+│   ├── AFC/                                    # Supporting — eval-first research
+│   │   ├── AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md
+│   │   └── ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md
+│   ├── FORMSENSE/                             # Supporting — multimodal document ops
+│   │   ├── FORMSENSE_DISTRIBUTION_SCOPE_v1_8_STAGE1.md
+│   │   └── FORMSENSE_DISTRIBUTION_SCOPE_v2_0_FULL_PRODUCTION.md
+│   ├── STREAMSMART/                           # Backlog — consumer AI app
+│   │   ├── STREAMSMART_OPTIMIZER_SCOPE_v1_6_STAGE1.md
+│   │   └── STREAMSMART_OPTIMIZER_SCOPE_v2_0_FULL_PRODUCTION.md
+│   ├── ODI/                                   # Backlog — enterprise demand analytics
+│   │   └── OPERATIONS_DEMAND_INTELLIGENCE_SCOPE_v3_0.md
+│   └── revisions/                            # superseded Crucible revisions (kept for trail)
+│       ├── CRUCIBLE_SCOPE_v1_1_SWING_REVISION.md
+│       └── CRUCIBLE_SCOPE_v1_2_CONFIRMED.md
+└── support_tools/                            # tooling, not portfolio flagships
+    ├── CADENCE_CONTENT_SCOPE_v1_0_STAGE1.md
+    └── CADENCE_CONTENT_SCOPE_v1_0_FULL_PRODUCTION.md
 ```
 
-> Each scope document includes: executive summary, business problem, data architecture, feature framework, phased implementation plan, tech stack, CI/CD pipeline, evaluation strategy (DeepEval + pytest, plus SelfCheckGPT/FActScore for flagship projects), Docker support, Mermaid architecture diagram, and Production README Standard. Stage 4 evolutions name agent patterns explicitly (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents"), layer in Loop Engineering (autonomous agent loops with human-in-the-loop gates), and reference A2A protocol for Stage 5 multi-tenant scenarios. The AFC scope adds a Neo4j Financial Knowledge Graph capstone and a GraphRAG-hybrid upgrade path (shared with PolicyPulse). The Crucible scope adds its research-loop integrity controls — the sealed out-of-sample vault, overfitting-budget ledger, and own-harness↔NautilusTrader engine-parity gate.
+> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
 
 ---
 
 ## 📖 More Resources
 
 | Resource | Link |
-|----------|------|
-| 📋 **Interactive Roadmap** | [37-Month GenAI-First Roadmap (v8.9)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
-| 📚 **Learning Journey** | [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) |
-| 👤 **GitHub Profile** | [@manuel-reyes-ml](https://github.com/manuel-reyes-ml) |
-| 🔗 **LinkedIn** | [Manuel Reyes](https://linkedin.com/in/mr410) |
+|---|---|
+| 📋 Interactive roadmap | [v10.0 career roadmap (3 stages, ~32 months)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
+| 📚 Learning journey | [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) |
+| 👤 GitHub profile | [@manuel-reyes-ml](https://github.com/manuel-reyes-ml) |
+| 🔗 LinkedIn | [Manuel Reyes](https://linkedin.com/in/mr410) |
 
 ---
 
-## 🎯 What I'm Looking For
+## 🎯 Open To
 
-**Open To:**
-- 💼 **GenAI-First Data Analyst & AI Engineer opportunities** (remote preferred)
-- 🤝 **Networking** with data professionals and traders
-- 💻 **Code reviews** and technical discussions
-- 🎓 **Mentorship** (giving or receiving)
+- **Data Engineer / Analytics Engineer** roles — AI-focused data platforms (embedding pipelines, vector stores, unstructured-data ETL feeding RAG)
+- **Applied AI Engineer / Forward Deployed Engineer** roles — regulated / fintech domains
+- Networking with data and AI practitioners · code reviews · technical discussion
 
 ---
 
 <div align="center">
 
-**Current Stage:** GenAI-First Data Analyst & AI Engineer (Stage 1 of 5) | 🟢 Active • Building in Public
+**Current stage (v10.0):** Stage 1 — Internal AI Builder · building toward AI-Focused Data / Analytics Engineering (Stage 2) → Applied AI / FDE (Stage 3)
 
-⭐ **Star this portfolio** to follow the journey! | 🔔 **Watch repos** for project updates!
+🟢 Active · building in public
 
 </div>
