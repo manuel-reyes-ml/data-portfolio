@@ -1240,7 +1240,7 @@ flowchart LR
 *Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** IBM Generative AI Engineering PC (RAG/LangChain spine) · Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications · MCP primer (DL.AI, Elie Schoppik — before the FastMCP build) · Docker for Beginners · 30 Days of Streamlit
+- **Courses:** IBM Generative AI Engineering PC (RAG/LangChain spine) · Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications · MCP primer [Academy: Introduction to Model Context Protocol] (DL.AI, Elie Schoppik — before the FastMCP build) · Docker for Beginners · 30 Days of Streamlit · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
 - **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
 ### 🎓 Stage 2 — DE/AE hardening
@@ -1248,7 +1248,8 @@ flowchart LR
 - **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional (take ONE):* SnowPro Core / DP-750
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** MCP full · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · HuggingFace NLP + LLM · Neo4j GraphAcademy · NVIDIA DLI Building RAG Agents
+- **Courses:** MCP full [Academy: MCP — Advanced Topics] · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · HuggingFace NLP + LLM · Neo4j GraphAcademy · NVIDIA DLI Building RAG Agents
 - **Certifications:** **Neo4j Certified Professional** (FREE) · **NVIDIA NCA-GENL** ($125) · **Databricks GenAI Associate** ($200) · **AI-103** (employer) · **Anthropic CCA-F** ($125)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · access-control retrieval · RAGAS/SelfCheckGPT eval · MCP read→approval-gated write.
