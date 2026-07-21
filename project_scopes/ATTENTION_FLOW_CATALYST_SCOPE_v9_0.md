@@ -1575,6 +1575,7 @@ flowchart LR
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · Knowledge Graphs for RAG (DL.AI × Neo4j) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · LangChain Academy · Automated Testing for LLMOps
 - **Certifications:** **Neo4j Certified Professional** (FREE — backs the GraphRAG layer) · **NVIDIA NCA-GENL** ($125) · **Anthropic CCA-F** ($125) · **Databricks GenAI Engineer Associate** ($200 — optional)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** EDGAR filing retrieval → LLM analyst → faithfulness eval + perturbation catalog → GraphRAG financial-KG read-only research loop.
 
