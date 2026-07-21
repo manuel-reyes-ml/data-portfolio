@@ -1037,5 +1037,6 @@ flowchart LR
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps
 - **Certifications:** **Anthropic CCA-F** (optional; shared) · **AI-103** (employer-reimbursed; optional)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** workflow-demand pipeline → dbt time-series marts + semantic layer → NL query / forecast-narrative insights.
