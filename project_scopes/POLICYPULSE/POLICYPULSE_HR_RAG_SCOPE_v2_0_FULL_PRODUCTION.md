@@ -533,7 +533,7 @@ policypulse/
 *Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs are noted.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** IBM Generative AI Engineering Professional Certificate (RAG/LangChain spine) · Building with the Claude API (Anthropic Academy — SDK, structured outputs, prompt caching) · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications (eval-from-scratch) · MCP primer (DeepLearning.AI, Elie Schoppik — *before* the FastMCP build) · Docker for Beginners (KodeKloud) · 30 Days of Streamlit
+- **Courses:** IBM Generative AI Engineering Professional Certificate (RAG/LangChain spine) · Building with the Claude API (Anthropic Academy — SDK, structured outputs, prompt caching) · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications (eval-from-scratch) · MCP primer [Academy: Introduction to Model Context Protocol] (DeepLearning.AI, Elie Schoppik — *before* the FastMCP build) · Docker for Beginners (KodeKloud) · 30 Days of Streamlit · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
 - **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
 
 ### 🎓 Stage 2 — DE/AE hardening
@@ -541,8 +541,9 @@ policypulse/
 - **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) **or** DP-750 Azure Databricks
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** MCP: Build Rich-Context AI Apps (full) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic · Automated Testing for LLMOps · HuggingFace NLP + LLM Course · Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · NVIDIA DLI: Building RAG Agents with LLMs (doubles as PolicyPulse evidence)
+- **Courses:** MCP: Build Rich-Context AI Apps (full) [Academy: MCP — Advanced Topics] · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · HuggingFace NLP + LLM Course · Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · NVIDIA DLI: Building RAG Agents with LLMs (doubles as PolicyPulse evidence)
 - **Certifications:** **Neo4j Certified Professional** (FREE — backs the GraphRAG layer) · **NVIDIA NCA-GENL** ($125) · **Databricks Certified GenAI Engineer Associate** ($200) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Anthropic CCA-F** ($125 — primary-SDK source-of-truth)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · confidence-based HR escalation · RAGAS/SelfCheckGPT eval · MCP tool exposure (read → approval-gated write) · access-control retrieval.
 
