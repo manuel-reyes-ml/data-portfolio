@@ -435,5 +435,6 @@ Design approved (June 10, 2026):
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** Neo4j GraphAcademy (GraphRAG) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · Automated Testing for LLMOps
 - **Certifications:** **NVIDIA NCA-GENL** ($125) · **Neo4j Certified Professional** (FREE) · **Anthropic CCA-F** ($125)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** SEC filing retrieval → LLM analyst → three-method faithfulness eval + controlled-perturbation catalog → published benchmark repo.
