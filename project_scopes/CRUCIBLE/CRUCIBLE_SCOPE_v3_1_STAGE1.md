@@ -35,9 +35,11 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)*
 
 **Identity note (v10.0):** roadmap v10.0 labels Crucible an *intraday* execution platform; this scope's v2.0 **multi-timeframe, swing-first** on-ramp is retained as the lower-risk Phase-1 path, with intraday plugins as later phases. Recommend reconciling the roadmap wording to **"multi-timeframe (swing → intraday)"** (see roadmap-change note). **Priority order:** DataVault → PolicyPulse → Crucible (Crucible is a lead flagship, not the first build).
+
+**🆕 Environment & packaging (v10.0 CORRECTION 13):** **uv (Astral)** is the default package/env manager here as in every project — a committed `uv.lock` and `uv sync --frozen` in CI/Docker give byte-reproducible installs. **Conda is a conditional for Crucible *only*:** adopt it **only if** the research/execution stack grows heavy compiled numerical or GPU backends (e.g. TA-Lib, CUDA/cuDF, MKL/BLAS-linked scientific wheels) where Conda's binary channels resolve more cleanly than PyPI wheels. If that trigger never fires, stay uv-only. Learn it from Anaconda's own free *Conda Basics* (the *certification* is paid-gated — learning evidence, not a recruiter credential). Never mix the two resolvers in one environment.
 
 ---
 
@@ -401,7 +403,7 @@ Machine learning is an **overlay you earn, never a foundation you need.** The de
 ### Deliverables
 | # | Deliverable | Acceptance criteria |
 |---|---|---|
-| 1 | Project setup | `src/` layout, `pyproject.toml` only, `py.typed`, pre-commit, CI green |
+| 1 | Project setup | `src/` layout, `pyproject.toml` + `uv.lock` (uv), `py.typed`, pre-commit, CI green |
 | 2 | Data layer (free-first) | Stooq/AV/Finnhub daily loaders; SPY + 11 SPDR ETFs; Parquet/DuckDB; survivorship handling + metadata flag |
 | 3 | EDGAR pipeline | Dilution filings (424B5/S-3/S-1) + 8-K earnings cross-check, PIT by filing date |
 | 4 | Earnings dates | Finnhub forward calendar + Alpha Vantage historical `reportedDate`, cached |
@@ -574,7 +576,8 @@ crucible/
 ├── .env.example                    # API/broker key placeholders (never commit .env)
 ├── .gitignore                      # ignores .env, logs/*, data caches, __pycache__, etc.
 ├── .pre-commit-config.yaml
-├── pyproject.toml                  # single source of config (NO requirements.txt)
+├── pyproject.toml                  # single source of config (uv-managed; NO requirements.txt)
+├── uv.lock                         # committed lockfile — deterministic, reproducible installs
 ├── Dockerfile · docker-compose.yml # reproducible run (+ optional Ollama + DuckDB volume)
 ├── LICENSE · CHANGELOG.md
 ├── README.md                       # Mermaid diagram + metrics table + What I Learned + demo GIF
@@ -615,7 +618,7 @@ crucible/
 └── scripts/                        # backfill data, build SPDR/universe snapshots
 ```
 
-**Production-grade checklist (carried over):** Mermaid diagram ✅ · Dockerfile ✅ · eval metrics table ✅ · demo GIF ✅ · "What I Learned" ✅ · CI ✅ · `pyproject.toml`-only ✅ · `src/` + `py.typed` ✅ · `.cursor/rules/` ✅ · structured logging + run-manifests ✅.
+**Production-grade checklist (carried over):** Mermaid diagram ✅ · Dockerfile ✅ · eval metrics table ✅ · demo GIF ✅ · "What I Learned" ✅ · CI ✅ · `pyproject.toml` + `uv.lock` (uv-managed) ✅ · `src/` + `py.typed` ✅ · `.cursor/rules/` ✅ · structured logging + run-manifests ✅.
 
 ### 12.1 Logging & Observability Standard
 
