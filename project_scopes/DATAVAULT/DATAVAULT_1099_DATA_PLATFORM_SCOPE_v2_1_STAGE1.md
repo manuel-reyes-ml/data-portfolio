@@ -35,7 +35,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)*
 
 **Fold-in note:** the former standalone *DataVault Analyst* (PandasAI "chat with your data") is now the **Stage-3 Applied-AI layer of this platform**, not a separate project — one coherent flagship arc (reconciliation → DE/AE platform → AI query/agentic layer). **Public repo = synthetic-data reconstruction**; the deployed Daybright system (real 450+ bad-tax-code catch) is the résumé line and stays private.
 
@@ -94,7 +94,7 @@
 - **1099-R tax-code derivation & validation:** rules engine derives the expected Box-7 code and flags disagreements with the source system
 - **Corrections analytics:** corrections by transaction type × week/month — the metric the real system exists to produce
 - **Narrow GenAI layer:** LLM-generated **exception explanations** ("why did this row fail?") with Pydantic structured outputs, PII guardrails, and a blocking DeepEval gate
-- **Production practices:** synthetic-data generator, Docker, GitHub Actions CI, ruff/mypy, `pyproject.toml` + `src/` + `py.typed`
+- **Production practices:** synthetic-data generator, Docker, GitHub Actions CI, ruff/mypy, `pyproject.toml` + `uv.lock` + `src/` + `py.typed`
 
 > **Scope boundary:** the conversational **DataVault *Analyst*** (natural-language querying, PandasAI, chat memory, text-to-SQL over marts) is **not built here** — it is the **Stage-3 Applied-AI layer**. See the Full-Production scope. Stage 1 ships the reconciliation core plus a narrow, evaluated GenAI explanation layer.
 
@@ -344,7 +344,7 @@ Relius export ─┘                                          │
 
 | Task | Details | Output |
 |---|---|---|
-| **Project scaffold** | Repo, CI/CD, README, `pyproject.toml` + `src/` + `py.typed`, ruff, mypy, LICENSE, Makefile | Green CI pipeline |
+| **Project scaffold** | Repo, CI/CD, README, `pyproject.toml` + `uv.lock` + `src/` + `py.typed`, ruff, mypy, LICENSE, Makefile | Green CI pipeline |
 | **Matrix reader** | Schema-validated loader (expected columns, types, row counts) | `src/ingest/matrix.py` |
 | **Relius reader** | Schema-validated loader | `src/ingest/relius.py` |
 | **PII boundary** | Salted SSN hashing, DOB → age derivation, name drop — **at read time** | `src/ingest/pii.py` |
@@ -735,7 +735,7 @@ def generate_synthetic_dataset(n_rows: int = 5000) -> pd.DataFrame:
 Every AI-powered feature includes measurable quality evaluation using DeepEval.
 
 **Framework:** DeepEval (pytest-compatible, open-source)  
-**Install:** `pip install deepeval`
+**Install:** `uv add deepeval`
 
 | Metric | What It Measures | Target Score |
 |--------|-----------------|-------------|
@@ -762,11 +762,13 @@ Adding measurable AI quality metrics signals production maturity beyond typical 
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY pyproject.toml .
-RUN pip install --no-cache-dir .
+# uv (Astral) — pinned binary from the official image; lockfile-strict install
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 COPY . .
 EXPOSE 8501
-CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+CMD ["uv", "run", "streamlit", "run", "app/Home.py", "--server.port=8501"]
 ```
 
 **`.dockerignore`** (keeps image small and secure):
