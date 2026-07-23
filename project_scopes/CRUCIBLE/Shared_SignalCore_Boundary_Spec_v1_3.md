@@ -125,7 +125,8 @@ signalcore/                      # shared package (its own repo or monorepo pkg)
     volume.py  shortinterest.py  dilution.py  relative.py  indicators.py
     data.py    validation.py     calendar.py
   tests/   (leakage tests · golden-value tests · short-interest lag test)
-  pyproject.toml   # versioned, semver'd
+  pyproject.toml   # versioned, semver'd (uv-managed)
+  uv.lock          # committed lockfile — deterministic installs; pinned by both consumers
 
 afc/                 # imports signalcore
   screen/  triggers/ (T1..T6)  backtest/  dashboard/  ...
