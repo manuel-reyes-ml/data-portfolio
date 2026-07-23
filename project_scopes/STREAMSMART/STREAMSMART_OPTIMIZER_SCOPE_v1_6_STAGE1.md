@@ -34,7 +34,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)*
 
 ---
 
@@ -510,12 +510,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: pip install ".[dev]"
-      - run: ruff check src/ tests/
-      - run: mypy src/ --ignore-missing-imports
-      - run: pytest tests/ -v --cov=src --cov-report=term-missing
+      - uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true, python-version: '3.11' }
+      - run: uv sync --frozen --all-extras
+      - run: uv run ruff check src/ tests/
+      - run: uv run mypy src/ --ignore-missing-imports
+      - run: uv run pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
 ---
@@ -695,7 +695,7 @@ streamsmart-optimizer/
 Every AI-powered feature includes measurable quality evaluation using DeepEval.
 
 **Framework:** DeepEval (pytest-compatible, open-source)  
-**Install:** `pip install deepeval`
+**Install:** `uv add deepeval`
 
 | Metric | What It Measures | Target Score |
 |--------|-----------------|-------------|
@@ -722,11 +722,13 @@ Adding measurable AI quality metrics signals production maturity beyond typical 
 # Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY pyproject.toml .
-RUN pip install --no-cache-dir .
+# uv (Astral) — pinned binary from the official image; lockfile-strict install
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 COPY . .
 EXPOSE 8501
-CMD ["streamlit", "run", "app/Home.py", "--server.port=8501"]
+CMD ["uv", "run", "streamlit", "run", "app/Home.py", "--server.port=8501"]
 ```
 
 **`.dockerignore`** (keeps image small and secure):
