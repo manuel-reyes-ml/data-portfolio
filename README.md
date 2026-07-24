@@ -20,6 +20,7 @@ The through-line:
 - **Real production impact** — a 1099 reconciliation platform running live at work (details below), not a tutorial clone.
 - **Domain depth as a moat** — ~15 years of business operations and financial-services work, applied to problems where correctness is regulated, not optional.
 - **Evaluation-first engineering** — DeepEval / RAGAS / SelfCheckGPT as *blocking* gates, faithfulness thresholds, synthetic data in every public repo.
+- **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran.
 - **One system per project, evolved across stages** — projects are hardened S1 → S3, never rebuilt per stage.
 
 Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) (3 stages, ~32 months).
@@ -81,7 +82,7 @@ Retrieval-augmented answering over retirement-plan documents with cited sources 
 ### 🔥 Crucible — *Autonomous trading-research flagship*
 A strategy-agnostic platform taking a strategy from **backtest → paper → live** through validation gates. **Multi-timeframe (swing → intraday)** — swing-first is the lower-risk on-ramp; intraday plugins follow once swing clears all three integrity gates. Strategies are plugins (Protocol + ABC + registry). Research-loop integrity is enforced by a sealed out-of-sample vault + an overfitting-budget ledger + an engine-parity gate. Live execution is the one genuinely irreversible path, so it is gated by **mandatory HITL sign-off + a kill-switch**; the LLM sits *behind the Wall* (proposes, never executes). Local-first inference keeps cost at zero and proprietary data on-machine.
 
-**Stack:** Python · own event-driven backtest harness → NautilusTrader · Optuna · DuckDB/Parquet · Ollama/Qwen (local-first) → cloud fallback · Pydantic · LangGraph · Alpaca (paper + live) · DeepEval · Docker
+**Stack:** Python · own event-driven backtest harness → NautilusTrader · Optuna · DuckDB/Parquet · Ollama/Qwen (local-first) → cloud fallback · Pydantic · LangGraph · Alpaca (paper + live) · DeepEval · Docker · uv *(Conda conditional — only if compiled/GPU numerical backends land)*
 
 > ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
 
@@ -114,7 +115,8 @@ Every project ships with:
 - **`docs/adr/`** — numbered, immutable Architecture Decision Records (context → decision → consequences)
 - **Dockerfile** · **evaluation-metrics table** · 15–30s **demo GIF** · **"What I Learned"**
 - **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
-- `pyproject.toml` + `src/` layout + `py.typed` + ruff + mypy · Conventional Commits · file-by-file review before merge
+- `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · Conventional Commits · file-by-file review before merge
+- **uv (Astral)** for packages and environments — `uv sync --frozen` in CI and Docker; **no `requirements.txt`** in any repo
 
 *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
 
@@ -122,7 +124,7 @@ Every project ships with:
 
 ## 🛠️ Technical Stack
 
-**Languages & Core** — Python · SQL · pandas · Jupyter
+**Languages & Core** — Python · SQL · pandas · Jupyter · **uv** (packaging & environments)
 
 **Data Engineering** — dbt · Great Expectations · Airflow (Astronomer) · Snowflake · Terraform · DuckDB/Parquet · Docker
 
@@ -130,7 +132,7 @@ Every project ships with:
 
 **Evaluation & Observability** — DeepEval · RAGAS · SelfCheckGPT · GEval · Arize Phoenix · LangSmith
 
-**Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy
+**Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy · **uv** (`uv sync --frozen`)
 
 **Trading & backtesting (Crucible)** — NautilusTrader · Optuna · Alpaca
 
@@ -177,7 +179,7 @@ data-portfolio/
     └── CADENCE_CONTENT_SCOPE_v1_0_FULL_PRODUCTION.md
 ```
 
-> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
+> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock`). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
 
 ---
 
