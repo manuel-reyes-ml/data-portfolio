@@ -117,6 +117,7 @@ Every project ships with:
 - **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
 - `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · Conventional Commits · file-by-file review before merge
 - **uv (Astral)** for packages and environments — `uv sync --frozen` in CI and Docker; **no `requirements.txt`** in any repo
+- **Agentic harness in-repo** — `.opencode/` (`agents/` + `commands/`), `AGENTS.md`, and `opencode.jsonc`, mirroring the existing `.cursor/rules/`. OpenCode loads those same rule files via `instructions[]`, so one set of standards drives both harnesses and the review discipline is version-controlled, not ad-hoc.
 
 *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
 
@@ -136,6 +137,8 @@ Every project ships with:
 
 **Documentation & Architecture** — Structurizr DSL (C4 model source) → Mermaid export · Architecture Decision Records (`docs/adr/`, Nygard/MADR)
 
+**Agentic dev harness** — OpenCode (`.opencode/agents/` · `.opencode/commands/` · `AGENTS.md` · `opencode.jsonc`) · Cursor (`.cursor/rules/`, shared via OpenCode `instructions[]`) · VS Code
+
 **Trading & backtesting (Crucible)** — NautilusTrader · Optuna · Alpaca
 
 **Data & domain APIs** — edgartools (SEC) · yfinance · Wikipedia API
@@ -151,6 +154,13 @@ Every project ships with:
 ```
 data-portfolio/
 ├── README.md                                  # This file — portfolio hub
+├── AGENTS.md                                  # standing instructions for agentic coding sessions
+├── opencode.jsonc                             # OpenCode config — model routing, permissions, instructions[]
+├── .opencode/                                 # agentic harness (replicated in every project repo)
+│   ├── agents/                                # docs-fix · docs-sync · eval-guardian · learn ·
+│   │                                          #   pattern-scout · security-auditor
+│   └── commands/                              # /commit-msg · /draft-issue · /eval · /labels · /pr-prep ·
+│                                              #   /readme · /review · /task-brief · /test
 ├── project_scopes/
 │   ├── POLICYPULSE/                            # 🚩 Applied-AI flagship (RAG → GraphRAG → agentic)
 │   │   ├── POLICYPULSE_HR_RAG_SCOPE_v1_6_STAGE1.md
@@ -181,7 +191,7 @@ data-portfolio/
     └── CADENCE_CONTENT_SCOPE_v1_0_FULL_PRODUCTION.md
 ```
 
-> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock` + the Structurizr-DSL→Mermaid diagram toolchain). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
+> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock` + the Structurizr-DSL→Mermaid diagram toolchain + the `.opencode/` agentic harness). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
 
 ---
 
