@@ -20,7 +20,7 @@ The through-line:
 - **Real production impact** — a 1099 reconciliation platform running live at work (details below), not a tutorial clone.
 - **Domain depth as a moat** — ~15 years of business operations and financial-services work, applied to problems where correctness is regulated, not optional.
 - **Evaluation-first engineering** — DeepEval / RAGAS / SelfCheckGPT as *blocking* gates, faithfulness thresholds, synthetic data in every public repo.
-- **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran.
+- **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran. Architecture diagrams are single-source too: modeled once in Structurizr DSL, exported to Mermaid, so the picture never lies about the system.
 - **One system per project, evolved across stages** — projects are hardened S1 → S3, never rebuilt per stage.
 
 Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) (3 stages, ~32 months).
@@ -111,7 +111,7 @@ Production-grade when built, positioned last. StreamSmart is a consumer subscrip
 
 Every project ships with:
 
-- **Mermaid architecture diagram** · **C4 Context diagram** (+ Container view on lead flagships)
+- **Mermaid architecture diagram** · **C4 Context diagram** (+ Container view on lead flagships) — both generated from **one source**: the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`) and the C4 views are exported to Mermaid via `structurizr-cli`, so the diagram in the README never drifts from the model
 - **`docs/adr/`** — numbered, immutable Architecture Decision Records (context → decision → consequences)
 - **Dockerfile** · **evaluation-metrics table** · 15–30s **demo GIF** · **"What I Learned"**
 - **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
@@ -133,6 +133,8 @@ Every project ships with:
 **Evaluation & Observability** — DeepEval · RAGAS · SelfCheckGPT · GEval · Arize Phoenix · LangSmith
 
 **Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy · **uv** (`uv sync --frozen`)
+
+**Documentation & Architecture** — Structurizr DSL (C4 model source) → Mermaid export · Architecture Decision Records (`docs/adr/`, Nygard/MADR)
 
 **Trading & backtesting (Crucible)** — NautilusTrader · Optuna · Alpaca
 
@@ -179,7 +181,7 @@ data-portfolio/
     └── CADENCE_CONTENT_SCOPE_v1_0_FULL_PRODUCTION.md
 ```
 
-> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock`). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
+> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock` + the Structurizr-DSL→Mermaid diagram toolchain). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
 
 ---
 
