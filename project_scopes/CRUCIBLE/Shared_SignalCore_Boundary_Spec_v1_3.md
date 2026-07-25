@@ -127,6 +127,11 @@ signalcore/                      # shared package (its own repo or monorepo pkg)
   tests/   (leakage tests · golden-value tests · short-interest lag test)
   pyproject.toml   # versioned, semver'd (uv-managed)
   uv.lock          # committed lockfile — deterministic installs; pinned by both consumers
+  docs/adr/        # numbered, immutable ADRs (the §6 governance log)
+  # (optional) docs/architecture.dsl — the §5 dependency diagram already serves as the C4 Context
+  #            view; a Structurizr DSL source is only worth adding if this library ever grows a
+  #            Container-level view. Per §6, no README / demo-GIF / Mermaid-export standard applies —
+  #            this is a pure-computation library, not a stage-evolution portfolio project.
 
 afc/                 # imports signalcore
   screen/  triggers/ (T1..T6)  backtest/  dashboard/  ...
