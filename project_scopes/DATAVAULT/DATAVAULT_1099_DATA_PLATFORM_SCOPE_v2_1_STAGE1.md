@@ -35,7 +35,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
 
 **Fold-in note:** the former standalone *DataVault Analyst* (PandasAI "chat with your data") is now the **Stage-3 Applied-AI layer of this platform**, not a separate project — one coherent flagship arc (reconciliation → DE/AE platform → AI query/agentic layer). **Public repo = synthetic-data reconstruction**; the deployed Daybright system (real 450+ bad-tax-code catch) is the résumé line and stays private.
 
@@ -529,6 +529,29 @@ datavault-analyst/
 │   └── plans/                    # Saved task briefs per Issue
 │       └── issue-XX-task-brief.md
 ├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
+├── .opencode/                    # OpenCode agentic harness (mirrors .cursor/; portable across editors)
+│   ├── agents/                   # subagent defs — filename = agent name (per OpenCode spec)
+│   │   ├── docs-fix.md           # repairs drift in README / scope docs
+│   │   ├── docs-sync.md          # keeps the 3 public docs aligned to the roadmap
+│   │   ├── eval-guardian.md      # guards the eval-first blocking gates
+│   │   ├── learn.md              # explain-before-merge; enforces "no vibe coding"
+│   │   ├── pattern-scout.md      # finds prior art in-repo before new code
+│   │   └── security-auditor.md   # secrets / dependency / config audit
+│   ├── commands/                 # slash commands — /review, /test, /commit-msg, ...
+│   │   ├── commit-msg.md
+│   │   ├── draft-issue.md
+│   │   ├── eval.md
+│   │   ├── labels.md
+│   │   ├── pr-prep.md
+│   │   ├── readme.md
+│   │   ├── review.md
+│   │   ├── task-brief.md
+│   │   └── test.md
+│   ├── .gitignore                # ignores node_modules/ (harness deps are installed, not committed)
+│   ├── package.json              # pinned OpenCode plugin dependencies
+│   └── package-lock.json         # committed — reproducible harness
+├── AGENTS.md                     # standing instructions; combined with opencode.jsonc instructions[]
+├── opencode.jsonc                # harness config — model routing, permissions, instructions[]
 ├── .github/
 │   ├── templates/                # Production workflow templates
 │   │   ├── issue_template.md     # GitHub Issue format
