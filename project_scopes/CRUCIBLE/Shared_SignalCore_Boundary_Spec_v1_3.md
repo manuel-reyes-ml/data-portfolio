@@ -125,6 +125,10 @@ signalcore/                      # shared package (its own repo or monorepo pkg)
     volume.py  shortinterest.py  dilution.py  relative.py  indicators.py
     data.py    validation.py     calendar.py
   tests/   (leakage tests · golden-value tests · short-interest lag test)
+  .opencode/       # agentic harness — agents/ + commands/ (+ .gitignore, package.json, package-lock.json)
+  AGENTS.md        # standing instructions; note the §1 boundary rule and §7 anti-patterns here so the
+                   # harness refuses to put thresholds or strategy logic into a primitive
+  opencode.jsonc   # harness config; instructions[] can also load ../.cursor/rules/*.md
   pyproject.toml   # versioned, semver'd (uv-managed)
   uv.lock          # committed lockfile — deterministic installs; pinned by both consumers
   docs/adr/        # numbered, immutable ADRs (the §6 governance log)
