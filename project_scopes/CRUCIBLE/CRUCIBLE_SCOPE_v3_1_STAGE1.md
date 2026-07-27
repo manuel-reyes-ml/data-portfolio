@@ -839,6 +839,10 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 | **Medallion lakehouse (bronze→silver→gold)** | **S2** | **Market-data platform architecture** |
 | **Terraform + AWS** | **S2** | **Reproducible infra** |
 | NautilusTrader (LGPL-3.0) | S2 → S3 | Event-driven engine; backtest→live with no code change (true parity) |
+| **FIX protocol** 🆕 | **S2** | **`FixBroker` adapter vs. a local simulator; session + application layer; interface-parity with the REST brokers (§5.5)** |
+| **Time-series database (ONE of QuestDB / TimescaleDB / ClickHouse)** 🆕 | **S2** | **Backend behind `signalcore.data`; benchmarked vs. DuckDB with the decision recorded in an ADR. kdb+/q = reading literacy only (§5.5)** |
+| **Bitemporal PIT storage (valid time + transaction time)** 🆕 | **S2** | **Look-ahead enforced as a storage constraint; restatement-replay test asserts historical results are bit-identical (§5.5) — the highest-value item of the four** |
+| **Event-driven design + measured latency budgets** 🆕 | **S2** | **Per-hop budget with p50/p95/p99, backpressure policy, replay determinism, idempotent order handling. ⚠️ Swing/intraday cadence — NOT HFT, never presented as such (§5.5)** |
 | scikit-learn, statsmodels, SHAP | S3 | Calibrated classifier / factor importance — **earned-overlay only** (ships only if it beats base-rate) |
 | Alpaca (paper → live), Schwab/TOS | S3 | Execution adapters; paper and live share one API |
 | **LangGraph** | **S3** | **Paper → live agent orchestration + verifier agent before the gate** |
@@ -847,6 +851,10 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 
 
 > **Honest gap:** trading/backtesting infrastructure has **no matching roadmap certification** — the defensible artifact (integrity spine + published evals + kill-switch) *is* the signal. Build it; don't look for a cert.
+
+> **🆕 Amendment (roadmap v10.0 CORRECTION 15):** confirmed by a dedicated research pass — live trading-systems postings gate on **FIX · a time-series database · event-driven design · Linux · Python/C++ · Terraform**, and **no finance certification appears as a requirement**. The four 🆕 S2 rows above are the market-infrastructure layer that opens that lane; their architecture is specified in `CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md` §5.5, which is authoritative. The only credential worth taking here is **OMSCS `CS 7646 — Machine Learning for Trading`** as a $0-marginal free elective — a transcript line, not a badge.
+
+> **🆕 Positioning (v10.0 CORRECTION 15):** Crucible is **systematic-trading systems engineering, not quantitative research.** It carries genuine quant-research *hygiene* (sealed OOS vault, walk-forward CV, purged k-fold + embargo, overfitting ledger) but its signals are rule-based technical setups, not statistically derived factors. Lead with **execution-safety and market-data engineering**; never let it be entered into a quant-research comparison it does not claim.
 
 ---
 
