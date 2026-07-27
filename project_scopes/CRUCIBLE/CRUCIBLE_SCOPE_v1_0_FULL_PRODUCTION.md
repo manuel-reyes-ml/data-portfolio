@@ -194,6 +194,23 @@ The shared spine with AFC (~70% overlap). Treated as a **real library**, not a f
 | **Failure policy** | Contract violation → **fail the DAG, do not publish to gold**. A silently-wrong bar poisons every downstream backtest |
 | **Monitoring** | Data freshness alerts, gap alerts, cost tracking; written postmortem on ≥1 real incident |
 
+### 5.5 Market-Infrastructure Layer 🆕 *(roadmap v10.0 CORRECTION 15)*
+
+**Why this subsection exists.** S5.1–5.4 make Crucible legible to a *data-engineering* interviewer. This layer makes it legible to a **trading-technology** interviewer — hedge funds, proprietary trading firms, and market-infrastructure fintechs. Live 2026 postings for trading-systems and market-data engineering roles gate on a consistent, narrow stack: **FIX protocol · KDB+ or another time-series database · low-latency messaging and event-driven design · Linux · Python/C++ · Terraform.** Notably, **no finance certification appears as a requirement** — the gate is the technical stack plus domain fluency. These four additions are what convert Crucible from *"a well-engineered backtester"* into **market-data infrastructure evidence**.
+
+> **This is an additive layer on work already scheduled — not a new project and not new spend.** Each item attaches to a component that already exists in S2.
+
+| # | Skill | What Crucible actually builds | The artifact that proves it |
+|---|---|---|---|
+| **1** | **FIX protocol** *(Financial Information eXchange)* | A `FixBroker` adapter implementing the **same `Broker` interface** as `AlpacaPaperBroker` / `SchwabLiveBroker`, exercised against a **local FIX simulator/acceptor** — never a production venue. Session layer (logon, heartbeat, sequence numbers, gap-fill, resend) and application layer (NewOrderSingle · ExecutionReport · OrderCancelRequest · reject handling). | A passing adapter-conformance suite proving **interface parity with the REST brokers**, plus an ADR on *"why FIX for venue connectivity and REST for retail brokerage."* The point is protocol literacy and interface discipline, **not** connecting real money over FIX. |
+| **2** | **Time-series database** | Add a **dedicated TSDB** (QuestDB · TimescaleDB · ClickHouse — pick **exactly one**) behind the existing `signalcore.data` accessor, benchmarked head-to-head against the incumbent DuckDB + Parquet path on the project's real bar/tick volumes. Separately, acquire **kdb+/q reading literacy** — enough to read a `q` expression and discuss the columnar/time-series model in interview, not to build in it. | A published **benchmark table** (ingest throughput, as-of-join latency, storage footprint, query p95) and an ADR recording the decision *and the case for keeping DuckDB where it wins*. "I measured it and kept the simpler thing" is a stronger sentence than an unmotivated migration. |
+| **3** | **Market-data ingestion with PIT correctness enforced at the storage layer** | Promote point-in-time correctness from a *test-and-accessor* guarantee to a **storage-level invariant**: **bitemporal modelling** — every record carries both a **valid time** (when the fact was true in the market) and a **transaction time** (when we learned it). Vendor restatements become new rows, never overwrites; `as_of(t)` becomes a property of the schema rather than a convention the caller must respect. | The existing **look-ahead assertion upgraded to a storage constraint**, plus a **restatement-replay test**: inject a vendor restatement, re-run a historical research window, and assert the original result is bit-identical. This is the highest-value item of the four — it is the exact failure mode that destroys backtests, and almost nobody demonstrates it. |
+| **4** | **Event-driven design + measured latency budgets** | NautilusTrader already supplies the event-driven *engine*; this makes the **discipline explicit and owned** rather than inherited. Documented **latency budget per hop** (data-in → signal → risk check → order-out), **backpressure policy** under burst load, **replay determinism** (same event stream → identical decisions), and **idempotent order handling** on reconnect/duplicate ExecutionReports. | A **latency-budget table with measured p50/p95/p99**, an adversarial **replay-determinism test** in CI, and an ADR on the two-speed loop. ⚠️ **Honest scope:** this is *event-driven correctness at swing/intraday cadence* — it is **not** HFT, and must never be presented as low-latency trading engineering. Overclaiming here is worse than silence. |
+
+**Sequencing.** All four are **S2**, layered onto components that already exist — the broker interface (5.x), the medallion lakehouse (5.1), the `signalcore.data` accessor, and the NautilusTrader migration. **Priority within S2, if hours are scarce: #3 → #4 → #1 → #2.** Item 3 strengthens the integrity spine that everything else rests on; item 4 is nearly free because the engine already provides the substrate; items 1 and 2 are the two that add genuinely new surface area.
+
+**Boundary note.** None of these four belong in `signalcore`. FIX, the event loop, and latency budgets are **execution concerns — Crucible only**; AFC is read-only and never executes. The TSDB is a **backend behind** the `signalcore.data` accessor, never a dependency of it. The bitemporal contract *is* `signalcore.data`'s job and is specified there. See `Shared_SignalCore_Boundary_Spec_v1_3.md` (**now at header version v1.4** — filename unchanged per the standing convention that the version lives in the document header) §2, §4 and §7.
+
 ---
 
 ## 6. S3 — The Execution Agent & Safety Architecture
@@ -285,6 +302,8 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | Engine — S2/S3 | **NautilusTrader** (LGPL-3.0) — event-driven; backtest→live, no code change |
 | Param sweeps | VectorBT (exploration only), Optuna (walk-forward wrapper) |
 | Storage | DuckDB + partitioned Parquet (medallion); S3 for bronze archive |
+| **Time-series store** 🆕 | **ONE of QuestDB / TimescaleDB / ClickHouse** behind the `signalcore.data` accessor — benchmarked against DuckDB, decision recorded in an ADR (§5.5). **kdb+/q = reading literacy only**, not a build target |
+| **PIT storage model** 🆕 | **Bitemporal** (valid time + transaction time); vendor restatements append, never overwrite; look-ahead enforced as a storage constraint, not a convention (§5.5) |
 | Transformation | **dbt** (feature/universe models, tests, lineage) |
 | Contracts | **Great Expectations** (PIT invariants) |
 | Orchestration | **Airflow** (idempotent, backfillable) |
@@ -294,6 +313,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | Agents | **LangGraph** (Phases 2–3) |
 | AI providers | **Ollama/Qwen3 (default, local)** → Gemini → Anthropic → OpenAI (config-selected) |
 | Brokers | **Alpaca** (paper + live), **Schwab Trader API** (live) |
+| **Wire protocol** 🆕 | **FIX** via a `FixBroker` adapter against a **local simulator/acceptor only** — session + application layer; interface-parity with the REST brokers (§5.5) |
 | Validation | Pydantic v2 (structured outputs + config) |
 | Eval | DeepEval + pytest (CI gate); agentic evals published |
 | Observability | **Arize Phoenix** (OTel-native, free) |
@@ -359,7 +379,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | Stage | Role (v10.0) | Layer & production deliverables | Exit criteria |
 |---|---|---|---|
 | **S1** | Foundation (GenAI-first core) | Backtest engine + integrity spine (The Wall, sealed OOS vault, overfitting ledger, PIT data, walk-forward CV, 3-gate pipeline) + AI research loop; swing-first. | Look-ahead assertion green; ledger public incl. failures; OOS unopened. |
-| **S2** | DE/AE hardening | PIT medallion lakehouse; feature/universe **dbt models + blocking tests**; Great Expectations contracts; idempotent Airflow; **`signalcore`** semver'd tested library; NautilusTrader + engine-parity gate; Docker/Terraform; monitoring + postmortem. | PIT invariants CI-enforced; parity gate passed; `signalcore` published; postmortem written. |
+| **S2** | DE/AE hardening | PIT medallion lakehouse; feature/universe **dbt models + blocking tests**; Great Expectations contracts; idempotent Airflow; **`signalcore`** semver'd tested library; NautilusTrader + engine-parity gate; Docker/Terraform; monitoring + postmortem. **🆕 Market-infrastructure layer (§5.5): FIX adapter · time-series store · bitemporal PIT storage · measured latency budgets.** | PIT invariants CI-enforced **at the storage layer**; parity gate passed; `signalcore` published; postmortem written; **restatement-replay test green; latency-budget table published.** |
 | **S3** | Applied AI (agentic + eval) | Paper → live agent; deterministic pre-checks + **verifier agent** + **mandatory HITL** + **tested kill-switch** + micro-sizing; "LLM behind the Wall"; published agentic evals + **Arize Phoenix** trajectory tracing. | Tool Correctness = 1.0; Task Completion > 0.8; adversarial kill-switch suite green; **zero unsigned live orders**. |
 
 > **Optional beyond-portfolio extensions (earned-overlay gated, not required):** intraday strategy plugins (only after swing clears all gates); additional venues; multi-strategy capital allocation. **Not planned:** anything that weakens the HITL gate.
@@ -390,6 +410,10 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | **`signalcore` semver'd tested library** | **S2** | **Shared spine with AFC — the DE/AE evidence beneath the trading system** |
 | **Terraform + AWS** | **S2** | **Reproducible infra** |
 | **NautilusTrader** | **S2 → S3** | **Event-driven engine; backtest→live parity; migration proven by the engine-parity gate** |
+| **FIX protocol** 🆕 | **S2** | **`FixBroker` adapter vs. a local simulator; session + application layer; interface-parity with the REST brokers (§5.5)** |
+| **Time-series database (ONE of QuestDB / TimescaleDB / ClickHouse)** 🆕 | **S2** | **Backend behind `signalcore.data`; benchmarked vs. DuckDB with the decision recorded in an ADR. kdb+/q = reading literacy only (§5.5)** |
+| **Bitemporal PIT storage (valid time + transaction time)** 🆕 | **S2** | **Look-ahead enforced as a storage constraint; restatement-replay test asserts historical results are bit-identical (§5.5) — the highest-value item of the four** |
+| **Event-driven design + measured latency budgets** 🆕 | **S2** | **Per-hop budget with p50/p95/p99, backpressure policy, replay determinism, idempotent order handling. ⚠️ Swing/intraday cadence — NOT HFT, never presented as such (§5.5)** |
 | scikit-learn, statsmodels, SHAP | S3 | Calibrated classifier / factor importance — **earned-overlay; must beat base-rate or be cut** |
 | Alpaca (paper → live), Schwab/TOS | S3 | Execution adapters; paper and live share one API |
 | **LangGraph** | **S3** | **Agent orchestration + verifier agent before the HITL gate** |
@@ -398,6 +422,8 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | MCP | S3 | Market/broker tools exposed under the verifier + HITL boundary |
 
 > **Honest gap:** trading/backtesting infrastructure has **no matching roadmap certification** — the defensible artifact (integrity spine + published evals + tested kill-switch) *is* the signal. Build it; don't look for a cert.
+
+> **🆕 Amendment (roadmap v10.0 CORRECTION 15):** the gap is real and remains — *no proctored finance or trading-technology certification is worth buying for this trajectory*, and practitioners who screen these CVs say so directly. The one exception is **not a certification**: **Georgia Tech OMSCS `CS 7646 — Machine Learning for Trading`**, taken as a free elective at **$0 marginal cost**, which produces a graduate transcript line instead of a badge. Everything else in this lane is earned by shipping §5.5.
 
 > **Positioning note:** lead with **safety engineering and data engineering**, never with returns. The interview story is *"here's how I made an irreversible system safe"* — not *"here's my Sharpe ratio."*
 
