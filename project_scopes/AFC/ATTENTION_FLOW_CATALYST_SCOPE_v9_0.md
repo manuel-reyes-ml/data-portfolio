@@ -32,7 +32,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
 
 ---
 
@@ -769,424 +769,202 @@ jobs:
 
 ## 14. Logging & Debugging
 
+> **🆕 CORRECTION 16 (v10.0):** this section is rewritten to the structured-logging standard.
+> The previous design — a `config/logging.yaml` dictConfig, a `logs/` tree of
+> `TimedRotatingFileHandler` outputs, and f-string log calls — is superseded on three counts:
+> f-strings destroy queryability, per-domain file handlers duplicate and interleave lines, and
+> Python-side rotation duplicates what the container runtime already does. All headings are
+> preserved; only the mechanism changed.
+
 ### 14.1 Logging Directory Structure
 
+**Primary destination is stdout.** Rotation, shipping and retention belong to Docker /
+systemd / the log aggregator, not to Python (12-Factor). "Per-domain logs" become *derived
+views* — filter on the `logger` field or the event name downstream.
+
 ```
-logs/
-├── app/                          # Streamlit dashboard logs
-│   ├── app.log                   # Current log
-│   └── app.log.{date}            # Rotated logs
-├── pipeline/                     # Data pipeline logs
-│   ├── pipeline.log              # Current log
-│   ├── pipeline.log.{date}       # Rotated logs
-│   └── runs/                     # Per-run detailed logs
-│       ├── run_2026-01-29_083000.log
-│       └── run_2026-01-29_120000.log
-├── collectors/                   # API collector logs
-│   ├── collectors.log
-│   └── errors/                   # Error-specific logs
-│       ├── sec_errors.log
-│       ├── wiki_errors.log
-│       └── news_errors.log
-├── backtest/                     # Backtest engine logs
-│   ├── backtest.log
-│   └── runs/
-│       └── backtest_{scenario_id}.log
-├── ai/                           # ⭐ AI observability logs
-│   ├── queries.log               # LLM queries, tokens, cost, latency
-│   └── guardrails.log            # Guardrail activations with reason
-└── debug/                        # Debug logs (verbose, gitignored)
-    └── debug.log
+logs/                             # gitignored; NOT the primary destination
+├── evaluation/                   # DeepEval/RAGAS result artifacts (not app logs)
+└── runs/                         # ⏸️ OPT-IN ONLY — long unattended local collector /
+    └── run_<id>.jsonl            #    backtest runs, via an explicit log_file= argument.
+                                  #    Never the default. Never inside a container.
 ```
+
+Everything the old tree separated by file (`collectors`, `backtest`, `ai`, `guardrails`) is
+now one stdout stream, separable by field:
+
+| Old file | Now retrieved by |
+|----------|------------------|
+| `collectors/collectors.log` | `logger` starts with `afc.collectors` |
+| `collectors/errors/sec_errors.log` | `logger == "afc.collectors.sec"` and `level == "error"` |
+| `backtest/runs/backtest_{id}.log` | `run_id == "<id>"` (bound via contextvars) |
+| `ai/queries.log` | `event == "ai_query_completed"` |
+| `ai/guardrails.log` | `event == "guardrail_blocked"` |
 
 ### 14.2 Logging Configuration
 
-**config/logging.yaml**
-```yaml
-version: 1
-disable_existing_loggers: false
+No YAML. Configuration is typed Python in `src/observability/logging.py`, per the
+`python-production-standards.mdc` rule — `structlog` renders both its own records and every
+foreign stdlib record (edgartools, httpx, Neo4j, DuckDB) through one `ProcessorFormatter`
+chain, so third-party output cannot drift into a second format.
 
-formatters:
-  standard:
-    format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
-    datefmt: "%Y-%m-%d %H:%M:%S"
-  
-  detailed:
-    format: "%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s"
-    datefmt: "%Y-%m-%d %H:%M:%S"
-  
-  json:
-    class: pythonjsonlogger.jsonlogger.JsonFormatter
-    format: "%(asctime)s %(levelname)s %(name)s %(funcName)s %(lineno)d %(message)s"
+```python
+# src/observability/logging.py  (see python-production-standards.mdc for the full module)
+SHARED_PROCESSORS = [
+    structlog.contextvars.merge_contextvars,   # run_id, ticker, trigger_id
+    structlog.stdlib.add_logger_name,
+    structlog.stdlib.add_log_level,
+    structlog.processors.TimeStamper(fmt="iso", utc=True),
+    structlog.processors.StackInfoRenderer(),
+    structlog.processors.UnicodeDecoder(),
+    redact_pii,                                # choke point — runs on foreign records too
+]
 
-handlers:
-  console:
-    class: logging.StreamHandler
-    level: INFO
-    formatter: standard
-    stream: ext://sys.stdout
-  
-  file_pipeline:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: INFO
-    formatter: detailed
-    filename: logs/pipeline/pipeline.log
-    when: midnight
-    interval: 1
-    backupCount: 30  # Keep 30 days
-    encoding: utf-8
-  
-  file_collectors:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: INFO
-    formatter: detailed
-    filename: logs/collectors/collectors.log
-    when: midnight
-    interval: 1
-    backupCount: 30
-    encoding: utf-8
-  
-  file_backtest:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: INFO
-    formatter: detailed
-    filename: logs/backtest/backtest.log
-    when: midnight
-    interval: 1
-    backupCount: 30
-    encoding: utf-8
-  
-  file_app:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: INFO
-    formatter: detailed
-    filename: logs/app/app.log
-    when: midnight
-    interval: 1
-    backupCount: 14  # Keep 14 days for app
-    encoding: utf-8
-  
-  file_ai:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: INFO
-    formatter: json  # JSON format for AI observability (structured parsing)
-    filename: logs/ai/queries.log
-    when: midnight
-    interval: 1
-    backupCount: 30
-    encoding: utf-8
-  
-  file_ai_guardrails:
-    class: logging.handlers.RotatingFileHandler
-    level: WARNING
-    formatter: detailed
-    filename: logs/ai/guardrails.log
-    maxBytes: 10485760  # 10MB
-    backupCount: 5
-    encoding: utf-8
-  
-  file_errors:
-    class: logging.handlers.RotatingFileHandler
-    level: ERROR
-    formatter: detailed
-    filename: logs/errors.log
-    maxBytes: 10485760  # 10MB
-    backupCount: 5
-    encoding: utf-8
-  
-  file_debug:
-    class: logging.handlers.RotatingFileHandler
-    level: DEBUG
-    formatter: detailed
-    filename: logs/debug/debug.log
-    maxBytes: 52428800  # 50MB
-    backupCount: 3
-    encoding: utf-8
+THIRD_PARTY_LEVELS = {
+    "httpx": logging.WARNING,
+    "httpcore": logging.WARNING,
+    "urllib3": logging.WARNING,
+    "neo4j": logging.WARNING,
+    "anthropic": logging.INFO,
+}
 
-loggers:
-  # Root logger
-  afc:
-    level: INFO
-    handlers: [console, file_pipeline, file_errors]
-    propagate: false
-  
-  # Module-specific loggers
-  afc.screener:
-    level: INFO
-    handlers: [console, file_pipeline]
-    propagate: false
-  
-  afc.collectors:
-    level: INFO
-    handlers: [console, file_collectors, file_errors]
-    propagate: false
-  
-  afc.collectors.sec:
-    level: INFO
-    handlers: [file_collectors]
-    propagate: true
-  
-  afc.collectors.wiki:
-    level: INFO
-    handlers: [file_collectors]
-    propagate: true
-  
-  afc.triggers:
-    level: INFO
-    handlers: [console, file_pipeline]
-    propagate: false
-  
-  afc.backtest:
-    level: INFO
-    handlers: [console, file_backtest]
-    propagate: false
-  
-  afc.database:
-    level: INFO
-    handlers: [console, file_pipeline]
-    propagate: false
-  
-  afc.app:
-    level: INFO
-    handlers: [console, file_app]
-    propagate: false
-  
-  # AI observability loggers
-  afc.ai:
-    level: INFO
-    handlers: [console, file_ai, file_errors]
-    propagate: false
-  
-  afc.ai.guardrails:
-    level: WARNING
-    handlers: [file_ai_guardrails, file_errors]
-    propagate: true
-
-root:
-  level: WARNING
-  handlers: [console, file_errors]
+# Renderer is selected at runtime, replacing the old YAML's three named
+# formatters (standard / detailed / json) with one TTY check.
+json_mode = force_json or not sys.stderr.isatty()
+renderer = (
+    structlog.processors.JSONRenderer()          # containers, CI, prod
+    if json_mode
+    else structlog.dev.ConsoleRenderer(colors=True)   # local dev
+)
 ```
+
+| Old YAML formatter | Replacement |
+|---|---|
+| `standard` (console, `%`-format) | `structlog.dev.ConsoleRenderer(colors=True)` — auto-selected on a TTY |
+| `detailed` (adds `funcName:lineno`) | not needed — `add_logger_name` + `StackInfoRenderer` carry it structurally |
+| `json` (`pythonjsonlogger`) | `structlog.processors.JSONRenderer` + `dict_tracebacks` — auto-selected off-TTY |
+
+Dropping `python-json-logger` is deliberate: with `ProcessorFormatter` the event dict is
+rendered by structlog itself, so the stdlib formatter no longer owns (and can no longer
+silently drop) the context fields.
+
+`configure_logging()` is called **once**, at the entrypoint (`app.py`, the CLI, the DAG task).
+Never inside a collector, a trigger module, or anything importable — and never in `signalcore`
+(see the boundary spec §7).
 
 ### 14.3 Logging Utility Module
 
-**src/utils/logging.py**
-```python
-import logging
-import logging.config
-from pathlib import Path
-from datetime import datetime
-from typing import Optional
-import yaml
+The hand-rolled `setup_logging()` / `get_logger()` / `LogContext` / `get_run_logger()` helpers
+are retired — `structlog` supplies all four capabilities natively:
 
-def setup_logging(
-    config_path: str = "config/logging.yaml",
-    default_level: int = logging.INFO,
-    env_key: str = "LOG_CFG"
-) -> None:
-    """
-    Setup logging configuration.
-    
-    Args:
-        config_path: Path to logging config YAML
-        default_level: Default logging level if config not found
-        env_key: Environment variable to override config path
-    """
-    import os
-    
-    # Create logs directories
-    log_dirs = [
-        "logs/app",
-        "logs/pipeline/runs",
-        "logs/collectors/errors",
-        "logs/backtest/runs",
-        "logs/debug"
-    ]
-    for log_dir in log_dirs:
-        Path(log_dir).mkdir(parents=True, exist_ok=True)
-    
-    # Load config
-    path = os.getenv(env_key, config_path)
-    if Path(path).exists():
-        with open(path, "r") as f:
-            config = yaml.safe_load(f)
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
-        logging.warning(f"Logging config not found at {path}, using defaults")
+| Retired helper | Replacement |
+|----------------|-------------|
+| `setup_logging(config_path=...)` | `configure_logging(level=..., force_json=...)` |
+| `get_logger("collectors.sec")` | `structlog.stdlib.get_logger(__name__)` |
+| `LogContext(logger, "...")` | `structlog.contextvars.bind_contextvars(...)` |
+| `get_run_logger("backtest", run_id=...)` | `bind_contextvars(run_id=...)` — one stream, filterable |
 
-def get_logger(name: str) -> logging.Logger:
-    """
-    Get a logger with the afc namespace.
-    
-    Args:
-        name: Logger name (will be prefixed with 'afc.')
-        
-    Returns:
-        Configured logger instance
-        
-    Example:
-        logger = get_logger("collectors.sec")
-        logger.info("Fetching Form 4 filings...")
-    """
-    if not name.startswith("afc."):
-        name = f"afc.{name}"
-    return logging.getLogger(name)
-
-def get_run_logger(
-    run_type: str,
-    run_id: Optional[str] = None
-) -> logging.Logger:
-    """
-    Get a logger for a specific pipeline run with dedicated file.
-    
-    Args:
-        run_type: Type of run ('pipeline', 'backtest', 'collector')
-        run_id: Optional run identifier (defaults to timestamp)
-        
-    Returns:
-        Logger with file handler for this specific run
-    """
-    if run_id is None:
-        run_id = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    
-    logger_name = f"afc.{run_type}.run_{run_id}"
-    logger = logging.getLogger(logger_name)
-    
-    # Add run-specific file handler
-    log_path = Path(f"logs/{run_type}/runs/run_{run_id}.log")
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    handler = logging.FileHandler(log_path, encoding="utf-8")
-    handler.setLevel(logging.DEBUG)
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s | %(levelname)-8s | %(name)s | %(funcName)s:%(lineno)d | %(message)s"
-    ))
-    logger.addHandler(handler)
-    
-    return logger
-
-class LogContext:
-    """Context manager for logging operation blocks."""
-    
-    def __init__(
-        self,
-        logger: logging.Logger,
-        operation: str,
-        level: int = logging.INFO
-    ):
-        self.logger = logger
-        self.operation = operation
-        self.level = level
-        self.start_time = None
-    
-    def __enter__(self):
-        self.start_time = datetime.now()
-        self.logger.log(self.level, f"Starting: {self.operation}")
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        duration = (datetime.now() - self.start_time).total_seconds()
-        if exc_type is None:
-            self.logger.log(
-                self.level,
-                f"Completed: {self.operation} ({duration:.2f}s)"
-            )
-        else:
-            self.logger.error(
-                f"Failed: {self.operation} ({duration:.2f}s) - {exc_type.__name__}: {exc_val}"
-            )
-        return False  # Don't suppress exceptions
-```
+Retiring `get_run_logger` is the substantive win: a per-run *file* cannot be joined against
+anything, whereas a per-run *field* lets one query span collectors, triggers and backtest in a
+single timeline.
 
 ### 14.4 Usage Examples
 
 ```python
-# Basic usage
-from src.utils.logging import setup_logging, get_logger, LogContext
+import structlog
+from src.observability.logging import configure_logging
 
-# Initialize logging (call once at startup)
-setup_logging()
+configure_logging()                       # once, at the entrypoint
+log = structlog.stdlib.get_logger(__name__)
 
-# Get module-specific logger
-logger = get_logger("collectors.sec")
+# Bind run context — every downstream line, including edgartools' and httpx's,
+# inherits run_id without being passed a logger.
+structlog.contextvars.clear_contextvars()  # ALWAYS first — prevents cross-run bleed
+structlog.contextvars.bind_contextvars(run_id=run_id, pipeline="sec_collection")
 
-# Standard logging
-logger.info("Starting SEC Form 4 collection")
-logger.debug(f"Processing ticker: {ticker}")
-logger.warning(f"Rate limit approaching: {remaining} requests left")
-logger.error(f"Failed to fetch filing: {error}", exc_info=True)
+log.info("collection_started", ticker_count=len(tickers), source="sec_form4")
+log.debug("ticker_processing", ticker=ticker)
+log.warning("rate_limit_approaching", remaining=remaining, source="sec")
+log.error("filing_fetch_failed", ticker=ticker, exc_info=True)
 
-# Context manager for operations
-with LogContext(logger, f"Collecting {len(tickers)} tickers"):
-    for ticker in tickers:
+# Per-ticker context inside the loop
+for ticker in tickers:
+    with structlog.contextvars.bound_contextvars(ticker=ticker):
         collect_insider_filings(ticker)
 
-# Pipeline run with dedicated log file
-from src.utils.logging import get_run_logger
-
-run_logger = get_run_logger("backtest", run_id="scenario_T1_T4")
-run_logger.info("Starting backtest for T1+T4 combination")
+log.info("collection_completed", ticker_count=len(tickers), elapsed_ms=elapsed)
 ```
 
 ### 14.5 Log Levels Guide
 
 | Level | When to Use | Example |
 |-------|-------------|---------|
-| **DEBUG** | Detailed diagnostic info | `logger.debug(f"Query returned {len(rows)} rows")` |
-| **INFO** | General operational events | `logger.info("Backtest completed successfully")` |
-| **WARNING** | Something unexpected but handled | `logger.warning("Missing data for AAPL, using interpolation")` |
-| **ERROR** | Error occurred, operation failed | `logger.error("API request failed", exc_info=True)` |
-| **CRITICAL** | Severe error, program may crash | `logger.critical("Database connection lost")` |
+| **DEBUG** | Detailed diagnostic info | `log.debug("query_returned", row_count=len(rows))` |
+| **INFO** | General operational events | `log.info("backtest_completed", scenario=scenario_id)` |
+| **WARNING** | Unexpected but handled | `log.warning("data_missing", ticker="AAPL", strategy="interpolation")` |
+| **ERROR** | Operation failed | `log.error("api_request_failed", source="sec", exc_info=True)` |
+| **CRITICAL** | Severe; may not continue | `log.critical("database_unavailable", db="afc.duckdb")` |
+
+Event names are stable `snake_case` **identifiers**, not sentences. Renaming one breaks
+downstream filters exactly as renaming a column breaks SQL.
 
 ### 14.6 Error Tracking Pattern
 
 ```python
-# Collector error tracking with context
-async def collect_wiki_pageviews(ticker: str) -> Optional[pd.DataFrame]:
-    logger = get_logger("collectors.wiki")
-    
-    try:
-        logger.debug(f"Fetching pageviews for {ticker}")
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            
-        logger.info(f"Successfully collected {ticker}: {len(data)} days")
-        return pd.DataFrame(data)
-        
-    except httpx.HTTPStatusError as e:
-        logger.error(
-            f"HTTP error for {ticker}: {e.response.status_code}",
-            extra={"ticker": ticker, "status": e.response.status_code}
-        )
-        return None
-        
-    except httpx.RequestError as e:
-        logger.error(
-            f"Request failed for {ticker}: {str(e)}",
-            extra={"ticker": ticker, "error_type": type(e).__name__}
-        )
-        return None
-        
-    except Exception as e:
-        logger.exception(f"Unexpected error for {ticker}")  # Includes traceback
-        return None
+import httpx
+import stamina
+import structlog
+
+log = structlog.stdlib.get_logger(__name__)
+
+
+# stamina detects structlog and logs each scheduled retry automatically —
+# retry storms become visible without any extra code.
+@stamina.retry(on=(httpx.HTTPError, httpx.TimeoutException), attempts=3, timeout=60.0)
+async def collect_wiki_pageviews(ticker: str) -> pd.DataFrame | None:
+    """Collect pageviews. Transport errors retry; anything else fails loudly."""
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        response.raise_for_status()
+
+    log.info("collection_succeeded", ticker=ticker, day_count=len(data), source="wiki")
+    return pd.DataFrame(data)
+
+
+# At the call site — retries are exhausted by the time we get here.
+try:
+    df = await collect_wiki_pageviews(ticker)
+except httpx.HTTPStatusError as exc:
+    log.error("http_error", ticker=exc.request.url.host, status=exc.response.status_code)
+    df = None
+except Exception:
+    log.exception("collection_failed_unexpectedly", ticker=ticker)   # includes traceback
+    df = None
 ```
+
+Two rules carried over from the standard: never retry a 4xx that is not 429 (it will fail
+identically), and never retry a write without an idempotency key.
 
 ### 14.7 Gitignore for Logs
 
 ```gitignore
-# Logs
+# Logs — stdout is primary; these are opt-in local artifacts only
 logs/
 *.log
+*.jsonl
 
 # Keep directory structure
 !logs/.gitkeep
 !logs/*/
 !logs/*/.gitkeep
+
+# Evaluation artifacts ARE tracked (they back the README metrics table)
+!logs/evaluation/
+!logs/evaluation/**
 ```
 
 ---
+
 
 ## 15. Project Structure
 
@@ -1246,7 +1024,8 @@ attention-flow-catalyst/
 │   └── workflows/ci.yml
 ├── config/
 │   ├── thresholds.yaml
-│   └── logging.yaml              # ⭐ Logging configuration
+│   └── # (no logging.yaml — 🆕 CORRECTION 16: logging is configured in
+│                                 #  src/observability/logging.py, not YAML dictConfig)
 ├── data/
 │   ├── raw/prices/, events/
 │   ├── processed/triggers/, universes/
@@ -1269,6 +1048,9 @@ attention-flow-catalyst/
 ├── src/
 │   ├── __init__.py
 │   ├── py.typed                  # PEP 561 — type hint support marker
+│   ├── observability/           # 🆕 CORRECTION 16
+│   │   ├── __init__.py
+│   │   └── logging.py          # configure_logging() + redact_pii processor
 │   ├── screener/
 │   ├── collectors/
 │   ├── triggers/
