@@ -240,7 +240,8 @@ logging_config:
     pipeline: 'logger startswith \"src.ingest\" or \"src.transform\"'
     analytics: 'logger startswith \"src.analytics\"'
     ai: 'event startswith \"ai_query\"'
-    guardrails: 'event == \"guardrail_blocked\"'
+    app: 'logger startswith \"src.app\"'      # Streamlit interactions
+    guardrails: 'event == \"guardrail_blocked\"'   # (new — was not a separate file before)
 
   processors:
     - merge_contextvars           # run_id, request_id
