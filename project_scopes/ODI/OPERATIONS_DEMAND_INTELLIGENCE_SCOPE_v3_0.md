@@ -32,7 +32,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
 
 **Consolidation note (v10.0):** ODI, the 1099-platform S3 Analyst layer, and DataVault all deliver internal NL analytics. Consider merging ODI's demand-analytics into the 1099 platform's mart/AI layer rather than maintaining a parallel project; keep ODI standalone only if the demand-forecasting angle is a distinct portfolio story.
 
@@ -217,25 +217,37 @@ logs/                         # Application logs (gitignored)
 
 ### 3.5 Logging Strategy
 
+> **🆕 CORRECTION 16 (v10.0):** stdlib `logging` with `%`-format strings and per-domain
+> rotating files is superseded by `structlog` over stdlib via `ProcessorFormatter`. The
+> former "log files" are now *derived views* over one stdout stream, filtered by field.
+
 ```yaml
 logging_config:
-  library: "Python logging (standard library)"
-  
+  library: "structlog over stdlib logging (structlog.stdlib.ProcessorFormatter)"
+  configured_in: "src/observability/logging.py — configure_logging(), called once at entrypoint"
+
   log_levels:
     development: DEBUG
     production: INFO
-    
-  log_files:
-    pipeline.log: "Data ingestion, transformation, validation"
-    analytics.log: "Metric calculations, aggregations"
-    ai.log: "LLM queries, token usage, cost, latency, guardrail activations"
-    app.log: "Streamlit interactions, AI queries"
-    
-  format: "%(asctime)s | %(levelname)s | %(module)s | %(message)s"
-  
-  rotation:
-    max_size: "10 MB"
-    backup_count: 5
+
+  renderer:
+    tty: "structlog.dev.ConsoleRenderer (colors)"
+    container: "JSONRenderer + dict_tracebacks"
+
+  destination: "stdout only (12-Factor) — rotation/shipping owned by Docker/aggregator"
+
+  derived_views:               # replaces the former per-domain log files
+    pipeline: 'logger startswith \"src.ingest\" or \"src.transform\"'
+    analytics: 'logger startswith \"src.analytics\"'
+    ai: 'event startswith \"ai_query\"'
+    guardrails: 'event == \"guardrail_blocked\"'
+
+  processors:
+    - merge_contextvars           # run_id, request_id
+    - add_logger_name
+    - add_log_level
+    - TimeStamper(iso, utc)
+    - redact_pii                  # PII choke point — runs on third-party records too
     
   key_events_to_log:
     - File loaded (rows, columns, path)
@@ -254,42 +266,60 @@ logging_config:
 **Example Logging Implementation:**
 
 ```python
-# src/utils/logger.py
-import logging
-from pathlib import Path
+# src/observability/logging.py — 🆕 CORRECTION 16
+# Replaces the former per-module setup_logger() with ONE configuration that also
+# captures third-party loggers (httpx, the LLM SDK, openpyxl) in the same format.
+# Full module lives in .cursor/rules/python-production-standards.mdc.
+from __future__ import annotations
 
-def setup_logger(name: str, log_file: str, level=logging.INFO) -> logging.Logger:
-    """Configure logger with file and console handlers."""
-    
-    # Create logs directory if needed
-    log_path = Path("logs")
-    log_path.mkdir(exist_ok=True)
-    
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    
-    # File handler
-    file_handler = logging.FileHandler(log_path / log_file)
-    file_handler.setFormatter(logging.Formatter(
-        "%(asctime)s | %(levelname)s | %(module)s | %(message)s"
-    ))
-    
-    # Console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(logging.Formatter(
-        "%(levelname)s | %(message)s"
-    ))
-    
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
-    
-    return logger
+import logging
+import sys
+
+import structlog
+
+
+def configure_logging(level: int = logging.INFO, *, force_json: bool = False) -> None:
+    """Configure structlog + stdlib once, at the entrypoint. Never per module."""
+    json_mode = force_json or not sys.stderr.isatty()
+
+    structlog.configure(
+        processors=[
+            *SHARED_PROCESSORS,                    # incl. redact_pii
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,   # MUST be last
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,            # False in tests
+    )
+
+    handler = logging.StreamHandler(sys.stdout)    # stdout only — 12-Factor
+    handler.setFormatter(
+        structlog.stdlib.ProcessorFormatter(
+            foreign_pre_chain=[structlog.stdlib.ExtraAdder(), *SHARED_PROCESSORS],
+            processors=[
+                structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                structlog.processors.JSONRenderer() if json_mode
+                else structlog.dev.ConsoleRenderer(colors=True),
+            ],
+        )
+    )
+    root = logging.getLogger()
+    root.handlers.clear()                          # idempotent across Streamlit reruns
+    root.addHandler(handler)
+    root.setLevel(level)
+
 
 # Usage in modules:
-# from src.utils.logger import setup_logger
-# logger = setup_logger("pipeline", "pipeline.log")
-# logger.info(f"Loaded {len(df)} rows from {filepath}")
+# import structlog
+# log = structlog.stdlib.get_logger(__name__)
+# log.info("file_loaded", path=str(filepath), row_count=len(df), columns=len(df.columns))
 ```
+
+> **Why this replaced `setup_logger()`:** the old helper attached a *new* pair of handlers
+> every time it was called, so importing two modules produced duplicated lines; it captured
+> nothing from third-party libraries; and its `%`-format strings made the output unqueryable.
+> One `configure_logging()` at the entrypoint fixes all three.
 
 ---
 
@@ -720,7 +750,8 @@ operations-demand-intelligence/
 │   └── workflows/ci.yml
 ├── config/
 │   ├── settings.yaml
-│   └── logging.yaml           # Logging configuration
+│   └── # (no logging.yaml — 🆕 CORRECTION 16: logging is configured in
+│                                 #  src/observability/logging.py, not YAML dictConfig)
 ├── data/
 │   ├── raw/                    # gitignored
 │   ├── processed/              # gitignored
@@ -735,6 +766,9 @@ operations-demand-intelligence/
 ├── src/
 │   ├── __init__.py
 │   ├── py.typed                # PEP 561 — type hint support marker
+│   ├── observability/           # 🆕 CORRECTION 16
+│   │   ├── __init__.py
+│   │   └── logging.py          # configure_logging() + redact_pii processor
 │   ├── ingest/
 │   │   ├── loader.py           # Excel loading
 │   │   └── anonymizer.py       # PII handling
