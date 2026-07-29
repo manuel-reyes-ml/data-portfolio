@@ -123,6 +123,7 @@ flowchart TD
 - 🆕 ❌ **Treating a restatement as an update.** → Overwriting a row destroys transaction time and silently reintroduces look-ahead into every historical run that touches it. Restatements **append**; the leakage tests assert it.
 - ❌ Attention/insider *trigger logic* in `signalcore`. → Only the *filing fetch/parse* is shared; interpretation is AFC's.
 - ❌ Treating the short-interest accessor's value as fresh-as-of-`t`. → It is bi-monthly and lagged; the accessor exposes the effective date so AFC can model that honestly.
+- ❌ **Calling `configure_logging()`, `logging.basicConfig()`, or `structlog.configure()` anywhere in `signalcore`.** → A library *emits* logs; only an application *configures* them. `signalcore` modules call `structlog.stdlib.get_logger(__name__)` and nothing else — AFC and Crucible each own their own configuration, and whichever one imports the library at runtime supplies it. A library that configures logging silently hijacks the handlers of every consumer that imports it, and the last import wins. Likewise `signalcore` reads **no** environment variables and instantiates **no** `Settings` object: configuration is passed in as typed arguments, never discovered from the ambient environment.
 - ❌ A **knowledge graph / Neo4j entity model** (companies · filings · officers · holdings → typed relationships), Cypher, or any GraphRAG hybrid-retriever logic in `signalcore`. → The entity ontology *is* project logic — it lives in **AFC** (the Stage 2 Financial-KG capstone), never in `signalcore`. The library may supply the *primitives* a graph ingest consumes (dilution filing records, short-interest ratios, PIT data accessors), but the graph schema, Cypher, and retriever stay in the project.
 
 ---
@@ -141,6 +142,8 @@ signalcore/                      # shared package (its own repo or monorepo pkg)
   opencode.jsonc   # harness config; instructions[] can also load ../.cursor/rules/*.md
   pyproject.toml   # versioned, semver'd (uv-managed)
   uv.lock          # committed lockfile — deterministic installs; pinned by both consumers
+  # NOTE: no logging.py / settings.py here by design — see §7. The library binds loggers via
+  #       structlog.stdlib.get_logger(__name__); consumers own configuration and redaction.
   docs/adr/        # numbered, immutable ADRs (the §6 governance log)
   # (optional) docs/architecture.dsl — the §5 dependency diagram already serves as the C4 Context
   #            view; a Structurizr DSL source is only worth adding if this library ever grows a
@@ -156,4 +159,4 @@ crucible/            # imports signalcore  (does NOT import signalcore.shortinte
 
 ---
 
-*Boundary spec only. Defines code ownership and dependency direction; makes no claim about either project's edge. Keep `signalcore` thin — the moment it knows what a "trade" is, what "loaded" means, **what a FIX session is, or what time it is**, the boundary has failed.*
+*Boundary spec only. Defines code ownership and dependency direction; makes no claim about either project's edge. Keep `signalcore` thin — the moment it knows what a "trade" is, what "loaded" means, **what a FIX session is, what time it is, or how logs should be formatted**, the boundary has failed.*
