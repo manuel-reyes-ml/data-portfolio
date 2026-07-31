@@ -48,24 +48,29 @@ Each project links to its scope document(s) in the [Repository Structure](#-repo
 
 ## 🏆 Production Highlight — 1099 / DataVault Data Platform (S1 core)
 
-**✅ Live in production at Daybright Financial.** The Data-Engineering flagship's Stage-1 core: ingests Matrix + Relius sources into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics.
+**✅ Live in production in an ERISA-regulated retirement-plan operations environment.** The Data-Engineering flagship's Stage-1 core: ingests Matrix + Relius sources into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics.
 
 | Metric | Impact |
 |---|---|
 | ⚡ Time saved | ~95% reduction (hours → minutes per cycle) |
-| 💰 Cost savings | ~$15,000 / year in labor |
-| 📊 Scale | 10× capacity vs. the manual process |
-| ✅ Correctness | Caught a tax-code error a manual pass missed (Dec 2025) |
+| 📈 Scale | Handles the **full distribution book without added headcount** |
+| 🛡️ Correctness | **Derived-vs-reported Box-7 validation gate** — mismatches quarantined before distribution |
+| ✅ Reliability | **Reconciliation success rate** held against a stated freshness SLA |
 
 **Stack:** Python · pandas · pytest · GitHub Actions CI · synthetic-data fixtures for the public build.
 
-> The public portfolio build uses synthetic data only — the production deployment runs internally on regulated data.
+> 🔒 **Regulated-environment disclosure.** The public portfolio build uses synthetic data only — the production deployment runs internally on regulated data. Published claims are limited to **mechanism and non-identifying relative deltas**: no absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes. The Cost section for this project is therefore thinner than a typical portfolio project's — that is a disclosure constraint, not a gap.
 
 ---
 
 ## 🚀 Project Summaries
 
 ### 🧾 1099 / DataVault Data Platform — *Data-Engineering flagship*
+
+- **① Production** — Live, depended-upon pipeline in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry behaviour, schema contracts, on-call reality.
+- **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
+- **③ Architecture** — **ERISA-driven ADRs** (retention, auditability, reconciliation guarantees, PII boundary) · C4 Context + Container · dbt tests and data contracts.
+
 One system across the arc, not two projects. **Stage 1:** the live 1099 reconciliation core (canonical model → reconcile → Box-7 derivation → corrections analytics). **Stage 2:** hardened into a data platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy (Docker/ECS), monitoring. **Stage 3:** the Applied-AI analyst layer — natural-language querying with **human-in-the-loop on every write**.
 
 **Stack:** Python · pandas · dbt · Great Expectations · Airflow · Snowflake · Docker · GitHub Actions CI · Anthropic SDK · Pydantic
@@ -73,6 +78,11 @@ One system across the arc, not two projects. **Stage 1:** the live 1099 reconcil
 ---
 
 ### 📋 PolicyPulse — *Applied-AI flagship (RAG)*
+
+- **① Production** — Containerised RAG + **FastMCP** service; **RAGAS/DeepEval blocking gates are merge conditions**, not reports; confidence-gated escalation path.
+- **② Cost** — Cost-per-query and p95 latency measured across inference substrates; local-vs-cloud routing policy; embedding/re-index cost.
+- **③ Architecture** — GraphRAG (Neo4j + ChromaDB) · retrieval-strategy **ADRs with rejected alternatives** · C4 Context + Container · MCP read → approval-gated write boundary.
+
 Retrieval-augmented answering over retirement-plan documents with cited sources and confidence-gated escalation. Exposes a **FastMCP server** so an editor/assistant can query the knowledge base directly. Evolves from vector RAG (S1) to a **GraphRAG hybrid — Neo4j + ChromaDB** (S2/S3) for multi-hop questions vector-only retrieval stitches together wrong, then to agentic workflows with a three-layer eval spine.
 
 **Stack:** Python · Anthropic SDK (primary) · ChromaDB · Neo4j (GraphRAG) · Gemini embeddings · FastMCP · Arize Phoenix · RAGAS · SelfCheckGPT · DeepEval · Streamlit · Pydantic · Docker
@@ -80,6 +90,11 @@ Retrieval-augmented answering over retirement-plan documents with cited sources 
 ---
 
 ### 🔥 Crucible — *Autonomous trading-research flagship*
+
+- **① Production** — Backtest → paper → live path with **mandatory human sign-off + kill-switch**; deterministic core owns every trade; intended-vs-filled reconciliation.
+- **② Cost** — Compute cost per backtest sweep, data-feed cost, sweep efficiency (results per compute-hour).
+- **③ Architecture** — Multi-timeframe design · execution and risk-control ADRs · C4 Context + Container · `signalcore` boundary (primitives in, strategy logic out).
+
 A strategy-agnostic platform taking a strategy from **backtest → paper → live** through validation gates. **Multi-timeframe (swing → intraday)** — swing-first is the lower-risk on-ramp; intraday plugins follow once swing clears all three integrity gates. Strategies are plugins (Protocol + ABC + registry). Research-loop integrity is enforced by a sealed out-of-sample vault + an overfitting-budget ledger + an engine-parity gate. Live execution is the one genuinely irreversible path, so it is gated by **mandatory HITL sign-off + a kill-switch**; the LLM sits *behind the Wall* (proposes, never executes). Local-first inference keeps cost at zero and proprietary data on-machine.
 
 **Stack:** Python · own event-driven backtest harness → NautilusTrader · Optuna · DuckDB/Parquet · Ollama/Qwen (local-first) → cloud fallback · Pydantic · LangGraph · Alpaca (paper + live) · DeepEval · Docker · uv *(Conda conditional — only if compiled/GPU numerical backends land)*
@@ -89,6 +104,11 @@ A strategy-agnostic platform taking a strategy from **backtest → paper → liv
 ---
 
 ### 📈 Attention-Flow Catalyst (AFC) — *Supporting (research)*
+
+- **① Production** — Read-only research loop; **faithfulness ≥ 0.9 as a blocking gate** — the eval-first premise is the deliverable.
+- **② Cost** — ⚪ Optional at supporting tier. Where it applies: cost-per-screen-run and embedding/re-index cost.
+- **③ Architecture** — GraphRAG (Neo4j + ChromaDB) · full ADR set + C4 Context · `signalcore` boundary (primitives in, thresholds out).
+
 An eval-first research system on small-cap attention/accumulation signals. The Stage-1 deliverable is the smallest publishable high-signal artifact: a **SEC-grounded faithfulness benchmark + a controlled-perturbation catalog**. A Neo4j financial knowledge graph anchors the later GraphRAG work. Shares a thin primitives layer (`signalcore`) with Crucible — siblings, no merge.
 
 **Stack:** Python · DuckDB/Parquet · edgartools (SEC) · Neo4j · Anthropic SDK · SelfCheckGPT · FActScore · DeepEval · Streamlit · Docker
@@ -96,6 +116,11 @@ An eval-first research system on small-cap attention/accumulation signals. The S
 ---
 
 ### 📄 FormSense — *Supporting (document operations)*
+
+- **① Production** — Deploy path (Docker + CI) with **GEval schema-adherence gates** as merge conditions; business-rule validation and routing to operations.
+- **② Cost** — ⚪ Optional at supporting tier — not manufactured where there is nothing to report.
+- **③ Architecture** — Frozen Pydantic schema contract · full ADR set + C4 Context · document → parse → validate → route boundary.
+
 Multimodal structured extraction from retirement-plan distribution forms (checkboxes, signatures), validated against business rules and routed to operations. An **agentic workflow** (control flow in code, not a free-roaming multi-agent), with a **Pydantic frozen-schema contract** on the output.
 
 **Stack:** Python · Gemini Vision · Pydantic · DeepEval · Streamlit · Docker
