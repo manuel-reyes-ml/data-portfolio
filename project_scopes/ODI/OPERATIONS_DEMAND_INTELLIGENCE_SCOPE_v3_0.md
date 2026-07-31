@@ -1022,6 +1022,26 @@ PII         Parquet    Reports     Filters   Structured  Demo
 
 > **v8.2 Cross-Project Standard:** Every project README must include these elements to meet production-grade portfolio quality.
 
+### README Presentation Order — ① Production · ② Cost · ③ Architecture
+
+> **🆕 Roadmap v10.0 CORRECTION 18.** The README **leads with these three headings, in this order**, and every résumé bullet written beneath this project answers one of the three. Anything answering none is cut. **This adds no artifact and removes none** — every element in the standard above still ships; only the order they are met in, and the language on top, changes. Cost to adopt: **$0**.
+
+> 🔒 **Internal-systems rule:** synthetic data only in the public repo; no employer-identifying volumes, client names, or internal metrics.
+
+| # | Heading | What goes under it | What does *not* |
+|---|---------|--------------------|-----------------|
+| **①** | **Production** | Where it runs, who consumes the output, refresh cadence, and the data-quality tests that gate a publish. If nothing depends on it yet, say so plainly and move the content under Architecture. | A stack list is not a production claim. If nothing depends on it and nothing watches it, it is not in production — say so and move the content to Architecture. |
+| **②** | **Cost** | Runtime and warehouse discipline, plus **manual hours removed** — the most defensible Cost axis for an internal analytics system. | A number with no mechanism. And never a speed/cost win without its reliability disclosure — state the SLA the change held to. A win that hides a regression is the bait-and-switch reviewers watch for. |
+| **③** | **Architecture** | ADR set + C4 Context, the source-contract boundary, and the modelling decisions with their rejected alternatives. | Diagrams shown without the decision behind them. The ADR is what turns a diagram into evidence of judgement. |
+
+**Everything else in the standard follows these three** — evaluation-metrics table, 15–30s demo GIF, "What I Learned", Conventional Commit history. Order changes; content does not.
+
+**Résumé bullets beneath this project:** `Action + What + Outcome + Proof`, carrying the three senior components — *a named metric against a baseline · the method · the scope*. Cap at **4–6 bullets**; if a bullet cannot answer *"so what?"* quickly, cut it.
+
+> **Honesty discipline (binds above the formula).** Use numbers **only when they can be defended in an interview**. Where a metric cannot be shared, substitute scale and reliability outcomes — tables, jobs, refresh cadence, incidents, users. **Never invent a figure to fill the shape**; a fabricated metric is a failed technical screen with extra steps.
+
+> **📄 Diagrams stay in the repo.** The Mermaid and C4 diagrams render natively on GitHub and belong in this README. They must **never** be pasted onto a résumé — ATS parsers skip images entirely, which is a documented failure mode on data-engineering résumés. The résumé carries the *text* of the architecture (named components, deploy path, contracts) and a link here.
+
 | Element | Description | Format |
 |---------|-------------|--------|
 | **Mermaid Architecture Diagram** | System flow rendered inline on GitHub — no external images needed | ```` ```mermaid ```` code block |
@@ -1029,6 +1049,8 @@ PII         Parquet    Reports     Filters   Structured  Demo
 | **Evaluation Metrics Table** | DeepEval + pytest results summary showing AI quality measurements | Markdown table in README |
 | **Demo GIF** | 15-30 second walkthrough of key functionality | Embedded GIF in README hero section |
 | **"What I Learned" Section** | Key technical takeaways, patterns discovered, and challenges overcome | README section before footer |
+| **C4 Diagrams** 🆕 | Context (Level 1) on every project; Container (Level 2) on lead flagships — generated from one Structurizr DSL source | `docs/architecture.dsl` + exported image |
+| **Architecture Decision Records (ADR)** 🆕 | Numbered, immutable log: context → decision → consequences, with rejected alternatives | `docs/adr/` (MADR or Nygard — pick ONE) |
 
 ### Architecture Diagram (Mermaid)
 
