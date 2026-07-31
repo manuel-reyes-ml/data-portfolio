@@ -459,6 +459,32 @@ datavault-1099-platform/
 
 ---
 
+## Production README Standard
+
+> **Cross-Project Standard:** Every project README includes a Mermaid architecture diagram, a **C4 Context diagram (+ Container on lead flagships)**, a **`docs/adr/` ADR set**, a Dockerfile, an evaluation-metrics table, a 15–30s demo GIF, and a "What I Learned" section.
+
+### README Presentation Order — ① Production · ② Cost · ③ Architecture
+
+> **🆕 Roadmap v10.0 CORRECTION 18.** The README **leads with these three headings, in this order**, and every résumé bullet written beneath this project answers one of the three. Anything answering none is cut. **This adds no artifact and removes none** — every element in the standard above still ships; only the order they are met in, and the language on top, changes. Cost to adopt: **$0**.
+
+> 🔒 **Regulated-data rule (binding, overrides everything below):** synthetic data only in the public repo; financial figures never recorded in public documents. No figure ships that has not cleared the *"would I say this in a deposition"* test.
+
+| # | Heading | What goes under it | What does *not* |
+|---|---------|--------------------|-----------------|
+| **①** | **Production** | 🟢 **The strongest Production claim available to this portfolio — lead with it.** A live, depended-upon pipeline inside an ERISA-regulated environment: reconciliation success rate, freshness/SLA, quarantine and retry behaviour, schema-contract enforcement, and the on-call reality. Most applicants cannot claim a deployed system at all. | A stack list is not a production claim. If nothing depends on it and nothing watches it, it is not in production — say so and move the content to Architecture. |
+| **②** | **Cost** | 🟡 **Deliberately constrained — this is correct, not a gap.** Permitted: the *mechanism* (partitioning, sizing, caching, incremental strategy), non-identifying **relative** deltas (runtime reduction, manual hours removed, test coverage, reconciliation success rate). Prohibited: absolute dollar amounts, participant or plan data, client identifiers, and any record volume that could identify the employer or its clients. The compensating strength is Production above. | A number with no mechanism. And never a speed/cost win without its reliability disclosure — state the SLA the change held to. A win that hides a regression is the bait-and-switch reviewers watch for. |
+| **③** | **Architecture** | ADRs on the **ERISA-driven constraints that shaped the design** — retention, auditability, reconciliation guarantees, the PII boundary (hash SSN, DOB→age). That constraint set is itself the scarce signal. C4 Context + Container; contracts and tests. | Diagrams shown without the decision behind them. The ADR is what turns a diagram into evidence of judgement. |
+
+**Everything else in the standard follows these three** — evaluation-metrics table, 15–30s demo GIF, "What I Learned", Conventional Commit history. Order changes; content does not.
+
+**Résumé bullets beneath this project:** `Action + What + Outcome + Proof`, carrying the three senior components — *a named metric against a baseline · the method · the scope*. Cap at **4–6 bullets**; if a bullet cannot answer *"so what?"* quickly, cut it.
+
+> **Honesty discipline (binds above the formula).** Use numbers **only when they can be defended in an interview**. Where a metric cannot be shared, substitute scale and reliability outcomes — tables, jobs, refresh cadence, incidents, users. **Never invent a figure to fill the shape**; a fabricated metric is a failed technical screen with extra steps.
+
+> **📄 Diagrams stay in the repo.** The Mermaid and C4 diagrams render natively on GitHub and belong in this README. They must **never** be pasted onto a résumé — ATS parsers skip images entirely, which is a documented failure mode on data-engineering résumés. The résumé carries the *text* of the architecture (named components, deploy path, contracts) and a link here.
+
+---
+
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
 *Synced to roadmap **v10.0**. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
