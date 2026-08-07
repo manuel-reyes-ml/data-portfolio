@@ -20,7 +20,7 @@ The through-line:
 - **Real production impact** — a 1099 reconciliation platform running live at work (details below), not a tutorial clone.
 - **Domain depth as a moat** — ~15 years of business operations and financial-services work, applied to problems where correctness is regulated, not optional.
 - **Evaluation-first engineering** — DeepEval / RAGAS / SelfCheckGPT as *blocking* gates, faithfulness thresholds, synthetic data in every public repo.
-- **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran. Architecture diagrams are single-source too: modeled once in Structurizr DSL, exported to Mermaid, so the picture never lies about the system. Logging is single-source in the same spirit — one `structlog` chain formats my code and my dependencies alike, so there is no second format to drift.
+- **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran — and a pinned `.pre-commit-config.yaml` with a `uv-lock` hook keeps that lockfile honest at the commit boundary, so the claim is enforced rather than asserted. Architecture diagrams are single-source too: modeled once in Structurizr DSL, exported to Mermaid, so the picture never lies about the system. Logging is single-source in the same spirit — one `structlog` chain formats my code and my dependencies alike, so there is no second format to drift.
 - **One system per project, evolved across stages** — projects are hardened S1 → S3, never rebuilt per stage.
 
 Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) (3 stages, ~32 months).
@@ -140,8 +140,9 @@ Every project ships with:
 - **`docs/adr/`** — numbered, immutable Architecture Decision Records (context → decision → consequences)
 - **Dockerfile** · **evaluation-metrics table** · 15–30s **demo GIF** · **"What I Learned"**
 - **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
-- `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · file-by-file review before merge
+- `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · **pinned `.pre-commit-config.yaml`** · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · file-by-file review before merge
 - **Observable by construction** — `structlog` renders **every** log line, including those from third-party libraries (LLM SDKs, httpx, Neo4j), through one `ProcessorFormatter` chain; a redaction processor sits in that chain as the PII choke point, so masking is structural rather than dependent on remembering it at each call site. Run context (`run_id`) is bound via contextvars, so one query reconstructs a whole pipeline run. Logs go to stdout (12-Factor); rotation and shipping belong to the runtime
+- **Enforced at the commit boundary** — a pinned `.pre-commit-config.yaml` in every repo. The governing rule is that **the hook set is a strict *subset* of the CI gate**: CI stays authoritative and nothing runs locally that does not also run in CI, so the two can never quietly disagree. `ruff-check --fix` is ordered *before* `ruff-format` (the linter's fixes can emit changes that then need reformatting); `uv-lock` keeps `uv.lock` in step with `pyproject.toml`; `gitleaks` and `detect-private-key` scan for credentials; `nbstripout` strips notebook output wherever notebooks exist, which extends the PII choke point from the logging boundary to the git boundary and is what makes **synthetic-data-only** a mechanical guarantee instead of a thing to remember; `conventional-pre-commit` runs on the `commit-msg` stage, so Conventional Commits above is *enforced*, not merely declared. **`mypy` is deliberately excluded and runs in CI only** — the `mirrors-mypy` hook's default `--ignore-missing-imports` silently degrades third-party types to `Any`, so the exclusion is recorded as an ADR rather than left as an omission. Hook revisions are pinned and never floating; the drift between those pins and `uv.lock` is a known risk with its own ADR
 - **uv (Astral)** for packages and environments — `uv sync --frozen` in CI and Docker; **no `requirements.txt`** in any repo
 - **Agentic harness in-repo** — `.opencode/` (`agents/` + `commands/`), `AGENTS.md`, and `opencode.jsonc`, mirroring the existing `.cursor/rules/`. OpenCode loads those same rule files via `instructions[]`, so one set of standards drives both harnesses and the review discipline is version-controlled, not ad-hoc.
 
@@ -159,7 +160,7 @@ Every project ships with:
 
 **Evaluation & Observability** — DeepEval · RAGAS · SelfCheckGPT · GEval · Arize Phoenix · LangSmith
 
-**Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy · **uv** (`uv sync --frozen`)
+**Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy · **pre-commit** (pinned hooks; strict subset of CI) · **uv** (`uv sync --frozen`)
 
 **Documentation & Architecture** — Structurizr DSL (C4 model source) → Mermaid export · Architecture Decision Records (`docs/adr/`, Nygard/MADR)
 
@@ -217,7 +218,7 @@ data-portfolio/
     └── CADENCE_CONTENT_SCOPE_v1_0_FULL_PRODUCTION.md
 ```
 
-> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock` + the Structurizr-DSL→Mermaid diagram toolchain + the observability/config/retry layer — `structlog` + redaction processor, `pydantic-settings`, `stamina` — + the `.opencode/` agentic harness). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
+> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock` + the pinned pre-commit hook set + the Structurizr-DSL→Mermaid diagram toolchain + the observability/config/retry layer — `structlog` + redaction processor, `pydantic-settings`, `stamina` — + the `.opencode/` agentic harness). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
 
 ---
 
