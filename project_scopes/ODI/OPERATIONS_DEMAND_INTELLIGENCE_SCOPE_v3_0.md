@@ -3,7 +3,7 @@
 ## AI-Powered Workflow Demand Analysis for Retirement Plan Operations
 
 **Document Version:** 3.0 (🎯 **v10.0 REALIGNMENT** — Supporting (production-grade); 3-stage arc (S1 analytics → S2 demand-analytics platform → S3 AI insights); destination Applied AI Engineer → FDE. Consolidation overlap with DataVault/1099-S3 flagged. Prior v2.8 note archived below.)
-**Last Updated:** June 16, 2026  
+**Last Updated:** August 10, 2026  
 **Status:** 📋 DRAFT — Awaiting Approval  
 **Author:** Manuel Reyes  
 **Data Coverage:** June 02, 2025 — Present (~8 months)  
@@ -41,6 +41,9 @@
 > **Known risk — version drift (ADR-worthy).** `.pre-commit-config.yaml` pins tool versions *independently* of `uv.lock`, so upgrading ruff via uv leaves the hook on the old pin and local checks diverge from CI. Mitigation: `sync-with-uv` (or `sync-pre-commit-deps`) plus a scheduled `pre-commit autoupdate --freeze`.
 >
 > **`prek` — evaluated, not selected (falsifier recorded).** `prek` is a Rust drop-in alternative that reads this same config file and uses uv natively (adopted by CPython, FastAPI, Airflow, Ruff). It is *not* adopted now: `.pre-commit-config.yaml` is the artifact a reviewer recognises, and because prek reads that identical file the migration stays free and reversible. **Falsifier:** adopt if hook install/run time becomes a measured friction point against the 25 hrs/week schedule.
+> **🆕 Language & AI last-mile standard (roadmap v10.0 CORRECTIONS 22–23, August 2026).** **Python and SQL are confirmed as the correct and sufficient primary languages** for this portfolio. **SQL is the single highest-signal language in DE postings**, and **PySpark is the capturable differentiator — reached through Python, not adopted as a separate language.** **Rust, Go, Java, Scala and standalone JavaScript were each evaluated and declined with recorded falsifiers**; JavaScript specifically as *redundant*, since TypeScript is a superset of it and the Stage-2 TypeScript sprint already covers that ground. **TypeScript is retained for the last mile only** — MCP protocol tooling and the AI application/UI layer. **This project stays Python-primary:** agent cores, retrieval, orchestration, evaluation and any long-horizon planning remain Python. ⚠️ **Falsifier:** revisit only if a target employer posts a JD naming a different primary language for the role being applied to. **No TypeScript layer in this project.** This is a Python/SQL data-platform project end to end; the last-mile TS layer belongs to PolicyPulse. Recorded so the absence is a decision, not an omission.
+>
+> ⚠️ **Evidence note — guardrail independently corroborated (August 2026).** The last-mile guardrail no longer rests solely on the sources that recommended the SDK. An independent practitioner review of the **AI SDK 7** release (June 2026) draws the same boundary unprompted: the SDK is strongest as a **TypeScript-first application layer**, and weaker where the core problem is multi-hour orchestration, language-agnostic workflows or deeply stateful agent planning — with the explicit note that teams deploying agents across **Python services, queues and data pipelines** should treat it as *an SDK layer, not an orchestration standard*. That is this portfolio's exact shape. Convergent and independently sourced; recorded as **directional**, per the CORRECTIONS 18–19 evidence standard.
 
 **Consolidation note (v10.0):** ODI, the 1099-platform S3 Analyst layer, and DataVault all deliver internal NL analytics. Consider merging ODI's demand-analytics into the 1099 platform's mart/AI layer rather than maintaining a parallel project; keep ODI standalone only if the demand-forecasting angle is a distinct portfolio story.
 
