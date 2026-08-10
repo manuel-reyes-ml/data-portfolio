@@ -6,7 +6,7 @@
 **Document Version:** 2.0 (🎯 **v10.0 REALIGNMENT** — 5-stage model collapsed to the 3-stage arc; Supporting (production-grade); destination Applied AI Engineer → FDE. Excellent v1.8 Anthropic-taxonomy vocabulary (agentic *workflow* not multi-agent; layered exits) retained. Adds three-layer eval + Phoenix. Prior v1.8 note archived below.)
 
 > **📝 v1.8 changelog — architecture vocabulary reconciled (no scope/behavior change).** S3 is now named precisely: an **agentic workflow** — i.e. an *agentic system* in Anthropic's parent-term sense, orchestrated through predefined code paths — **not** a "multi-agent" system or an autonomous agent. Three corrections, all grounded in Anthropic's *Building Effective Agents* taxonomy and the roadmap's v8.8 goal-loop / layered-exits note: (1) "multi-agent" and "agents" (for the Extractor/Validator/Router steps) → **agentic-workflow steps**; (2) the mislabeled Stage-4 "parallelization of Extractor‖Validator‖Router" (they are *sequential* dependencies) → parallelism relocated to where it actually exists — **multi-source concurrent extraction** (email body ‖ form image) and **batch-level concurrency** (SQS workers); (3) the evaluator-optimizer re-extraction loop given **layered exits** (primary stop = verifier, with a max-iteration cap as a *safety backstop*, not the primary stopping mechanism). Adds a new **§6.0 "Agentic Workflow, not Autonomous Agent"** callout that doubles as CCA-F Domain-1 revision material. The `FormExtraction`/`ValidationResult`/`EscalationEmail`/`ProcessingTicket` contract is untouched.
-**Last Updated:** July 6, 2026
+**Last Updated:** August 10, 2026
 **Status:** 📋 DRAFT — v10.0-aligned; S2–S3 layers build progressively across the 3-stage model.
 **Author:** Manuel Reyes
 **Stages Covered (v10.0):** S1 (foundation, built first) → S2 (DE/AE hardening) → S3 (Applied AI → FDE). One evolving system — ML is an embedded literacy module inside S3.
@@ -46,6 +46,9 @@
 > **Known risk — version drift (ADR-worthy).** `.pre-commit-config.yaml` pins tool versions *independently* of `uv.lock`, so upgrading ruff via uv leaves the hook on the old pin and local checks diverge from CI. Mitigation: `sync-with-uv` (or `sync-pre-commit-deps`) plus a scheduled `pre-commit autoupdate --freeze`.
 >
 > **`prek` — evaluated, not selected (falsifier recorded).** `prek` is a Rust drop-in alternative that reads this same config file and uses uv natively (adopted by CPython, FastAPI, Airflow, Ruff). It is *not* adopted now: `.pre-commit-config.yaml` is the artifact a reviewer recognises, and because prek reads that identical file the migration stays free and reversible. **Falsifier:** adopt if hook install/run time becomes a measured friction point against the 25 hrs/week schedule.
+> **🆕 Language & AI last-mile standard (roadmap v10.0 CORRECTIONS 22–23, August 2026).** **Python and SQL are confirmed as the correct and sufficient primary languages** for this portfolio. **SQL is the single highest-signal language in DE postings**, and **PySpark is the capturable differentiator — reached through Python, not adopted as a separate language.** **Rust, Go, Java, Scala and standalone JavaScript were each evaluated and declined with recorded falsifiers**; JavaScript specifically as *redundant*, since TypeScript is a superset of it and the Stage-2 TypeScript sprint already covers that ground. **TypeScript is retained for the last mile only** — MCP protocol tooling and the AI application/UI layer. **This project stays Python-primary:** agent cores, retrieval, orchestration, evaluation and any long-horizon planning remain Python. ⚠️ **Falsifier:** revisit only if a target employer posts a JD naming a different primary language for the role being applied to. **No TypeScript layer scoped for this project at present.** ⚠️ **Falsifier:** revisit only if a UI deliverable is added to this project's scope by approval.
+>
+> ⚠️ **Evidence note — guardrail independently corroborated (August 2026).** The last-mile guardrail no longer rests solely on the sources that recommended the SDK. An independent practitioner review of the **AI SDK 7** release (June 2026) draws the same boundary unprompted: the SDK is strongest as a **TypeScript-first application layer**, and weaker where the core problem is multi-hour orchestration, language-agnostic workflows or deeply stateful agent planning — with the explicit note that teams deploying agents across **Python services, queues and data pipelines** should treat it as *an SDK layer, not an orchestration standard*. That is this portfolio's exact shape. Convergent and independently sourced; recorded as **directional**, per the CORRECTIONS 18–19 evidence standard.
 
 ---
 
@@ -259,6 +262,9 @@ At production scale, the **FormSense coordinator** discovers and coordinates wit
 | Agentic workflow (chaining + routing + evaluator-optimizer) | 4 | Chained extract→validate→route; validator triggers re-extraction; concurrency at multi-source extract + batch level |
 | MCP action tools | 4 | `send_advisor_email`, `create_ticket` (approval-gated, reversible) |
 | Form-history RAG (vector) | 4 | Cross-reference a participant's prior distributions for context/consistency |
+
+> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+
 | OnBase integration + real-time | 5 | System-of-record integration; live intake processing |
 | Multi-form-type support | 5 | Beyond distributions — loans, rollovers, hardship, more |
 | A2A cross-team coordination | 5 | FormSense ↔ Compliance ↔ OnBase ↔ Payroll |
@@ -277,6 +283,9 @@ Stage 1 generates the `EscalationEmail` and `ProcessingTicket` as objects. S3 ex
 | `send_advisor_email(escalation)` | 4 | write (reversible, approval-gated) | Actually dispatches the missing-items email |
 | `create_ticket(extraction)` | 4 | write (approval-gated) | Creates the OnBase operations ticket |
 | `lookup_form_history(participant)` | 4 | read | Form-history RAG over prior distributions (vector, not graph) |
+
+> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+
 
 > **Write tools are approval-gated, mirroring the cross-portfolio rule.** Because no action here moves money or is irreversible, FormSense needs *no live sign-off gate* — only the approval gate on the email/ticket dispatch and the low-confidence human-review queue. This is the deliberate autonomy contrast with Crucible (live trades = mandatory human sign-off + kill-switch).
 
