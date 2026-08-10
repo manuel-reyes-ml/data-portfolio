@@ -4,7 +4,7 @@
 ## "Your AI Agent That Manages Your Streaming — So You Don't Have To"
 
 **Document Version:** 2.0 (🎯 **v10.0 REALIGNMENT** — Supporting/backlog (production-grade); 3-stage arc; destination Applied AI Engineer → FDE. Stage-4/5 & Month-35-37 references retired. Prior v1.5 note archived below.)
-**Last Updated:** June 16, 2026  
+**Last Updated:** August 10, 2026  
 **Status:** 📋 DRAFT — v10.0-aligned; Supporting/backlog (sequence behind the lead trio).
 **Author:** Manuel Reyes  
 **Target (v10.0):** Stage 3 within the 3-stage model (backlog — no S3).
@@ -44,6 +44,11 @@
 > **Known risk — version drift (ADR-worthy).** `.pre-commit-config.yaml` pins tool versions *independently* of `uv.lock`, so upgrading ruff via uv leaves the hook on the old pin and local checks diverge from CI. Mitigation: `sync-with-uv` (or `sync-pre-commit-deps`) plus a scheduled `pre-commit autoupdate --freeze`.
 >
 > **`prek` — evaluated, not selected (falsifier recorded).** `prek` is a Rust drop-in alternative that reads this same config file and uses uv natively (adopted by CPython, FastAPI, Airflow, Ruff). It is *not* adopted now: `.pre-commit-config.yaml` is the artifact a reviewer recognises, and because prek reads that identical file the migration stays free and reversible. **Falsifier:** adopt if hook install/run time becomes a measured friction point against the 25 hrs/week schedule.
+> **🆕 Language & AI last-mile standard (roadmap v10.0 CORRECTIONS 22–23, August 2026).** **Python and SQL are confirmed as the correct and sufficient primary languages** for this portfolio. **SQL is the single highest-signal language in DE postings**, and **PySpark is the capturable differentiator — reached through Python, not adopted as a separate language.** **Rust, Go, Java, Scala and standalone JavaScript were each evaluated and declined with recorded falsifiers**; JavaScript specifically as *redundant*, since TypeScript is a superset of it and the Stage-2 TypeScript sprint already covers that ground. **TypeScript is retained for the last mile only** — MCP protocol tooling and the AI application/UI layer. **This project stays Python-primary:** agent cores, retrieval, orchestration, evaluation and any long-horizon planning remain Python. ⚠️ **Falsifier:** revisit only if a target employer posts a JD naming a different primary language for the role being applied to.
+>
+> ⚠️ **Evidence note — guardrail independently corroborated (August 2026).** The last-mile guardrail no longer rests solely on the sources that recommended the SDK. An independent practitioner review of the **AI SDK 7** release (June 2026) draws the same boundary unprompted: the SDK is strongest as a **TypeScript-first application layer**, and weaker where the core problem is multi-hour orchestration, language-agnostic workflows or deeply stateful agent planning — with the explicit note that teams deploying agents across **Python services, queues and data pipelines** should treat it as *an SDK layer, not an orchestration standard*. That is this portfolio's exact shape. Convergent and independently sourced; recorded as **directional**, per the CORRECTIONS 18–19 evidence standard.
+>
+> **🆕 Pre-existing TypeScript frontend — reconciled, not retracted (roadmap v10.0 CORRECTION 22, August 2026).** This document already specifies a **React + TypeScript** web app and React Native mobile client. That specification **stands and is consistent with** the CORRECTION 22 last-mile ruling: the ruling restricts TypeScript to the **MCP tooling and AI application/UI layer**, and a product UI *is* the last mile. **The agent core, LangGraph orchestration, HITL checkpoints, browser automation and eval pipeline remain Python.** Recorded so the pre-existing TS stack is not later misread as a contradiction of the last-mile rule. ⚠️ **Status note:** this project is **backlog / positioned last** and outside the active lead set; nothing here authorises starting it ahead of the flagships.
 
 **Sequencing (v10.0):** backlog — build only after the lead trio (DataVault → PolicyPulse → Crucible) and the Supporting set (FormSense/AFC) are production-hardened. Retired the Stage-4/5 & Month-35-37 framing (there is no S3 in the 3-stage model).
 
@@ -1358,6 +1363,7 @@ streamsmart-optimizer/
 | **LangSmith / Arize Phoenix tracing** | **S3** | **Agent trajectory tracing + debugging** |
 | **LLM-as-judge eval + Automated Testing for LLMOps** | **S3** | **CI eval gate for recommendation quality** |
 | FastAPI, System Design, Production Monitoring | S3 | Backend, architecture, observability |
+| **Observability discipline (v10.0 CORRECTION 16)** | **S1 ✅** | **`structlog` over stdlib via `ProcessorFormatter` with `foreign_pre_chain` + `redact_pii` processor as the PII choke point; `pydantic-settings` + `SecretStr` as sole config entrypoint; `stamina` capped jittered retries. No `logging.yaml` — logging is configured in code.** |
 
 
 ---
