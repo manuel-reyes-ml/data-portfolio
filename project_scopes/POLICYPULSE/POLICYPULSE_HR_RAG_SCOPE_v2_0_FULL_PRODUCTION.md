@@ -4,7 +4,7 @@
 ## "Ask Your Policies" — From RAG Chatbot to Hybrid GraphRAG + Agentic Knowledge Operations
 
 **Document Version:** 2.0 (🎯 **v10.0 REALIGNMENT** — 5-stage model collapsed to the 3-stage arc (S1 RAG → S2 embedding/vector as data infra → S3 GraphRAG + agentic + eval/observability); destination Applied AI Engineer → FDE. Adds the 2026 three-layer eval + Arize Phoenix observability. Prior v1.6 note archived below.)
-**Last Updated:** June 30, 2026
+**Last Updated:** August 10, 2026
 **Status:** 📋 DRAFT — v10.0-aligned; S2–S3 layers build progressively across the 3-stage model.
 **Author:** Manuel Reyes
 **Stages Covered (v10.0):** S1 (foundation, built first) → S2 (DE/AE hardening) → S3 (Applied AI → FDE). One evolving system — ML is an embedded literacy module inside S3, not a separate stage.
@@ -44,6 +44,19 @@
 > **Known risk — version drift (ADR-worthy).** `.pre-commit-config.yaml` pins tool versions *independently* of `uv.lock`, so upgrading ruff via uv leaves the hook on the old pin and local checks diverge from CI. Mitigation: `sync-with-uv` (or `sync-pre-commit-deps`) plus a scheduled `pre-commit autoupdate --freeze`.
 >
 > **`prek` — evaluated, not selected (falsifier recorded).** `prek` is a Rust drop-in alternative that reads this same config file and uses uv natively (adopted by CPython, FastAPI, Airflow, Ruff). It is *not* adopted now: `.pre-commit-config.yaml` is the artifact a reviewer recognises, and because prek reads that identical file the migration stays free and reversible. **Falsifier:** adopt if hook install/run time becomes a measured friction point against the 25 hrs/week schedule.
+> **🆕 Language & AI last-mile standard (roadmap v10.0 CORRECTIONS 22–23, August 2026).** **Python and SQL are confirmed as the correct and sufficient primary languages** for this portfolio. **SQL is the single highest-signal language in DE postings**, and **PySpark is the capturable differentiator — reached through Python, not adopted as a separate language.** **Rust, Go, Java, Scala and standalone JavaScript were each evaluated and declined with recorded falsifiers**; JavaScript specifically as *redundant*, since TypeScript is a superset of it and the Stage-2 TypeScript sprint already covers that ground. **TypeScript is retained for the last mile only** — MCP protocol tooling and the AI application/UI layer. **This project stays Python-primary:** agent cores, retrieval, orchestration, evaluation and any long-horizon planning remain Python. ⚠️ **Falsifier:** revisit only if a target employer posts a JD naming a different primary language for the role being applied to.
+>
+> ⚠️ **Evidence note — guardrail independently corroborated (August 2026).** The last-mile guardrail no longer rests solely on the sources that recommended the SDK. An independent practitioner review of the **AI SDK 7** release (June 2026) draws the same boundary unprompted: the SDK is strongest as a **TypeScript-first application layer**, and weaker where the core problem is multi-hour orchestration, language-agnostic workflows or deeply stateful agent planning — with the explicit note that teams deploying agents across **Python services, queues and data pipelines** should treat it as *an SDK layer, not an orchestration standard*. That is this portfolio's exact shape. Convergent and independently sourced; recorded as **directional**, per the CORRECTIONS 18–19 evidence standard.
+>
+> **🆕 AI last-mile layer — Vercel AI SDK (roadmap v10.0 CORRECTIONS 22–24, August 2026).** PolicyPulse is the **named build target** for the roadmap's AI-application-layer deliverable: a **streaming Claude-powered UI over this project's existing retrieval**, built with the **Vercel AI SDK** (free, open-source, TypeScript). Selected on adoption evidence — **16M+ weekly downloads** (Vercel, primary source; a separate 2026 analysis puts it in **62% of TypeScript projects started that year**, recorded as directional), the named industry standard for streaming AI UIs, and **model-agnostic across 25+ providers**, matching this portfolio's provider-agnostic architecture and Anthropic-primary routing.
+>
+> 🧱 **It ships as a sibling package, not a rewrite.** `web/` sits alongside `src/policypulse/` and consumes the retrieval surface over HTTP. **The Python core is untouched** — ingestion, retrieval, fusion, the evaluator-optimizer loop, eval, and the FastMCP server all remain Python. **Produces the AI last-mile artifact a Python-only portfolio cannot show.**
+>
+> ⏱️ **Timing.** The sprint sits **immediately before the compressed Q1 2027 apply window** — re-timed from the retired "~Month 14" placement, which was set against the pre-resignation calendar — so the evidence is fresh at interview. It is **subordinate to DataVault S2 and never competes with the evidence gate.**
+>
+> ⚠️ **Privacy-routing amendment (CORRECTION 23) — binding.** The official Vercel starter repo ships **Vercel AI Gateway**, which routes prompts through Vercel. Under this portfolio's privacy-first model-routing rule that is **not acceptable for anything but synthetic data**. The gateway is **swapped for the direct `@ai-sdk/anthropic` provider** — a one-line change the SDK's provider-agnostic design makes trivial — and the build runs **synthetic policy corpus only**, the same constraint every public repo here already carries. **Recorded as an ADR in `docs/adr/` on two grounds, not one:** (a) *privacy* — prompts must not transit a third-party gateway; (b) 🆕 *architecture over platform* — an independent 2026 review of AI SDK 7 warns that when the best experience assumes AI Gateway, Vercel Workflows, Vercel Sandbox, Vercel Observability and Next.js together, teams **drift into a platform decision before making an architecture decision**. Declining the gateway is how this project keeps the SDK as a library rather than inheriting a platform.
+>
+> 🔭 **Observability — one trace backend, not two (🆕 AI SDK 7, June 2026).** AI SDK 7 ships **`@ai-sdk/otel`** with a single application-startup `registerTelemetry(new OpenTelemetry())` call and optional **OpenTelemetry GenAI semantic conventions**. Because this project's S3 observability standard is **Arize Phoenix (OTel-native)**, the TypeScript last-mile layer **emits into the same trace backend as the Python core**. **No second observability stack is introduced.** ⚠️ **PII constraint carries across the language boundary:** AI SDK 7 telemetry is **allowlist-based** (`includeRuntimeContext` / `includeToolsContext`), and anything not explicitly allowlisted must stay out of spans. The three-layer PII defence and the `redact_pii` posture apply to the TS layer exactly as they do to `structlog` on the Python side — **the boundary is a language boundary, not a policy boundary.**
 
 ---
 
@@ -242,6 +255,9 @@ When a question spans domains, PolicyPulse's HR agent discovers and delegates to
 | A2A cross-team routing | 5 | HR ↔ IT ↔ Payroll agent collaboration for cross-functional questions |
 | LLMOps evaluation pipeline | 5 | CI evals, A/B retrieval strategies, regression gates |
 
+> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+
+
 ---
 
 ## 8. MCP Server (Expanded)
@@ -255,6 +271,11 @@ The Stage-1 FastMCP server exposes **read** tools. Each later stage extends the 
 | `get_policy_graph(entity)` | 3 | read | Returns the local graph neighborhood for an entity (multi-hop transparency) |
 | `propose_policy_update(section, change)` | 4 | write (approval-gated) | Drafts a change for HR review — never auto-applies |
 | `create_ticket(question, context)` | 4 | write (reversible) | Mirrors the Stage-1 escalation as a callable tool |
+
+> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+
+
+> 🆕 **MCP Apps (AI SDK 7, June 2026) — noted as a candidate, not scoped.** MCP servers can now separate **model-visible tools from app-only tools**, preserve app metadata, and render an app UI inside a **sandboxed iframe** via a JSON-RPC bridge. That maps cleanly onto this project's approval-gated write tools — `propose_policy_update` could surface a reviewable diff in an app pane rather than as raw text for HR. **Recorded as a candidate for the S3 MCP surface; not scoped, and not a prerequisite for the Week-2(b) build.** ⚠️ **Falsifier:** scope it only after the Week-2(b) UI lands and only if the approval-review UX is demonstrably worse without it.
 
 > **Write tools are approval-gated by design.** `propose_policy_update` drafts; a human in HR commits. This mirrors the cross-portfolio rule that irreversible/material actions keep a human sign-off (the same principle as Crucible's live-trade gate, scaled to PolicyPulse's far lower stakes).
 
@@ -303,6 +324,7 @@ The Stage-1 guardrail set (scope, hallucination, PII, grounding — 8 guardrails
 | Eval | RAGAS + SelfCheckGPT + DeepEval, manual | LLMOps CI pipeline, A/B, regression gates |
 | Deploy | Streamlit Cloud (free) | AWS ECS (Fargate), auto-scaling |
 | Observability | Python logging | LangSmith traces + Prometheus/Grafana/Sentry |
+| AI last-mile UI | — | 🆕 Vercel AI SDK (TS) — streaming Claude UI over retrieval; direct `@ai-sdk/anthropic` provider, gateway declined (ADR); synthetic data only |
 
 > All Python standards from the roadmap hold across every stage: `pyproject.toml`, `src/` layout, `py.typed`, `from __future__ import annotations`, NumPy-style docstrings, Pydantic validation, logging (no `print()`), GitHub Actions CI.
 
@@ -391,10 +413,13 @@ policypulse/
     retrieve/      # vector channel · graph channel · fusion · re-ranker (Stage 3)
     agent/         # evaluator-optimizer loop · LangGraph (S3)
     eval/          # RAGAS · SelfCheckGPT · multi-hop labeled set
-    mcp_server/    # FastMCP — read tools (S1) + approval-gated write tools (S4)
+    mcp_server/    # FastMCP — read tools (S1) + approval-gated write tools (S3)
     api/           # FastAPI · Slack/Teams adapters (S3)
     a2a/           # cross-team agent protocol (S3)
     guardrails/
+    observability/ # 🆕 structlog ProcessorFormatter chain + redact_pii processor (CORRECTION 16)
+  web/             # 🆕 TS last mile — Vercel AI SDK streaming UI over the retrieval API
+                   #    sibling package, NOT a rewrite; Python core untouched
   tests/
   .pre-commit-config.yaml   # pinned hook set; strict subset of CI (CORRECTION 21)
   pyproject.toml   # py.typed · src layout · semver
@@ -412,6 +437,9 @@ policypulse/
 | Intelligence | 3 | Fine-tuned embeddings + re-ranker; **GraphRAG deepen** (dual-channel fusion, graph-quality monitoring) | Hybrid beats vector-only baseline on labeled multi-hop set; Neo4j credential earned by building |
 | Agentic | 4 | LangGraph evaluator-optimizer loop; Pinecone migration; expanded MCP write tools; voice | Self-correcting loop measurably lifts groundedness; write tools approval-gated |
 | Platform | 5 | Multi-tenant SaaS, RBAC, Slack/Teams, A2A, LLMOps CI | Multi-tenant isolation verified; A2A cross-team answer with provenance; regression gates green |
+
+> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+
 
 ---
 
@@ -474,7 +502,8 @@ policypulse/
 | **MCP (deep dive) + access-control retrieval** | **S3** | **Approval-gated write tools; per-document RBAC at retrieval** |
 | **Three-layer eval + Arize Phoenix observability** | **S3** | **Per-query + trajectory tracing + drift vs frozen golden set** |
 | **LLMOps (CI evals, A/B, regression gates)** | **S3** | **Blocking groundedness gates; retrieval A/B** |
-| TypeScript + Zod | S2 (Month-14 sprint) | TS MCP server variant; Zod = MCP SDK input validation |
+| TypeScript + Zod | S2 (sprint immediately before the Q1 2027 apply window) | TS MCP server variant; Zod = MCP SDK input validation — and carries directly into the AI SDK layer below, no new prerequisite |
+| **Vercel AI SDK (TypeScript — last mile)** | **S2 sprint** | **Streaming Claude-powered UI over this project's retrieval; direct `@ai-sdk/anthropic` provider (no gateway); synthetic corpus only; `@ai-sdk/otel` → same Phoenix/OTel backend as the Python core** |
 | FastAPI, System Design, Production Monitoring | S3 | Backend, architecture, observability |
 
 
@@ -515,7 +544,7 @@ policypulse/
 │  🔧 MCP TOOL SURFACE                                             │
 │     • S1 read: query_policies · list_policy_documents            │
 │     • S3 read: get_policy_graph (multi-hop transparency)         │
-│     • S4 write (approval-gated): propose_policy_update · ticket  │
+│     • S3 write (approval-gated): propose_policy_update · ticket  │
 ├─────────────────────────────────────────────────────────────────┤
 │  🌐 PLATFORM (S3)                                           │
 │     • Multi-tenant SaaS + RBAC + Slack/Teams                     │
