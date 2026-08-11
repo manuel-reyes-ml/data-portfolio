@@ -46,6 +46,10 @@
 > **Known risk — version drift (ADR-worthy).** `.pre-commit-config.yaml` pins tool versions *independently* of `uv.lock`, so upgrading ruff via uv leaves the hook on the old pin and local checks diverge from CI. Mitigation: `sync-with-uv` (or `sync-pre-commit-deps`) plus a scheduled `pre-commit autoupdate --freeze`.
 >
 > **`prek` — evaluated, not selected (falsifier recorded).** `prek` is a Rust drop-in alternative that reads this same config file and uses uv natively (adopted by CPython, FastAPI, Airflow, Ruff). It is *not* adopted now: `.pre-commit-config.yaml` is the artifact a reviewer recognises, and because prek reads that identical file the migration stays free and reversible. **Falsifier:** adopt if hook install/run time becomes a measured friction point against the 25 hrs/week schedule.
+>
+> **🆕 Python version — pinned (roadmap v10.0 CORRECTIONS 27–28, August 2026).** **Python 3.14 is the official floor for every project in this portfolio (`3.14+`).** It is pinned in one place per repo — `requires-python = ">=3.14"` in `pyproject.toml` — and every downstream tool reads from that single declaration: `[tool.ruff] target-version = "py314"`, `[tool.mypy] python_version = "3.14"`, the Dockerfile base image, and the CI matrix. **One source, no second place to drift.** ⚠️ **Enforcement:** a mismatch between any of those four and `requires-python` is a CI failure, not a lint warning — the same discipline `uv.lock` gets from the `uv-lock` hook under CORRECTION 21.
+>
+> ⚙️ **Two binding constraints on the pin.** **(a) Standard GIL build only — the free-threaded build (`python3.14t`) is explicitly NOT used.** Free-threading is where the C-extension wheel compatibility problems live, this portfolio has no CPU-bound multicore workload that would benefit, and debugging wheel availability is pure schedule tax against a 25 hrs/week budget with zero portfolio value. **(b) Airflow constraint-file caveat:** Airflow 3.2.0+ officially supports Python 3.14, but a known open issue reports the 3.14 constraint files being out of sync between the published Docker image and `pip`/`uv` install. **Documented workaround: fall back to the `constraints-3.13.txt` file for the Airflow service only** — this is a constraint-file selection, *not* a second Python version, and the interpreter stays 3.14. ⚠️ **Falsifier:** raise the floor only when a named dependency in a committed lockfile requires it, or when 3.14 leaves security support — **never to chase a release**; 3.15 ships October 2026 and is explicitly not adopted on release.
 > **🆕 Language & AI last-mile standard (roadmap v10.0 CORRECTIONS 22–23, August 2026).** **Python and SQL are confirmed as the correct and sufficient primary languages** for this portfolio. **SQL is the single highest-signal language in DE postings**, and **PySpark is the capturable differentiator — reached through Python, not adopted as a separate language.** **Rust, Go, Java, Scala and standalone JavaScript were each evaluated and declined with recorded falsifiers**; JavaScript specifically as *redundant*, since TypeScript is a superset of it and the Stage-2 TypeScript sprint already covers that ground. **TypeScript is retained for the last mile only** — MCP protocol tooling and the AI application/UI layer. **This project stays Python-primary:** agent cores, retrieval, orchestration, evaluation and any long-horizon planning remain Python. ⚠️ **Falsifier:** revisit only if a target employer posts a JD naming a different primary language for the role being applied to. **No TypeScript layer scoped for this project at present.** ⚠️ **Falsifier:** revisit only if a UI deliverable is added to this project's scope by approval.
 >
 > ⚠️ **Evidence note — guardrail independently corroborated (August 2026).** The last-mile guardrail no longer rests solely on the sources that recommended the SDK. An independent practitioner review of the **AI SDK 7** release (June 2026) draws the same boundary unprompted: the SDK is strongest as a **TypeScript-first application layer**, and weaker where the core problem is multi-hour orchestration, language-agnostic workflows or deeply stateful agent planning — with the explicit note that teams deploying agents across **Python services, queues and data pipelines** should treat it as *an SDK layer, not an orchestration standard*. That is this portfolio's exact shape. Convergent and independently sourced; recorded as **directional**, per the CORRECTIONS 18–19 evidence standard.
@@ -71,7 +75,7 @@
 15. [Security & Compliance](#15-security--compliance)
 16. [Project Structure](#16-project-structure)
 17. [Development Phases](#17-development-phases)
-18. [Project Evolution (3 Stages)](#18-project-evolution-5-stages)
+18. [Project Evolution (3 Stages)](#18-project-evolution-3-stages--v100)
 19. [Success Metrics](#19-success-metrics)
 20. [Risk Mitigation](#20-risk-mitigation)
 21. [Skills Required (Roadmap Alignment)](#21-skills-required-roadmap-alignment)
@@ -219,7 +223,7 @@ Stage 3 swaps the generic vision LLM for a **fine-tuned domain extraction model*
 
 ### 6.1 The agentic workflow: chaining, routing, and the self-correcting validator loop
 
-The Stage-4 upgrade composes three of Anthropic's *Building Effective Agents* **workflow** patterns: **prompt chaining** (extract → validate → route), **routing** (the confidence/completeness branch directs each case to ticket / escalation / human review), and **evaluator-optimizer** (the Validator triggers targeted re-extraction). Concurrency is *not* one of these patterns applied to the sequential core — it lives at the multi-source and batch levels (see §6.1.1).
+The **S3** upgrade composes three of Anthropic's *Building Effective Agents* **workflow** patterns: **prompt chaining** (extract → validate → route), **routing** (the confidence/completeness branch directs each case to ticket / escalation / human review), and **evaluator-optimizer** (the Validator triggers targeted re-extraction). Concurrency is *not* one of these patterns applied to the sequential core — it lives at the multi-source and batch levels (see §6.1.1).
 
 ```
 extract → validate → route   (a chained, dependent sequence — NOT run in parallel)
@@ -243,7 +247,7 @@ Extractor→Validator→Router are **sequential dependencies** and cannot be par
 
 ### 6.2 A2A cross-team coordination (S3) — the one genuinely agentic tier
 
-> ✅ **This is the *one* place in FormSense where a true agent legitimately belongs.** The Stage-4 core stays a deterministic agentic workflow (the reliable, auditable spine). At the **cross-team boundary**, dynamic model-driven decisions actually earn their keep: a hardship distribution *might* need a compliance check before a payroll action, and *which* peers to involve can depend on the case. That kind of open-ended, "the path isn't knowable in advance" coordination is where agent autonomy pays off.
+> ✅ **This is the *one* place in FormSense where a true agent legitimately belongs.** The **S3** core stays a deterministic agentic workflow (the reliable, auditable spine). At the **cross-team boundary**, dynamic model-driven decisions actually earn their keep: a hardship distribution *might* need a compliance check before a payroll action, and *which* peers to involve can depend on the case. That kind of open-ended, "the path isn't knowable in advance" coordination is where agent autonomy pays off.
 
 At production scale, the **FormSense coordinator** discovers and coordinates with peers over A2A: `FormSense ↔ Compliance-Agent ↔ OnBase-Agent ↔ Payroll-Agent`. Each peer owns its domain; FormSense assembles the verified result with per-step provenance. Per the portfolio's **earned-overlay rule**, this agentic coordination layer ships only if it demonstrably beats a fixed, hard-coded coordination path on a labeled set — autonomy is added because it's *justified*, not by default. This gives the defensible senior narrative: *"deterministic workflow for the regulated core, a bounded agent only at the coordination boundary — and I can tell you exactly why each is where it is."*
 
@@ -253,22 +257,20 @@ At production scale, the **FormSense coordinator** discovers and coordinates wit
 
 | Capability | Stage introduced | Description |
 |-----------|------------------|-------------|
-| Multimodal multi-source extraction + reconciliation | 1 | Email body + form read concurrently → one `FormExtraction`; per-field confidence |
-| ERISA business-rule validation | 1 | 12+ YAML-configured rules (critical/warning/info), conditional + cross-field |
-| Smart routing | 1 | complete → ticket · incomplete → advisor email · low-confidence → human review |
-| Advisor-reply reconciliation | 1 | Read the reply, reconcile new fields, re-validate to completion |
-| AWS S3 + SQS batch + PostgreSQL | 2 | Async high-volume intake; scheduled batch; durable ticket tracking |
-| Fine-tuned extraction model + form-type classifier | 3 | Domain accuracy lift; distribution/loan/rollover auto-routing |
-| Agentic workflow (chaining + routing + evaluator-optimizer) | 4 | Chained extract→validate→route; validator triggers re-extraction; concurrency at multi-source extract + batch level |
-| MCP action tools | 4 | `send_advisor_email`, `create_ticket` (approval-gated, reversible) |
-| Form-history RAG (vector) | 4 | Cross-reference a participant's prior distributions for context/consistency |
+| Multimodal multi-source extraction + reconciliation | S1 | Email body + form read concurrently → one `FormExtraction`; per-field confidence |
+| ERISA business-rule validation | S1 | 12+ YAML-configured rules (critical/warning/info), conditional + cross-field |
+| Smart routing | S1 | complete → ticket · incomplete → advisor email · low-confidence → human review |
+| Advisor-reply reconciliation | S1 | Read the reply, reconcile new fields, re-validate to completion |
+| AWS S3 + SQS batch + PostgreSQL | S2 | Async high-volume intake; scheduled batch; durable ticket tracking |
+| Fine-tuned extraction model + form-type classifier | S3 | Domain accuracy lift; distribution/loan/rollover auto-routing |
+| Agentic workflow (chaining + routing + evaluator-optimizer) | S3 | Chained extract→validate→route; validator triggers re-extraction; concurrency at multi-source extract + batch level |
+| MCP action tools | S3 | `send_advisor_email`, `create_ticket` (approval-gated, reversible) |
+| Form-history RAG (vector) | S3 | Cross-reference a participant's prior distributions for context/consistency |
 
-> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
-
-| OnBase integration + real-time | 5 | System-of-record integration; live intake processing |
-| Multi-form-type support | 5 | Beyond distributions — loans, rollovers, hardship, more |
-| A2A cross-team coordination | 5 | FormSense ↔ Compliance ↔ OnBase ↔ Payroll |
-| LLMOps evaluation pipeline | 5 | CI accuracy gates, per-field A/B, regression tracking |
+| OnBase integration + real-time | S3 | System-of-record integration; live intake processing |
+| Multi-form-type support | S3 | Beyond distributions — loans, rollovers, hardship, more |
+| A2A cross-team coordination | S3 | FormSense ↔ Compliance ↔ OnBase ↔ Payroll |
+| LLMOps evaluation pipeline | S3 | CI accuracy gates, per-field A/B, regression tracking |
 
 ---
 
@@ -278,13 +280,11 @@ Stage 1 generates the `EscalationEmail` and `ProcessingTicket` as objects. S3 ex
 
 | Tool | Stage | Type | Notes |
 |------|-------|------|-------|
-| `extract_form(source)` | 4 | read | Run extraction on a form/email pair; returns `FormExtraction` |
-| `validate_form(extraction)` | 4 | read | Returns `ValidationResult` against the form-type rule set |
-| `send_advisor_email(escalation)` | 4 | write (reversible, approval-gated) | Actually dispatches the missing-items email |
-| `create_ticket(extraction)` | 4 | write (approval-gated) | Creates the OnBase operations ticket |
-| `lookup_form_history(participant)` | 4 | read | Form-history RAG over prior distributions (vector, not graph) |
-
-> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+| `extract_form(source)` | S3 | read | Run extraction on a form/email pair; returns `FormExtraction` |
+| `validate_form(extraction)` | S3 | read | Returns `ValidationResult` against the form-type rule set |
+| `send_advisor_email(escalation)` | S3 | write (reversible, approval-gated) | Actually dispatches the missing-items email |
+| `create_ticket(extraction)` | S3 | write (approval-gated) | Creates the OnBase operations ticket |
+| `lookup_form_history(participant)` | S3 | read | Form-history RAG over prior distributions (vector, not graph) |
 
 
 > **Write tools are approval-gated, mirroring the cross-portfolio rule.** Because no action here moves money or is irreversible, FormSense needs *no live sign-off gate* — only the approval gate on the email/ticket dispatch and the low-confidence human-review queue. This is the deliberate autonomy contrast with Crucible (live trades = mandatory human sign-off + kill-switch).
@@ -293,7 +293,7 @@ Stage 1 generates the `EscalationEmail` and `ProcessingTicket` as objects. S3 ex
 
 ## 9. Form-History RAG (Not GraphRAG)
 
-> 🚫 **GraphRAG is explicitly N/A for FormSense.** FormSense is a **structured-extraction** problem, not a corpus-retrieval problem — there is no policy/entity ontology to traverse. The Stage-4 "form-history RAG" is **plain vector retrieval** for cross-referencing a participant's prior distributions (e.g., "does this routing number match what we've seen before; is this the third hardship this year"). It is a consistency/context aid, not a knowledge graph, and it does **not** import any Neo4j/knowledge-graph layer. (This mirrors the SignalCore boundary discipline: the knowledge-graph entity model lives only where the problem actually is graph-shaped — AFC — never spread by default.)
+> 🚫 **GraphRAG is explicitly N/A for FormSense.** FormSense is a **structured-extraction** problem, not a corpus-retrieval problem — there is no policy/entity ontology to traverse. The **S3** "form-history RAG" is **plain vector retrieval** for cross-referencing a participant's prior distributions (e.g., "does this routing number match what we've seen before; is this the third hardship this year"). It is a consistency/context aid, not a knowledge graph, and it does **not** import any Neo4j/knowledge-graph layer. (This mirrors the SignalCore boundary discipline: the knowledge-graph entity model lives only where the problem actually is graph-shaped — AFC — never spread by default.)
 
 ---
 
@@ -303,16 +303,16 @@ The Stage-1 guardrail set (10 guardrails — confidence, PII, financial validati
 
 | Guardrail | Stage | What it enforces |
 |-----------|-------|------------------|
-| Per-field confidence gate | 1 | `requires_review` when confidence < 0.8; nothing auto-routed on a shaky field |
-| Cross-source agreement | 1 | Email/form conflicts flag for human review, never silently merged |
-| PII protection | 1 | SSN reduced to last-4; no PII in logs; synthetic forms for the public repo |
-| Financial-field validation | 1 | Routing/account numbers, withholding %, amounts range-checked |
-| ERISA completeness rules | 1 | Required fields per distribution type enforced (critical severity) |
-| Max-escalation-round cap | 4 | Prevents advisor-email ping-pong; routes to human after N rounds |
-| Re-extraction loop layered exits | 4 | Inner evaluator-optimizer loop stops on **verifier satisfied (primary)**; **max-iteration cap** + **no-progress detection** are safety backstops, never the primary stop (per CCA-F Domain-1 guidance) |
-| MCP action approval | 4 | Email send / ticket create require approval; reversible |
-| Form-type rule-set match | 3/5 | Validation uses the rule set for the *classified* form type |
-| Cross-agent provenance | 5 | A2A-assembled outcomes carry per-step source attribution |
+| Per-field confidence gate | S1 | `requires_review` when confidence < 0.8; nothing auto-routed on a shaky field |
+| Cross-source agreement | S1 | Email/form conflicts flag for human review, never silently merged |
+| PII protection | S1 | SSN reduced to last-4; no PII in logs; synthetic forms for the public repo |
+| Financial-field validation | S1 | Routing/account numbers, withholding %, amounts range-checked |
+| ERISA completeness rules | S1 | Required fields per distribution type enforced (critical severity) |
+| Max-escalation-round cap | S3 | Prevents advisor-email ping-pong; routes to human after N rounds |
+| Re-extraction loop layered exits | S3 | Inner evaluator-optimizer loop stops on **verifier satisfied (primary)**; **max-iteration cap** + **no-progress detection** are safety backstops, never the primary stop (per CCA-F Domain-1 guidance) |
+| MCP action approval | S3 | Email send / ticket create require approval; reversible |
+| Form-type rule-set match | S3 | Validation uses the rule set for the *classified* form type |
+| Cross-agent provenance | S3 | A2A-assembled outcomes carry per-step source attribution |
 
 ---
 
@@ -439,11 +439,16 @@ formsense/
 
 | Phase | Stage | Build focus | Exit criteria |
 |-------|-------|-------------|---------------|
-| Foundation | 1 | Multimodal multi-source extraction + reconciliation + ERISA validation + routing | Live Streamlit demo; GEval accuracy measured; advisor-reply reconciliation working |
-| Pipeline | 2 | AWS S3 + SQS batch + PostgreSQL ticket tracking; scheduled processing; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff) | High-volume async intake working; durable ticket tracking; app + workers running on ECS/Fargate |
-| Intelligence | 3 | Fine-tuned extraction model + form-type classifier | Fine-tuned model beats off-the-shelf baseline; classifier above threshold |
-| Agentic Workflow | 4 | Agentic workflow (chaining + routing + evaluator-optimizer re-extraction); MCP actions; form-history RAG | Re-extraction loop measurably cuts human-review rate; layered exits enforced (verifier primary, caps as backstop); write actions approval-gated |
-| Platform | 5 | OnBase integration, real-time, multi-form-type, A2A, LLMOps CI | OnBase round-trip working; A2A outcome with provenance; accuracy regression gates green |
+| Foundation | **S1** | Multimodal multi-source extraction + reconciliation + ERISA validation + routing | Live Streamlit demo; GEval accuracy measured; advisor-reply reconciliation working |
+| Pipeline | **S2** | AWS S3 + SQS batch + PostgreSQL ticket tracking; scheduled processing; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff) | High-volume async intake working; durable ticket tracking; app + workers running on ECS/Fargate |
+| Intelligence | **S3** | Fine-tuned extraction model + form-type classifier | Fine-tuned model beats off-the-shelf baseline; classifier above threshold |
+| Agentic Workflow | **S3** | Agentic workflow (chaining + routing + evaluator-optimizer re-extraction); MCP actions; form-history RAG | Re-extraction loop measurably cuts human-review rate; layered exits enforced (verifier primary, caps as backstop); write actions approval-gated |
+| Platform | **S3** *(end-state product surface — beyond the portfolio evidence bar)* | OnBase integration, real-time, multi-form-type, A2A, LLMOps CI | OnBase round-trip working; A2A outcome with provenance; accuracy regression gates green |
+
+---
+
+
+> ✅ **Stage columns above are on the governing 3-stage scale (S1 · S2 · S3)** — renumbered from the retired 5-stage scale in roadmap **v10.0 CORRECTION 27**. Mapping applied: old 1 → **S1**; old 2 → **S2**; old 2–3, 3, 4 and 5 → **S3**. **No capability, tool or guardrail was removed** — every row survives with its content intact; only the stage label changed. The five build phases in §17 are retained as *build sequencing within* the three stages, which is not duplication.
 
 ---
 
