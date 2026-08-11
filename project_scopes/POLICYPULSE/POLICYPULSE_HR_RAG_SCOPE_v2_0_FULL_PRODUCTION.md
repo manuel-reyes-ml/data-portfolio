@@ -44,6 +44,10 @@
 > **Known risk — version drift (ADR-worthy).** `.pre-commit-config.yaml` pins tool versions *independently* of `uv.lock`, so upgrading ruff via uv leaves the hook on the old pin and local checks diverge from CI. Mitigation: `sync-with-uv` (or `sync-pre-commit-deps`) plus a scheduled `pre-commit autoupdate --freeze`.
 >
 > **`prek` — evaluated, not selected (falsifier recorded).** `prek` is a Rust drop-in alternative that reads this same config file and uses uv natively (adopted by CPython, FastAPI, Airflow, Ruff). It is *not* adopted now: `.pre-commit-config.yaml` is the artifact a reviewer recognises, and because prek reads that identical file the migration stays free and reversible. **Falsifier:** adopt if hook install/run time becomes a measured friction point against the 25 hrs/week schedule.
+>
+> **🆕 Python version — pinned (roadmap v10.0 CORRECTIONS 27–28, August 2026).** **Python 3.14 is the official floor for every project in this portfolio (`3.14+`).** It is pinned in one place per repo — `requires-python = ">=3.14"` in `pyproject.toml` — and every downstream tool reads from that single declaration: `[tool.ruff] target-version = "py314"`, `[tool.mypy] python_version = "3.14"`, the Dockerfile base image, and the CI matrix. **One source, no second place to drift.** ⚠️ **Enforcement:** a mismatch between any of those four and `requires-python` is a CI failure, not a lint warning — the same discipline `uv.lock` gets from the `uv-lock` hook under CORRECTION 21.
+>
+> ⚙️ **Two binding constraints on the pin.** **(a) Standard GIL build only — the free-threaded build (`python3.14t`) is explicitly NOT used.** Free-threading is where the C-extension wheel compatibility problems live, this portfolio has no CPU-bound multicore workload that would benefit, and debugging wheel availability is pure schedule tax against a 25 hrs/week budget with zero portfolio value. **(b) Airflow constraint-file caveat:** Airflow 3.2.0+ officially supports Python 3.14, but a known open issue reports the 3.14 constraint files being out of sync between the published Docker image and `pip`/`uv` install. **Documented workaround: fall back to the `constraints-3.13.txt` file for the Airflow service only** — this is a constraint-file selection, *not* a second Python version, and the interpreter stays 3.14. ⚠️ **Falsifier:** raise the floor only when a named dependency in a committed lockfile requires it, or when 3.14 leaves security support — **never to chase a release**; 3.15 ships October 2026 and is explicitly not adopted on release.
 > **🆕 Language & AI last-mile standard (roadmap v10.0 CORRECTIONS 22–23, August 2026).** **Python and SQL are confirmed as the correct and sufficient primary languages** for this portfolio. **SQL is the single highest-signal language in DE postings**, and **PySpark is the capturable differentiator — reached through Python, not adopted as a separate language.** **Rust, Go, Java, Scala and standalone JavaScript were each evaluated and declined with recorded falsifiers**; JavaScript specifically as *redundant*, since TypeScript is a superset of it and the Stage-2 TypeScript sprint already covers that ground. **TypeScript is retained for the last mile only** — MCP protocol tooling and the AI application/UI layer. **This project stays Python-primary:** agent cores, retrieval, orchestration, evaluation and any long-horizon planning remain Python. ⚠️ **Falsifier:** revisit only if a target employer posts a JD naming a different primary language for the role being applied to.
 >
 > ⚠️ **Evidence note — guardrail independently corroborated (August 2026).** The last-mile guardrail no longer rests solely on the sources that recommended the SDK. An independent practitioner review of the **AI SDK 7** release (June 2026) draws the same boundary unprompted: the SDK is strongest as a **TypeScript-first application layer**, and weaker where the core problem is multi-hour orchestration, language-agnostic workflows or deeply stateful agent planning — with the explicit note that teams deploying agents across **Python services, queues and data pipelines** should treat it as *an SDK layer, not an orchestration standard*. That is this portfolio's exact shape. Convergent and independently sourced; recorded as **directional**, per the CORRECTIONS 18–19 evidence standard.
@@ -57,6 +61,17 @@
 > ⚠️ **Privacy-routing amendment (CORRECTION 23) — binding.** The official Vercel starter repo ships **Vercel AI Gateway**, which routes prompts through Vercel. Under this portfolio's privacy-first model-routing rule that is **not acceptable for anything but synthetic data**. The gateway is **swapped for the direct `@ai-sdk/anthropic` provider** — a one-line change the SDK's provider-agnostic design makes trivial — and the build runs **synthetic policy corpus only**, the same constraint every public repo here already carries. **Recorded as an ADR in `docs/adr/` on two grounds, not one:** (a) *privacy* — prompts must not transit a third-party gateway; (b) 🆕 *architecture over platform* — an independent 2026 review of AI SDK 7 warns that when the best experience assumes AI Gateway, Vercel Workflows, Vercel Sandbox, Vercel Observability and Next.js together, teams **drift into a platform decision before making an architecture decision**. Declining the gateway is how this project keeps the SDK as a library rather than inheriting a platform.
 >
 > 🔭 **Observability — one trace backend, not two (🆕 AI SDK 7, June 2026).** AI SDK 7 ships **`@ai-sdk/otel`** with a single application-startup `registerTelemetry(new OpenTelemetry())` call and optional **OpenTelemetry GenAI semantic conventions**. Because this project's S3 observability standard is **Arize Phoenix (OTel-native)**, the TypeScript last-mile layer **emits into the same trace backend as the Python core**. **No second observability stack is introduced.** ⚠️ **PII constraint carries across the language boundary:** AI SDK 7 telemetry is **allowlist-based** (`includeRuntimeContext` / `includeToolsContext`), and anything not explicitly allowlisted must stay out of spans. The three-layer PII defence and the `redact_pii` posture apply to the TS layer exactly as they do to `structlog` on the Python side — **the boundary is a language boundary, not a policy boundary.**
+>
+> **🆕 Model-call ownership — the A/B ruling (roadmap v10.0 CORRECTION 28, August 2026).** With a TypeScript last mile in scope, **two designs were possible and the scope documents resolved neither**, which left the privacy amendment protecting an undefined surface. Both are now ruled on explicitly:
+>
+> - **Pattern A — Python owns the model call.** React → FastAPI → FastAPI calls the provider. The AI SDK renders the stream only.
+> - **Pattern B — TypeScript owns the model call.** React → Next.js route handler → the route calls the provider *and* calls this project's retrieval API as a tool.
+>
+> 🎯 **Ruling: Pattern B for the single-turn chat; Pattern A for the agentic loop.** The **S3 evaluator-optimizer loop, the GraphRAG fusion, access-control retrieval, the three-layer eval and every long-horizon decision stay entirely in Python (Pattern A)** — nothing about this ruling moves an agent core across the language boundary. The **last-mile chat turn runs through the AI SDK route handler with retrieval exposed as a tool (Pattern B)**, which is what the Vercel Academy course teaches, so its patterns apply directly rather than needing translation.
+>
+> 🧭 **Why this line and not a simpler one.** A pure-Pattern-A build would force the last mile to re-implement streaming, tool-call normalisation and structured output on the Python side purely to keep a language rule — rebuilding what the SDK exists to provide, for no evidence gain. A pure-Pattern-B build would pull the evaluator-optimizer loop into TypeScript, which the CORRECTION 22 guardrail forbids and the AI SDK's own positioning advises against. **The split follows the guardrail's actual principle — the loop is Python, the turn is the last mile — rather than the language boundary as a blunt instrument.**
+>
+> ⚠️ **What this changes about the privacy amendment — it now protects a defined surface.** Under Pattern B the **route handler sees the full prompt**, which is precisely why the Vercel AI Gateway is declined in favour of the direct `@ai-sdk/anthropic` provider and why the build runs **synthetic corpus only**. Had the ruling landed on Pattern A, the gateway question would have been moot; under Pattern B it is load-bearing. **The retrieval API called as a tool remains behind this project's own auth and access-control layer — Pattern B does not expose the corpus to the browser**, only to the server-side route handler. ⚠️ **Falsifier:** revisit if a single chat turn ever needs more than one model round-trip plus tool calls — at that point it has become a loop, and a loop belongs in Python by the rule above, not in a route handler that has quietly grown one.
 
 ---
 
@@ -79,7 +94,7 @@
 15. [Security & Compliance](#15-security--compliance)
 16. [Project Structure](#16-project-structure)
 17. [Development Phases](#17-development-phases)
-18. [Project Evolution (3 Stages)](#18-project-evolution-5-stages)
+18. [Project Evolution (3 Stages)](#18-project-evolution-3-stages--v100)
 19. [Success Metrics](#19-success-metrics)
 20. [Risk Mitigation](#20-risk-mitigation)
 21. [Skills Required (Roadmap Alignment)](#21-skills-required-roadmap-alignment)
@@ -213,7 +228,7 @@ Stage 3 matures the layer into **dual-channel retrieval**: run the vector channe
 
 ## 6. Agentic AI System Design
 
-The Stage-4 upgrade wraps the responder in an **evaluator-optimizer loop** — the pattern from Anthropic's "Building Effective Agents," and the same loop discipline AFC and FormSense use.
+The **S3** upgrade wraps the responder in an **evaluator-optimizer loop** — the pattern from Anthropic's "Building Effective Agents," and the same loop discipline AFC and FormSense use.
 
 ### 6.1 The retrieval loop
 
@@ -241,21 +256,19 @@ When a question spans domains, PolicyPulse's HR agent discovers and delegates to
 
 | Capability | Stage introduced | Description |
 |-----------|------------------|-------------|
-| Cited grounded answers | 1 | Top-K vector retrieval → cited answer with section/paragraph provenance |
-| Confidence-based HR escalation | 1 | conf < 0.7 → structured ticket (question + context + suggested contact) |
-| FastMCP tool surface | 1 | `query_policies`, `list_policy_documents` exposed to Cursor/Claude Desktop |
-| AWS document store + scheduled re-ingestion | 2 | S3 source-of-truth; nightly re-embed on policy change; PostgreSQL ticket tracking |
-| GraphRAG hybrid retriever | 2→3 | Neo4j knowledge graph fused with vectors for multi-hop questions |
-| Fine-tuned embeddings + re-ranker | 3 | HR-domain embedding model; learned re-ranking over fused candidates |
-| Evaluator-optimizer loop | 4 | Self-correcting retrieve→verify→re-retrieve; LangGraph orchestration |
-| Expanded MCP tools | 4 | + `propose_policy_update`, `create_ticket` (write tools behind approval) |
-| Voice interface | 4 | Spoken policy Q&A for accessibility |
-| Multi-tenant SaaS + RBAC | 5 | Per-tenant corpora, role-scoped retrieval, admin console |
-| Slack / Teams integration | 5 | Answer in-channel where employees already work |
-| A2A cross-team routing | 5 | HR ↔ IT ↔ Payroll agent collaboration for cross-functional questions |
-| LLMOps evaluation pipeline | 5 | CI evals, A/B retrieval strategies, regression gates |
-
-> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+| Cited grounded answers | S1 | Top-K vector retrieval → cited answer with section/paragraph provenance |
+| Confidence-based HR escalation | S1 | conf < 0.7 → structured ticket (question + context + suggested contact) |
+| FastMCP tool surface | S1 | `query_policies`, `list_policy_documents` exposed to Cursor/Claude Desktop |
+| AWS document store + scheduled re-ingestion | S2 | S3 source-of-truth; nightly re-embed on policy change; PostgreSQL ticket tracking |
+| GraphRAG hybrid retriever | S3 | Neo4j knowledge graph fused with vectors for multi-hop questions |
+| Fine-tuned embeddings + re-ranker | S3 | HR-domain embedding model; learned re-ranking over fused candidates |
+| Evaluator-optimizer loop | S3 | Self-correcting retrieve→verify→re-retrieve; LangGraph orchestration |
+| Expanded MCP tools | S3 | + `propose_policy_update`, `create_ticket` (write tools behind approval) |
+| Voice interface | S3 | Spoken policy Q&A for accessibility |
+| Multi-tenant SaaS + RBAC | S3 | Per-tenant corpora, role-scoped retrieval, admin console |
+| Slack / Teams integration | S3 | Answer in-channel where employees already work |
+| A2A cross-team routing | S3 | HR ↔ IT ↔ Payroll agent collaboration for cross-functional questions |
+| LLMOps evaluation pipeline | S3 | CI evals, A/B retrieval strategies, regression gates |
 
 
 ---
@@ -266,13 +279,11 @@ The Stage-1 FastMCP server exposes **read** tools. Each later stage extends the 
 
 | Tool | Stage | Type | Notes |
 |------|-------|------|-------|
-| `query_policies(question)` | 1 | read | Returns cited answer + confidence |
-| `list_policy_documents()` | 1 | read | Enumerates corpus with metadata |
-| `get_policy_graph(entity)` | 3 | read | Returns the local graph neighborhood for an entity (multi-hop transparency) |
-| `propose_policy_update(section, change)` | 4 | write (approval-gated) | Drafts a change for HR review — never auto-applies |
-| `create_ticket(question, context)` | 4 | write (reversible) | Mirrors the Stage-1 escalation as a callable tool |
-
-> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
+| `query_policies(question)` | S1 | read | Returns cited answer + confidence |
+| `list_policy_documents()` | S1 | read | Enumerates corpus with metadata |
+| `get_policy_graph(entity)` | S3 | read | Returns the local graph neighborhood for an entity (multi-hop transparency) |
+| `propose_policy_update(section, change)` | S3 | write (approval-gated) | Drafts a change for HR review — never auto-applies |
+| `create_ticket(question, context)` | S3 | write (reversible) | Mirrors the Stage-1 escalation as a callable tool |
 
 
 > 🆕 **MCP Apps (AI SDK 7, June 2026) — noted as a candidate, not scoped.** MCP servers can now separate **model-visible tools from app-only tools**, preserve app metadata, and render an app UI inside a **sandboxed iframe** via a JSON-RPC bridge. That maps cleanly onto this project's approval-gated write tools — `propose_policy_update` could surface a reviewable diff in an app pane rather than as raw text for HR. **Recorded as a candidate for the S3 MCP surface; not scoped, and not a prerequisite for the Week-2(b) build.** ⚠️ **Falsifier:** scope it only after the Week-2(b) UI lands and only if the approval-review UX is demonstrably worse without it.
@@ -298,14 +309,14 @@ The Stage-1 guardrail set (scope, hallucination, PII, grounding — 8 guardrails
 
 | Guardrail | Stage | What it enforces |
 |-----------|-------|------------------|
-| Scope limiter | 1 | Answers only from the policy corpus; refuses out-of-scope questions |
-| Grounding check | 1 | Every claim traceable to a retrieved chunk; ungrounded → escalate |
-| PII protection | 1 | No personal data surfaced in answers or logs |
-| Confidence gate | 1 | conf < 0.7 → HR ticket, never a confident guess |
-| Citation integrity | 2 | Cited section must actually contain the claim (graph cross-check) |
-| Effective-date check | 2/3 | Never cite a superseded policy version as current |
-| Role-scope enforcement | 5 | Retrieval respects the asker's RBAC role |
-| Cross-agent provenance | 5 | A2A-assembled answers carry per-claim source attribution |
+| Scope limiter | S1 | Answers only from the policy corpus; refuses out-of-scope questions |
+| Grounding check | S1 | Every claim traceable to a retrieved chunk; ungrounded → escalate |
+| PII protection | S1 | No personal data surfaced in answers or logs |
+| Confidence gate | S1 | conf < 0.7 → HR ticket, never a confident guess |
+| Citation integrity | S2 | Cited section must actually contain the claim (graph cross-check) |
+| Effective-date check | S2 | Never cite a superseded policy version as current |
+| Role-scope enforcement | S3 | Retrieval respects the asker's RBAC role |
+| Cross-agent provenance | S3 | A2A-assembled answers carry per-claim source attribution |
 
 ---
 
@@ -324,7 +335,7 @@ The Stage-1 guardrail set (scope, hallucination, PII, grounding — 8 guardrails
 | Eval | RAGAS + SelfCheckGPT + DeepEval, manual | LLMOps CI pipeline, A/B, regression gates |
 | Deploy | Streamlit Cloud (free) | AWS ECS (Fargate), auto-scaling |
 | Observability | Python logging | LangSmith traces + Prometheus/Grafana/Sentry |
-| AI last-mile UI | — | 🆕 Vercel AI SDK (TS) — streaming Claude UI over retrieval; direct `@ai-sdk/anthropic` provider, gateway declined (ADR); synthetic data only |
+| AI last-mile UI | — | 🆕 Vercel AI SDK (TS) — streaming Claude UI over retrieval; **Pattern B** (route handler owns the single-turn model call, retrieval as a tool); direct `@ai-sdk/anthropic` provider, gateway declined (ADR); synthetic data only |
 
 > All Python standards from the roadmap hold across every stage: `pyproject.toml`, `src/` layout, `py.typed`, `from __future__ import annotations`, NumPy-style docstrings, Pydantic validation, logging (no `print()`), GitHub Actions CI.
 
@@ -420,6 +431,8 @@ policypulse/
     observability/ # 🆕 structlog ProcessorFormatter chain + redact_pii processor (CORRECTION 16)
   web/             # 🆕 TS last mile — Vercel AI SDK streaming UI over the retrieval API
                    #    sibling package, NOT a rewrite; Python core untouched
+                   #    Pattern B: route handler owns the single-turn model call,
+                   #    calls retrieval as a tool. Agentic loop stays Python (Pattern A).
   tests/
   .pre-commit-config.yaml   # pinned hook set; strict subset of CI (CORRECTION 21)
   pyproject.toml   # py.typed · src layout · semver
@@ -432,14 +445,17 @@ policypulse/
 
 | Phase | Stage | Build focus | Exit criteria |
 |-------|-------|-------------|---------------|
-| Foundation | 1 | Vector RAG + cited answers + escalation + FastMCP | Live Streamlit demo; RAG Triad measured; MCP tools callable in Cursor |
-| Cloud | 2 | S3 + PostgreSQL + scheduled re-ingestion; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff); **GraphRAG intro** (Neo4j) | App running on ECS/Fargate; multi-hop questions answered by graph traversal; nightly re-ingest working |
-| Intelligence | 3 | Fine-tuned embeddings + re-ranker; **GraphRAG deepen** (dual-channel fusion, graph-quality monitoring) | Hybrid beats vector-only baseline on labeled multi-hop set; Neo4j credential earned by building |
-| Agentic | 4 | LangGraph evaluator-optimizer loop; Pinecone migration; expanded MCP write tools; voice | Self-correcting loop measurably lifts groundedness; write tools approval-gated |
-| Platform | 5 | Multi-tenant SaaS, RBAC, Slack/Teams, A2A, LLMOps CI | Multi-tenant isolation verified; A2A cross-team answer with provenance; regression gates green |
+| Foundation | **S1** | Vector RAG + cited answers + escalation + FastMCP | Live Streamlit demo; RAG Triad measured; MCP tools callable in Cursor |
+| Cloud | **S2** | AWS S3 + PostgreSQL + scheduled re-ingestion; **containerize + deploy to AWS ECS/Fargate** (Streamlit Cloud → ECS handoff) | App running on ECS/Fargate; nightly re-ingest working |
+| Intelligence | **S3** | **GraphRAG intro** (Neo4j) → **GraphRAG deepen** (dual-channel fusion, graph-quality monitoring); fine-tuned embeddings + re-ranker | Multi-hop questions answered by graph traversal; hybrid beats vector-only baseline on labeled multi-hop set; Neo4j credential earned by building |
+| Agentic | **S3** | LangGraph evaluator-optimizer loop; Pinecone migration; expanded MCP write tools; voice | Self-correcting loop measurably lifts groundedness; write tools approval-gated |
+| Platform | **S3** *(end-state product surface — beyond the portfolio evidence bar)* | Multi-tenant SaaS, RBAC, Slack/Teams, A2A, LLMOps CI | Multi-tenant isolation verified; A2A cross-team answer with provenance; regression gates green |
 
-> ⚠️ **🆕 Stage-numbering note (roadmap v10.0 CORRECTION 26, August 2026).** The **Stage** column above uses the **retired 5-stage numbering**. Under the governing 3-stage model at the top of this document, read **old 1 → S1**, **old 2 → S2**, **old 3 → the S2/S3 boundary** (embedding/vector infrastructure is S2; GraphRAG deepening is S3), and **old 4 and old 5 → S3**. The numbers are **left in place deliberately**: renumbering these tables would be a structural teardown requiring its own capability audit, and the authoritative block already rules that it wins on any conflict. This note removes the ambiguity without the teardown.
 
+---
+
+
+> ✅ **Stage columns above are on the governing 3-stage scale (S1 · S2 · S3)** — renumbered from the retired 5-stage scale in roadmap **v10.0 CORRECTION 27**. Mapping applied: old 1 → **S1**; old 2 → **S2**; old 2–3, 3, 4 and 5 → **S3**. **No capability, tool or guardrail was removed** — every row survives with its content intact; only the stage label changed. The five build phases in §17 are retained as *build sequencing within* the three stages, which is not duplication.
 
 ---
 
@@ -504,6 +520,7 @@ policypulse/
 | **LLMOps (CI evals, A/B, regression gates)** | **S3** | **Blocking groundedness gates; retrieval A/B** |
 | TypeScript + Zod | S2 (sprint immediately before the Q1 2027 apply window) | TS MCP server variant; Zod = MCP SDK input validation — and carries directly into the AI SDK layer below, no new prerequisite |
 | **Vercel AI SDK (TypeScript — last mile)** | **S2 sprint** | **Streaming Claude-powered UI over this project's retrieval; direct `@ai-sdk/anthropic` provider (no gateway); synthetic corpus only; `@ai-sdk/otel` → same Phoenix/OTel backend as the Python core** |
+| **React / Next.js** *(named outcome, not a separate track)* | **S2 sprint** | **Produced by the row above, not studied separately — components, hooks, state, streaming UI, calling a typed API. Scoped to table-stakes competence; ships as a browser page at a URL, not an Electron desktop build.** |
 | FastAPI, System Design, Production Monitoring | S3 | Backend, architecture, observability |
 
 
