@@ -1,9 +1,12 @@
 # 📊 Data & AI Portfolio
 
-![AI-Focused](https://img.shields.io/badge/AI--Focused-Data_Engineering_→_Applied_AI-blueviolet?style=for-the-badge)
+![AI-Focused](https://img.shields.io/badge/AI--Focused-Analytics_Engineering_·_Data_Engineering-blueviolet?style=for-the-badge)
 
 **Manuel Reyes** — Production systems, evaluation-gated, built in a regulated financial domain.
 
+**🟢 Open to AI-Focused Analytics Engineer and Data Engineer roles.**
+
+[![Open to work](https://img.shields.io/badge/🟢_Open_to-Analytics_Engineer_·_Data_Engineer-success?style=flat-square)](mailto:manuelreyesv410@gmail.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-mr410-0077B5?logo=linkedin)](https://linkedin.com/in/mr410)
 [![GitHub](https://img.shields.io/badge/GitHub-manuel--reyes--ml-181717?logo=github)](https://github.com/manuel-reyes-ml)
 [![Email](https://img.shields.io/badge/Email-Contact-D14836?logo=gmail)](mailto:manuelreyesv410@gmail.com)
@@ -33,7 +36,7 @@ Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.gith
 
 | Project | Role | Arc | What it demonstrates | Status |
 |---|---|---|---|---|
-| 🧾 **1099 / DataVault Data Platform** | 🚩 Flagship — Data Engineering | S1 → S3 | Production ETL + reconciliation → dbt-tested models (CI) → orchestration → an Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live in production** |
+| 🧾 **DataVault / 1099 Data Platform** | 🚩 Flagship — Data Engineering | S1 → S3 | Production ETL + reconciliation → dbt-tested models (CI) → orchestration → an Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live in production** |
 | 📋 **PolicyPulse** | 🚩 Flagship — Applied AI (RAG) | S1 → S3 | RAG over plan documents → GraphRAG hybrid (Neo4j + ChromaDB) → agentic + eval/observability; exposes a FastMCP server | 🏗️ **S1 shipping** |
 | 🔥 **Crucible** | 🚩 Flagship — Autonomous trading research | S1 → S3 | Multi-timeframe (swing → intraday) backtest engine + integrity spine → agentic execution; **mandatory HITL sign-off + kill-switch** on the live path | 🏗️ **S1 in progress** |
 | 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | S1 → S3 | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
@@ -46,7 +49,7 @@ Each project links to its scope document(s) in the [Repository Structure](#-repo
 
 ---
 
-## 🏆 Production Highlight — 1099 / DataVault Data Platform (S1 core)
+## 🏆 Production Highlight — DataVault / 1099 Data Platform (S1 core)
 
 **✅ Live in production in an ERISA-regulated retirement-plan operations environment.** The Data-Engineering flagship's Stage-1 core: ingests Matrix + Relius sources into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics.
 
@@ -65,7 +68,7 @@ Each project links to its scope document(s) in the [Repository Structure](#-repo
 
 ## 🚀 Project Summaries
 
-### 🧾 1099 / DataVault Data Platform — *Data-Engineering flagship*
+### 🧾 DataVault / 1099 Data Platform — *Data-Engineering flagship*
 
 - **① Production** — Live, depended-upon pipeline in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry behaviour, schema contracts, on-call reality.
 - **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
@@ -140,7 +143,8 @@ Every project ships with:
 - **`docs/adr/`** — numbered, immutable Architecture Decision Records (context → decision → consequences)
 - **Dockerfile** · **evaluation-metrics table** · 15–30s **demo GIF** · **"What I Learned"**
 - **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
-- `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · **pinned `.pre-commit-config.yaml`** · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · file-by-file review before merge
+- **Python 3.14** (standard GIL build; the free-threaded `python3.14t` build is deliberately *not* used — no CPU-bound multicore workload here, and that build is where the C-extension wheel problems live). The version is a **single-source pin**: declared once as `requires-python = ">=3.14"`, with ruff's `target-version`, mypy's `python_version`, the Dockerfile base image and the CI matrix all reading from it — a mismatch is a **CI failure, not a lint warning**
+- `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · **pinned `.pre-commit-config.yaml`** · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **branch → PR → self-review → merge** (never direct commits to `main`) · file-by-file review before merge
 - **Observable by construction** — `structlog` renders **every** log line, including those from third-party libraries (LLM SDKs, httpx, Neo4j), through one `ProcessorFormatter` chain; a redaction processor sits in that chain as the PII choke point, so masking is structural rather than dependent on remembering it at each call site. Run context (`run_id`) is bound via contextvars, so one query reconstructs a whole pipeline run. Logs go to stdout (12-Factor); rotation and shipping belong to the runtime
 - **Enforced at the commit boundary** — a pinned `.pre-commit-config.yaml` in every repo. The governing rule is that **the hook set is a strict *subset* of the CI gate**: CI stays authoritative and nothing runs locally that does not also run in CI, so the two can never quietly disagree. `ruff-check --fix` is ordered *before* `ruff-format` (the linter's fixes can emit changes that then need reformatting); `uv-lock` keeps `uv.lock` in step with `pyproject.toml`; `gitleaks` and `detect-private-key` scan for credentials; `nbstripout` strips notebook output wherever notebooks exist, which extends the PII choke point from the logging boundary to the git boundary and is what makes **synthetic-data-only** a mechanical guarantee instead of a thing to remember; `conventional-pre-commit` runs on the `commit-msg` stage, so Conventional Commits above is *enforced*, not merely declared. **`mypy` is deliberately excluded and runs in CI only** — the `mirrors-mypy` hook's default `--ignore-missing-imports` silently degrades third-party types to `Any`, so the exclusion is recorded as an ADR rather than left as an omission. Hook revisions are pinned and never floating; the drift between those pins and `uv.lock` is a known risk with its own ADR
 - **uv (Astral)** for packages and environments — `uv sync --frozen` in CI and Docker; **no `requirements.txt`** in any repo
@@ -152,11 +156,13 @@ Every project ships with:
 
 ## 🛠️ Technical Stack
 
-**Languages & Core** — Python · SQL · pandas · Jupyter · **uv** (packaging & environments)
+**Languages & Core** — **Python 3.14** · SQL · pandas · Jupyter · **uv** (packaging & environments) · TypeScript *(last mile only)*
 
 **Data Engineering** — dbt · Great Expectations · Airflow (Astronomer) · Snowflake · Terraform · DuckDB/Parquet · Docker
 
 **AI & GenAI** — Anthropic SDK (primary) · Ollama / Qwen (local-first) · LM Studio · Gemini SDK · FastMCP · LangGraph · Pydantic · ChromaDB · Neo4j (GraphRAG)
+
+**Last-mile UI** — Vercel **AI SDK 7** · TypeScript · Zod · React. ⚠️ **Language boundary:** TypeScript is the last mile only — the agentic loop, GraphRAG fusion, access-control retrieval and the full eval suite stay in Python; no agent core crosses the boundary
 
 **Evaluation & Observability** — DeepEval · RAGAS · SelfCheckGPT · GEval · Arize Phoenix · LangSmith
 
@@ -235,15 +241,14 @@ data-portfolio/
 
 ## 🎯 Open To
 
-- **Data Engineer / Analytics Engineer** roles — AI-focused data platforms (embedding pipelines, vector stores, unstructured-data ETL feeding RAG)
-- **Applied AI Engineer / Forward Deployed Engineer** roles — regulated / fintech domains
+- **AI-Focused Analytics Engineer** (first door) and **Data Engineer** roles — AI-ready data platforms (semantic/metrics layers, embedding pipelines, vector stores, unstructured-data ETL feeding RAG)
 - Networking with data and AI practitioners · code reviews · technical discussion
 
 ---
 
 <div align="center">
 
-**Current stage (v10.0):** Stage 1 — Internal AI Builder · building toward AI-Focused Data / Analytics Engineering (Stage 2) → Applied AI / FDE (Stage 3)
+**🟢 Open to AI-Focused Analytics Engineer and Data Engineer roles** · longer-term trajectory: Applied AI / FDE (Stage 3 of the roadmap)
 
 🟢 Active · building in public
 
