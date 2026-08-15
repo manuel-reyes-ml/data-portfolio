@@ -593,8 +593,11 @@ A processor who receives five bad escalations for every good one **stops trustin
 | Claim store | SQLite (S1) → PostgreSQL (S2) | Lease TTL, content-hash key |
 | Excel parse | `openpyxl` read-only, `SORTORDER` dispatch | §5 — **never pandas `read_excel` on the raw sheet** |
 | PDF | `pypdf` for inventory; page rasterization for scans | Scanned faxes have no usable text layer |
-| Vision / LLM | **Anthropic SDK primary**; provider-agnostic interface | Privacy routing: sensitive → local; synthetic → cloud |
-| Local models | **Ollama** for any run touching non-synthetic data | Standing privacy-first routing rule |
+| Vision / LLM | **Provider-agnostic interface** (`ai/provider.py`) — sole boundary | **ADR-009.** Three named, benchmarked substrates below |
+| ├ Substrate 1 | **Anthropic SDK** | Primary. Default for build and eval |
+| ├ Substrate 2 | 🆕 **Azure OpenAI via Microsoft Foundry** (OpenAI-compatible client) | Enterprise/portability target. VNet isolation, Azure Monitor, MCP auth |
+| └ Substrate 3 | **Ollama** (local) | **Mandatory for any run touching non-synthetic data** |
+| Other providers | Gemini, OpenAI-direct | Supported by the interface, **not benchmarked** — no falsifier claim made |
 | Schemas | `pydantic` + `pydantic-settings` (`SecretStr`) | Sole config entrypoint |
 | Rules | Versioned Python + YAML tables | Fee, code, withholding-limit tables |
 | Retries | `stamina` | Capped, jittered |
@@ -608,6 +611,44 @@ A processor who receives five bad escalations for every good one **stops trustin
 | Container | Docker → **ECS/Fargate** (Terraform) | S2 |
 | MCP | **FastMCP** | S1 read tools |
 | Quality | `ruff`, `mypy`, `pytest`, `pre-commit` (Tier A + B `nbstripout`) | CI authoritative; hooks a strict subset |
+
+---
+
+### 14.1 🆕 ADR-009 — Provider strategy: agnostic interface, three named substrates
+
+**Context.** The target roles deploy into *the customer's* stack, not a chosen one. The incumbent QA reviewer lives on a Microsoft surface. **AB-620** and **AI-103** are both committed certifications and both bear directly on this decision. Meanwhile the vendor landscape has stopped being single-model: Microsoft now routes SharePoint's AI through Anthropic's Claude rather than OpenAI, building a multi-model architecture where the best model for each task is routed to that task regardless of which company built it. **"Azure means OpenAI" is outdated** — which strengthens provider-agnosticism rather than undermining it.
+
+**Decision.** `ai/provider.py` remains the **sole** boundary; no provider SDK is imported anywhere else in the tree. **Three named, tested substrates:**
+
+| Substrate | Role | Notes |
+|---|---|---|
+| **Anthropic SDK** | Primary | Default for build, eval, and the golden-set baseline |
+| 🆕 **Azure OpenAI via Microsoft Foundry** | Enterprise / portability target | Foundry's SDK exposes an **OpenAI-compatible client** alongside its Project client — so this is a configuration change behind the interface, not a rewrite. Foundry Hosted Agents reached GA in April 2026 with **VNet isolation, built-in evaluations, Azure Monitor integration, and MCP with complete auth coverage** |
+| **Ollama** (local) | Privacy floor | **Mandatory for any run touching non-synthetic data.** Non-negotiable |
+
+**One eval suite runs across all three.** Substrate results — agreement rate, false-NIGO delta, latency, cost-per-packet — ship in the README **Cost** section. This is the substrate-benchmark pattern already used elsewhere in the portfolio, applied to **portability** rather than to cost.
+
+**Consequences.**
+- 🎯 **Portability is demonstrated, not asserted.** An FDE deploys into the customer's environment; a system proven to run the same adjudication and the same eval gates on three substrates is materially stronger evidence than one that names a vendor. **This is the primary reason for the decision.**
+- Direct cert alignment: the Copilot Studio vs Foundry decision is squarely the **AI-103 / AB-620** subject matter.
+- Cost: roughly one day. The interface already exists; this adds a second concrete implementation and a substrate axis to the eval harness.
+- Risk: substrate drift — a prompt tuned on one substrate regressing on another. **Mitigated by running the blocking gates per substrate**, not only on the primary.
+
+**Rejected alternatives, with reasons recorded.**
+
+| Rejected | Why |
+|---|---|
+| **Copilot Studio** | Low-code, grounds in Microsoft 365 content by default. No versioned rule packs, no compiled deterministic layer, no blocking CI eval gates, no ADR trail. **It is also the incumbent's surface** — and the flattened-text chat rendering is precisely the failure mode this project exists to eliminate (§5.2). Rebuilding on it would reproduce the bug. |
+| **Microsoft 365 Agents SDK** | A **channel/distribution** framework — it exists to deploy agents *into* Teams, Copilot and other M365 channels. PostCheck has no Teams surface; its consumers are a watched folder, a processor's inbox, and a BI surface. Adopting it would add a deployment target with no consumer. |
+| **Single-vendor lock (any vendor)** | Forfeits the portability evidence that is the main reason this ADR exists. |
+| **Benchmarking Gemini and OpenAI-direct too** | Supported by the interface, but benchmarking five substrates buys little beyond three and dilutes the eval budget. **"Replace, not stack."** |
+
+⚠️ **Falsifiers.**
+1. Adopt the **M365 Agents SDK** only if a processor-facing review queue *inside Teams* becomes a stated requirement — the same falsifier as the no-TypeScript decline.
+2. Promote **Gemini or OpenAI-direct** to a benchmarked substrate only if a target employer's stack makes one of them the deciding input at the apply window — the same conditional logic as the lakehouse certification slot.
+3. Demote **Azure OpenAI** back to unbenchmarked if it fails to reach parity on the false-NIGO gate after one tuning pass — portability is not worth shipping a worse adjudicator.
+
+**⚖️ Open ruling for the operator — privacy routing has a third category.** The standing rule is binary: proprietary data → local Ollama; cloud APIs for synthetic scaffolding only. **A tenant-isolated Azure OpenAI deployment with VNet isolation is arguably neither** — data does not leave the tenant boundary, which is a materially different risk posture from a public API endpoint. This distinction is **irrelevant to the public repo, which is synthetic-only regardless**, and matters only to a private or internal deployment. ⚠️ **The binary rule stands until explicitly amended; this scope does not relax it.**
 
 ---
 
@@ -658,6 +699,7 @@ postcheck/
 │   ├── adr/                        # ADR-001 parse · 002 rules-first · 003 intake
 │   │                               # 004 grain · 005 false-NIGO gate · 006 synthetic-only
 │   │                               # 007 mypy CI-only · 008 no-TypeScript
+│   │                               # 009 provider strategy (3 substrates)
 │   ├── architecture.dsl            # Structurizr → Mermaid export
 │   ├── rule_catalog.md · nigo_taxonomy.md · data_dictionary.md
 ├── src/postcheck/
@@ -749,7 +791,7 @@ postcheck/
 | Skill | Stage | How PostCheck uses it |
 |---|---|---|
 | Python, Pydantic, `openpyxl` | S1 ✅ | Deterministic parsing, schemas, structured outputs |
-| Multimodal LLM (Anthropic primary) | S1 ✅ | Scanned, handwritten packet extraction |
+| Multimodal LLM — **provider-agnostic across 3 substrates** | S1 ✅ | Scanned/handwritten packet extraction; **Anthropic · Azure OpenAI (Foundry) · Ollama**, one eval suite across all three (ADR-009) |
 | Event-driven systems, idempotency, leases | S1 ✅ | Exactly-once intake — **rare and high-signal in a portfolio** |
 | Rule-engine design, versioned rule tables | S1 ✅ | The SOP as executable, diffable code |
 | **DeepEval / GEval / `extract-eval`** | S1 ✅ | Field-level P/R/F1; the blocking gate |
