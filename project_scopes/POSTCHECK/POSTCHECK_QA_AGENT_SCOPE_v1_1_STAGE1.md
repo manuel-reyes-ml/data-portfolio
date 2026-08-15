@@ -406,6 +406,7 @@ assert len(VERIFICATION_ITEMS) == 15
 - Freeze the 200-packet golden set, stratified by NIGO reason
 - Field-level P/R/F1 via `extract-eval` with omission / hallucination / mismatch classification
 - **CI eval gate — blocking:** false-NIGO rate · false-CRITICAL rate · **false-CRITICAL vs the flattened baseline** · report-format conformance
+- 🆕 **Substrate matrix (ADR-009):** the same eval suite run across **Anthropic · Azure OpenAI (Foundry) · Ollama**. Agreement rate, false-NIGO delta, latency and cost-per-packet per substrate ship in the README **Cost** section. **Gates run per substrate — parity is required, not assumed.**
 - Docker Compose; ADRs; Structurizr DSL → Mermaid + C4 L1/L2; README to the ①②③ order; demo GIF
 
 **Exit:** `docker compose up` runs the full pipeline on the synthetic corpus from a clean clone; the gate is green and blocks on regression.
@@ -458,6 +459,7 @@ Faker-generated identities · fictitious plan sponsors and institutions · **no 
 | **False-CRITICAL rate** on the 15-item surface | ✅ |
 | **False-CRITICAL vs flattened baseline** — must be lower | ✅ **the headline** |
 | **Report-format conformance** (15 rows, fixed order, none omitted) | ✅ |
+| 🆕 **Per-substrate gate parity** — gates run on **each** named substrate, not only the primary (ADR-009) | ✅ |
 | NIGO recall | Reported; trend non-decreasing |
 | Field-level F1 per field | Reported |
 | Layer-1 share of findings | Reported; alarms below 65% |
@@ -523,6 +525,11 @@ def test_duplicate_content_under_different_filename_processed_once(): ...
 def test_partial_write_never_read(): ...
 def test_expired_lease_is_reclaimed(): ...
 
+# tests/test_provider.py — ADR-009
+def test_no_provider_sdk_imported_outside_ai_module(): ...
+def test_all_three_substrates_satisfy_same_interface(): ...
+def test_non_synthetic_run_is_pinned_to_local_substrate(): ...
+
 # tests/test_parsing.py
 def test_reordered_header_column_fails_run_loudly(): ...
 def test_block_binding_is_positional_not_by_physical_column_name(): ...
@@ -546,7 +553,7 @@ def test_report_header_carries_agent_rulepack_and_prompt_version(): ...
 | Intake | `watchdog` + poll sweep; SQLite claim store with lease TTL |
 | Excel | `openpyxl` read-only + `SORTORDER` dispatch |
 | PDF | `pypdf` inventory; page rasterization for scans |
-| Vision / LLM | **Anthropic SDK primary**, provider-agnostic interface; **Ollama for any non-synthetic run** |
+| Vision / LLM | **Provider-agnostic interface** (`ai/provider.py`, sole boundary — no provider SDK imported elsewhere). 🆕 **Three named substrates (ADR-009):** **Anthropic SDK** (primary) · **Azure OpenAI via Microsoft Foundry** (OpenAI-compatible client — a config change, not a rewrite) · **Ollama** (local, **mandatory for any non-synthetic run**). Gemini and OpenAI-direct are interface-supported but **not benchmarked**. |
 | Schemas / config | `pydantic`, `pydantic-settings`, `SecretStr` |
 | Money | `decimal.Decimal` — never `float` |
 | Retries | `stamina` |
@@ -577,7 +584,8 @@ postcheck/
 │   │   ├── 0005-synthetic-corpus-only.md
 │   │   ├── 0006-read-only-advisory-boundary.md
 │   │   ├── 0007-mypy-ci-only.md
-│   │   └── 0008-no-typescript-layer.md
+│   │   ├── 0008-no-typescript-layer.md
+│   │   └── 0009-provider-strategy-three-substrates.md
 │   ├── architecture.dsl · rule_catalog.md · nigo_taxonomy.md · data_dictionary.md
 ├── src/postcheck/
 │   ├── config.py
@@ -597,7 +605,7 @@ postcheck/
 │   ├── events/       emitter.py · schema.py · render_xlsx.py
 │   ├── mcp_server/   server.py
 │   ├── observability/ logging.py · redact.py
-│   └── ai/           provider.py
+│   └── ai/           provider.py · substrates/ anthropic.py · azure_openai.py · ollama.py
 ├── evals/
 │   ├── generator/    packets.py · perturbations.py · scans.py
 │   ├── golden/       v1/ (200 packets + labels, frozen)
@@ -668,7 +676,9 @@ postcheck/
 - [ ] Synthetic-corpus-only approved; name scrub confirmed (ADR-005)
 - [ ] `Decimal`-only money rule approved
 - [ ] Report header carrying agent / rule-pack / SOP / prompt version approved
-- [ ] Project name **PostCheck** approved or replaced
+- [x] Project name **PostCheck** approved
+- [x] **ADR-009 provider strategy approved** — three named substrates; Copilot Studio and M365 Agents SDK declined with recorded falsifiers
+- [ ] ⚖️ **Open ruling:** whether tenant-isolated Azure OpenAI is a third privacy category. **The binary rule (proprietary → local) stands until explicitly amended.**
 - [ ] 8-week phasing realistic against the 25 hrs/week baseline
 
 ---
