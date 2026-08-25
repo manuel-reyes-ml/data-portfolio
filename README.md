@@ -24,6 +24,7 @@ The through-line:
 - **Domain depth as a moat** — ~15 years of business operations and financial-services work, applied to problems where correctness is regulated, not optional.
 - **Evaluation-first engineering** — DeepEval / RAGAS / SelfCheckGPT as *blocking* gates, faithfulness thresholds, synthetic data in every public repo.
 - **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran — and a pinned `.pre-commit-config.yaml` with a `uv-lock` hook keeps that lockfile honest at the commit boundary, so the claim is enforced rather than asserted. Architecture diagrams are single-source too: modeled once in Structurizr DSL, exported to Mermaid, so the picture never lies about the system. Logging is single-source in the same spirit — one `structlog` chain formats my code and my dependencies alike, so there is no second format to drift.
+- **Engine choice is an architecture decision, not a habit** — **Polars** owns ingestion, schema enforcement and bulk transforms; **pandas is retained deliberately** at the `openpyxl` template write and the plotting hand-off; business logic lives in **dbt**, not in either engine. The reviewable artifact is the ADR recording which engine owns which layer plus a `.explain()` query plan — never a speed number on a small dataset.
 - **One system per project, evolved across stages** — projects are hardened S1 → S3, never rebuilt per stage.
 
 Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) (3 stages, ~32 months).
@@ -32,13 +33,14 @@ Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.gith
 
 ## 🗂️ Portfolio at a Glance
 
-**3 flagships + 2 supporting**, plus a backlog and shared tooling. *Flagship vs supporting denotes size and emphasis — not a quality tier. Every project carries the full production standard.*
+**4 flagships + 2 supporting**, plus a backlog and shared tooling. *Flagship vs supporting denotes size and emphasis — not a quality tier. Every project carries the full production standard.*
 
 | Project | Role | Arc | What it demonstrates | Status |
 |---|---|---|---|---|
 | 🧾 **DataVault / 1099 Data Platform** | 🚩 Flagship — Data Engineering | S1 → S3 | Production ETL + reconciliation → dbt-tested models (CI) → orchestration → an Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live in production** |
 | 📋 **PolicyPulse** | 🚩 Flagship — Applied AI (RAG) | S1 → S3 | RAG over plan documents → GraphRAG hybrid (Neo4j + ChromaDB) → agentic + eval/observability; exposes a FastMCP server | 🏗️ **S1 shipping** |
 | 🔥 **Crucible** | 🚩 Flagship — Autonomous trading research | S1 → S3 | Multi-timeframe (swing → intraday) backtest engine + integrity spine → agentic execution; **mandatory HITL sign-off + kill-switch** on the live path | 🏗️ **S1 in progress** |
+| 🧾 **PostCheck** | 🚩 Flagship — **Dual-target** (Applied AI **and** AE/DE) | S1 → S3 | Autonomous post-posting QA review: agentic SOP adjudication with a hard escalation boundary **+** exactly-once event ingestion → dbt-modelled NIGO quality mart. One deliverable, first-class evidence for both target doors | 🏗️ **S1 scoped** |
 | 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | S1 → S3 | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
 | 📄 **FormSense** | Supporting — Document ops | S1 → S3 | Multimodal structured extraction from distribution forms; Pydantic frozen-schema contract; agentic workflow | 📅 Planned |
 | 📺 StreamSmart · 📊 ODI | Backlog | — | Production-grade when built; ODI is a consolidation candidate against the platform's mart/AI layer | 🗒️ Backlog |
@@ -62,6 +64,8 @@ Each project links to its scope document(s) in the [Repository Structure](#-repo
 
 **Stack:** Python · pandas · pytest · GitHub Actions CI · synthetic-data fixtures for the public build.
 
+> 🧭 **The S1 pandas pipeline is not rewritten — it is frozen as the "before."** The S2 hardening moves ingestion and bulk transforms to **Polars** and the reconciliation rules to **tested dbt models**; the delta between the two becomes the S2 headline metric rather than an unmeasured refactor.
+
 > 🔒 **Regulated-environment disclosure.** The public portfolio build uses synthetic data only — the production deployment runs internally on regulated data. Published claims are limited to **mechanism and non-identifying relative deltas**: no absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes. The Cost section for this project is therefore thinner than a typical portfolio project's — that is a disclosure constraint, not a gap.
 
 ---
@@ -74,9 +78,9 @@ Each project links to its scope document(s) in the [Repository Structure](#-repo
 - **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
 - **③ Architecture** — **ERISA-driven ADRs** (retention, auditability, reconciliation guarantees, PII boundary) · C4 Context + Container · dbt tests and data contracts.
 
-One system across the arc, not two projects. **Stage 1:** the live 1099 reconciliation core (canonical model → reconcile → Box-7 derivation → corrections analytics). **Stage 2:** hardened into a data platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy (Docker/ECS), monitoring. **Stage 3:** the Applied-AI analyst layer — natural-language querying with **human-in-the-loop on every write**.
+One system across the arc, not two projects. **Stage 1:** the live 1099 reconciliation core (canonical model → reconcile → Box-7 derivation → corrections analytics). **Stage 2:** hardened into a data platform — **Polars** ingestion and bulk transforms, dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy (Docker/ECS), monitoring. **Stage 3:** the Applied-AI analyst layer — natural-language querying with **human-in-the-loop on every write**.
 
-**Stack:** Python · pandas · dbt · Great Expectations · Airflow · Snowflake · Docker · GitHub Actions CI · Anthropic SDK · Pydantic
+**Stack:** Python · **Polars** (default engine) · pandas *(boundary-scoped: `openpyxl` writes + plotting hand-off)* · dbt · Great Expectations · Airflow · Snowflake · Docker · GitHub Actions CI · Anthropic SDK · Pydantic
 
 ---
 
@@ -106,6 +110,27 @@ A strategy-agnostic platform taking a strategy from **backtest → paper → liv
 
 ---
 
+### 🧾 PostCheck — *Dual-target flagship (Applied AI **and** Analytics/Data Engineering)*
+
+- **① Production** — **Read-only and advisory — a binding, tested safety invariant.** Never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor; never edits SSN, name or DOB. An IGO verdict is a **recommendation to a human, never an authorization**.
+- **② Cost** — Provider-agnostic across three named substrates (**Anthropic · Azure OpenAI via Microsoft Foundry · local Ollama**); one eval suite, gates run per substrate.
+- **③ Architecture** — The spreadsheet is a **rendered export, never the source of truth** · declared grain (`fct_document_reviews` = one row per packet × review run) · ADRs + C4 Context + Container.
+
+An autonomous **post-posting QA review agent** for regulated distribution operations, and the only project whose single deliverable produces first-class evidence for **both** target doors. It watches an intake folder and claims each packet **exactly once** (event-as-hint + poll floor + content-hash idempotency + lease TTL), parses the posted-transaction export **deterministically** (row-type discriminator dispatch — *the LLM never sees the workbook*), segments and extracts a scanned multi-document packet with a multimodal model, routes on form family, resolves live-vs-dead payee legs, then adjudicates against a **versioned SOP** across a fixed 15-item verification surface (PASS / EXCEPTION / CRITICAL / N/A) → **IGO** / **NIGO (needs clarification)** / **NIGO (do not process)**. Findings escalate to the human processor with field, form value, export value, **SOP citation** and fix; every adjudication appends to an event log feeding a **dbt-modelled NIGO quality mart** (first-pass IGO rate, reason Pareto, reason-mix drift, agent-vs-human agreement).
+
+| Door | What this system evidences |
+|---|---|
+| 🤖 **Applied AI** | Agentic adjudication with a hard escalation boundary · multimodal reasoning over scanned packets · three-layer eval with a blocking gate · MCP + HITL |
+| 📊 **Analytics / Data Engineering** | Exactly-once event ingestion · deterministic parsing of a ragged block-structured source · append-only event log with a **declared grain** · dbt models + contracts · a metrics layer answering a real operational question |
+
+**📏 It has a real incumbent to beat** — a prompt-only reviewer already in use — so the headline is a genuine before/after rather than an unfalsifiable claim. Headline metric: **false-CRITICAL rate** against a flattened-text baseline running the identical rule pack on the identical golden set. **The blocking gate is false-NIGO rate, not accuracy** — precision blocks the merge, recall is reported, because a review agent that cries wolf destroys the trust it needs to be useful. **Synthetic corpus only**; the controlled-NIGO-injection generator is itself a portfolio artifact and the only route to ground-truth labels.
+
+> 🗓️ **Scheduling:** when hours are scarce the priority order is **DataVault → PolicyPulse → Crucible**. PostCheck S1 is scoped to be **independently shippable and independently evidence-bearing**, so it never blocks the S2 evidence gate.
+
+**Stack:** Python · Anthropic SDK · Azure OpenAI / Microsoft Foundry · Ollama *(local)* · multimodal extraction · Pydantic · **dbt** · DeepEval · FastMCP · Docker · GitHub Actions CI
+
+---
+
 ### 📈 Attention-Flow Catalyst (AFC) — *Supporting (research)*
 
 - **① Production** — Read-only research loop; **faithfulness ≥ 0.9 as a blocking gate** — the eval-first premise is the deliverable.
@@ -125,6 +150,8 @@ An eval-first research system on small-cap attention/accumulation signals. The S
 - **③ Architecture** — Frozen Pydantic schema contract · full ADR set + C4 Context · document → parse → validate → route boundary.
 
 Multimodal structured extraction from retirement-plan distribution forms (checkboxes, signatures), validated against business rules and routed to operations. An **agentic workflow** (control flow in code, not a free-roaming multi-agent), with a **Pydantic frozen-schema contract** on the output.
+
+> 🔀 **FormSense is not PostCheck.** FormSense sits **pre-index** — is this form complete, legible and internally consistent enough to file? It judges the form *against itself*. PostCheck sits **post-posting** — does the posted transaction match the request and comply with the SOP? It judges the form *against the posted export*. Different position in the workflow, different source of truth, different escalation target. **Never merged, never sharing a source of truth.**
 
 **Stack:** Python · Gemini Vision · Pydantic · DeepEval · Streamlit · Docker
 
@@ -148,7 +175,7 @@ Every project ships with:
 - **Observable by construction** — `structlog` renders **every** log line, including those from third-party libraries (LLM SDKs, httpx, Neo4j), through one `ProcessorFormatter` chain; a redaction processor sits in that chain as the PII choke point, so masking is structural rather than dependent on remembering it at each call site. Run context (`run_id`) is bound via contextvars, so one query reconstructs a whole pipeline run. Logs go to stdout (12-Factor); rotation and shipping belong to the runtime
 - **Enforced at the commit boundary** — a pinned `.pre-commit-config.yaml` in every repo. The governing rule is that **the hook set is a strict *subset* of the CI gate**: CI stays authoritative and nothing runs locally that does not also run in CI, so the two can never quietly disagree. `ruff-check --fix` is ordered *before* `ruff-format` (the linter's fixes can emit changes that then need reformatting); `uv-lock` keeps `uv.lock` in step with `pyproject.toml`; `gitleaks` and `detect-private-key` scan for credentials; `nbstripout` strips notebook output wherever notebooks exist, which extends the PII choke point from the logging boundary to the git boundary and is what makes **synthetic-data-only** a mechanical guarantee instead of a thing to remember; `conventional-pre-commit` runs on the `commit-msg` stage, so Conventional Commits above is *enforced*, not merely declared. **`mypy` is deliberately excluded and runs in CI only** — the `mirrors-mypy` hook's default `--ignore-missing-imports` silently degrades third-party types to `Any`, so the exclusion is recorded as an ADR rather than left as an omission. Hook revisions are pinned and never floating; the drift between those pins and `uv.lock` is a known risk with its own ADR
 - **uv (Astral)** for packages and environments — `uv sync --frozen` in CI and Docker; **no `requirements.txt`** in any repo
-- **Agentic harness in-repo** — `.opencode/` (`agents/` + `commands/`), `AGENTS.md`, and `opencode.jsonc`, mirroring the existing `.cursor/rules/`. OpenCode loads those same rule files via `instructions[]`, so one set of standards drives both harnesses and the review discipline is version-controlled, not ad-hoc.
+- **Dual agentic harness in-repo** — **OpenCode + Claude Code**, governed by one portable **`AGENTS.md`** contract plus a shared prompt-extraction layer, so identical standards drive both and no prompt content is duplicated. `.opencode/` (`agents/` + `commands/`) and `opencode.jsonc` sit alongside `.cursor/rules/`; OpenCode loads those same rule files via `instructions[]`. The review discipline is version-controlled, not ad-hoc — and enforcement is architectural: a `PreToolUse` guard hook blocks `git commit`/`push` and sensitive-path access, so **every commit is made by a human, by construction.**
 
 *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
 
@@ -156,9 +183,11 @@ Every project ships with:
 
 ## 🛠️ Technical Stack
 
-**Languages & Core** — **Python 3.14** · SQL · pandas · Jupyter · **uv** (packaging & environments) · TypeScript *(last mile only)*
+**Languages & Core** — **Python 3.14** · SQL · **Polars** *(default dataframe engine)* · pandas *(boundary-scoped)* · Jupyter · **uv** (packaging & environments) · TypeScript *(last mile only)*
 
 **Data Engineering** — dbt · Great Expectations · Airflow (Astronomer) · Snowflake · Terraform · DuckDB/Parquet · Docker
+
+**AI-ready data infrastructure** — embedding pipelines · vector schemas & retrieval governance · **PII-safe corpus preparation** and citation-grade chunking · reproducible ML-ready datasets with **point-in-time correctness**, leakage detection and CI gates for schema/slice/drift/bias
 
 **AI & GenAI** — Anthropic SDK (primary) · Ollama / Qwen (local-first) · LM Studio · Gemini SDK · FastMCP · LangGraph · Pydantic · ChromaDB · Neo4j (GraphRAG)
 
@@ -170,7 +199,7 @@ Every project ships with:
 
 **Documentation & Architecture** — Structurizr DSL (C4 model source) → Mermaid export · Architecture Decision Records (`docs/adr/`, Nygard/MADR)
 
-**Agentic dev harness** — OpenCode (`.opencode/agents/` · `.opencode/commands/` · `AGENTS.md` · `opencode.jsonc`) · Cursor (`.cursor/rules/`, shared via OpenCode `instructions[]`) · VS Code
+**Agentic dev harness** — **OpenCode + Claude Code** under one portable `AGENTS.md` contract (`.opencode/agents/` · `.opencode/commands/` · `opencode.jsonc`) · Cursor (`.cursor/rules/`, shared via OpenCode `instructions[]`) · VS Code · `PreToolUse` guard hook (human commits only)
 
 **Trading & backtesting (Crucible)** — NautilusTrader · Optuna · Alpaca
 
@@ -205,6 +234,8 @@ data-portfolio/
 │   │   ├── CRUCIBLE_SCOPE_v3_1_STAGE1.md
 │   │   ├── CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md
 │   │   └── Shared_SignalCore_Boundary_Spec_v1_3.md   # shared primitives (AFC ↔ Crucible)
+│   ├── POSTCHECK/                              # 🚩 Dual-target flagship (Applied AI + AE/DE)
+│   │   └── …                                   #   Stage-1 build sheet + Full-Production architecture doc
 │   ├── AFC/                                    # Supporting — eval-first research
 │   │   ├── AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md
 │   │   └── ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md
@@ -241,7 +272,8 @@ data-portfolio/
 
 ## 🎯 Open To
 
-- **AI-Focused Analytics Engineer** (first door) and **Data Engineer** roles — AI-ready data platforms (semantic/metrics layers, embedding pipelines, vector stores, unstructured-data ETL feeding RAG)
+- **AI-Focused Analytics Engineer** (first door) and **Data Engineer** roles — AI-ready data platforms (semantic/metrics layers, embedding pipelines, vector stores, PII-safe unstructured-data ETL feeding RAG, reproducible ML-ready datasets)
+- **Where to look first if you are hiring for AE/DE:** DataVault for the platform arc, **PostCheck** for event ingestion + a modelled metrics layer with a declared grain
 - Networking with data and AI practitioners · code reviews · technical discussion
 
 ---
