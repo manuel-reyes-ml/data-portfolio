@@ -316,7 +316,7 @@ Move gold to Snowflake when **any** of: (a) concurrent readers exceed what DuckD
 | Layer | Technology |
 |---|---|
 | Language | Python 3.14+, SQL |
-| Ingestion | pandas, openpyxl, Pydantic v2 (frozen contracts) |
+| Ingestion | **Polars** (default engine from S2 — ingestion, schema enforcement, bulk normalization) · pandas *(boundary-scoped: `openpyxl` template writes + plotting hand-off)* · openpyxl · Pydantic v2 (frozen contracts). Business logic lives in **dbt**, not in either engine — CORRECTION 35 |
 | Storage | S3 + Parquet (bronze/silver), DuckDB → Snowflake (gold) |
 | Transformation | **dbt** (models, tests, docs, lineage) |
 | Contracts | **Great Expectations** |
@@ -431,6 +431,7 @@ datavault-1099-platform/
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python 3.14+, pandas, numpy, openpyxl | S1 ✅ | Matrix + Relius ingestion; normalization to the canonical model |
+| **Polars** | ⬆️ S2 | Default dataframe engine — ingestion, schema enforcement, bulk normalization (CORRECTION 35) |
 | SQL | S1 ✅ | Reconciliation logic; tax-code derivation queries |
 | Pydantic v2 | S1 ✅ | **Frozen canonical transaction contract** — what S2/S3 build on without a rewrite |
 | Faker / synthetic-data generation | S1 ✅ | Public-repo reconstruction that **exercises every break type and Box-7 branch** |
@@ -504,19 +505,19 @@ datavault-1099-platform/
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API (Anthropic Academy — structured outputs) · Mode SQL Tutorial · Docker for Beginners · 30 Days of Streamlit · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · **dbt Fundamentals + dbt Advanced Learning Paths** · **Astronomer Academy (Airflow 101 + DAG Authoring)** · Terraform Fundamentals (HashiCorp) · Snowflake Data Engineering Professional Certificate · Databricks Academy (Spark) · Apache Kafka 101 (Confluent)
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) / DP-750 Azure Databricks / dbt Analytics Engineering
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · **dbt Fundamentals + dbt Advanced Learning Paths** · **Astronomer Academy (Airflow 101 + DAG Authoring)** · Terraform Fundamentals (HashiCorp) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) — the engine ADR for this platform · 🆕 **IBM AI-Native Data Engineering PC** (all three gap-filling courses land here: **PII-safe corpus preparation**, **vector schemas + retrieval governance** for the S3 analyst layer, and **reproducible ML-ready datasets with point-in-time correctness** — CORRECTION 43) · Snowflake Data Engineering Professional Certificate · Databricks Academy (Spark) · Apache Kafka 101 (Confluent)
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) / DP-750 Azure Databricks / dbt Analytics Engineering
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full) · Improving the Accuracy of LLM Applications
-- **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks GenAI Engineer Associate** ($200 — optional; also reads as a DE cert)
+- **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** Azure AI Apps & Agents Developer (**$165** · ✅ committed · self-funded) · **Databricks GenAI Engineer Associate** ($200 — optional; also reads as a DE cert)
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** Matrix + Relius ingest → PII boundary → canonical contract → reconcile (balance-asserted) → Box-7 derivation (tax-year-pinned) → dbt marts + contracts + semantic layer → NL query + HITL-gated AI corrections.
