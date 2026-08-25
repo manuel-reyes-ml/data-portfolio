@@ -235,7 +235,8 @@ data-portfolio/
 │   │   ├── CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md
 │   │   └── Shared_SignalCore_Boundary_Spec_v1_3.md   # shared primitives (AFC ↔ Crucible)
 │   ├── POSTCHECK/                              # 🚩 Dual-target flagship (Applied AI + AE/DE)
-│   │   └── …                                   #   Stage-1 build sheet + Full-Production architecture doc
+│   │   ├── POSTCHECK_QA_AGENT_SCOPE_v1_1_STAGE1.md
+│   │   └── POSTCHECK_QA_AGENT_SCOPE_v1_0_FULL_PRODUCTION.md
 │   ├── AFC/                                    # Supporting — eval-first research
 │   │   ├── AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md
 │   │   └── ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md
