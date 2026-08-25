@@ -493,7 +493,7 @@ disclaimer:
 | Category | Technology |
 |----------|------------|
 | Language | Python 3.14+ |
-| Data Processing | pandas, numpy |
+| Data Processing | **S1: pandas, numpy** (shipped, frozen as the *before*) · ⬆️ **S2 OPTIONAL UPGRADE — Polars** (CORRECTION 35): ingestion, schema enforcement and bulk normalization move to Polars; pandas retained at the `openpyxl` template write and the plotting hand-off. **Not an S1 rewrite** — the shipped pandas pipeline stays as the measured baseline, and the Polars/dbt delta becomes the S2 headline metric. Reviewable artifact = the engine ADR + a `.explain()` query plan, never a speed number on a small frame |
 | Excel Handling | openpyxl |
 | Storage | Parquet (processed), CSV (synthetic) |
 | Synthetic Data | Faker |
@@ -1022,6 +1022,7 @@ flowchart LR
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python 3.14+, pandas, numpy, openpyxl | S1 ✅ | Ingest Matrix + Relius distribution reports (Excel/CSV); normalize to one transaction model |
+| **Polars** | ⬆️ **S2 optional upgrade** | Ingestion + schema enforcement + bulk normalization; pandas kept at the `openpyxl` write and plotting boundaries (CORRECTION 35) |
 | SQL | S1 ✅ | Reconciliation queries across sources; tax-code derivation logic |
 | Pydantic v2 | S1 ✅ | Transaction + 1099-R tax-code schema validation (frozen contract) |
 | Faker / synthetic-data generation | S1 ✅ | **Public-repo synthetic reconstruction** — real Daybright data never leaves private |
@@ -1049,19 +1050,19 @@ flowchart LR
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which the 1099 / DataVault DE-AE flagship needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which the 1099 / DataVault DE-AE flagship needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API · Mode SQL Tutorial · Docker for Beginners · 30 Days of Streamlit · Pre-processing Unstructured Data (for exception-doc parsing) · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Apache Kafka 101 (Confluent) · Terraform Fundamentals · Databricks Academy (Spark) · Snowflake Data Engineering Professional Certificate · BigQuery Basics
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) / DP-750 Azure Databricks / dbt Analytics Engineering
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Apache Kafka 101 (Confluent) · Terraform Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) — **the course behind the S2 optional engine upgrade in §Tech Stack** · 🆕 **IBM AI-Native Data Engineering PC** (**PII-safe corpus preparation** · **vector schemas + retrieval governance** for the S3 analyst layer · **reproducible ML-ready datasets, point-in-time correctness** — CORRECTION 43) · Databricks Academy (Spark) · Snowflake Data Engineering Professional Certificate · BigQuery Basics
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03) / DP-750 Azure Databricks / dbt Analytics Engineering
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full) — text-to-SQL / RAG-over-marts patterns
-- **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks GenAI Engineer Associate** ($200 — optional; "also reads as a DE cert")
+- **Certifications:** **Anthropic CCA-F** ($125) · **AI-103** Azure AI Apps & Agents Developer (**$165** · ✅ committed · self-funded) · **Databricks GenAI Engineer Associate** ($200 — optional; "also reads as a DE cert")
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** Matrix + Relius ingest → dbt reconciliation + tax-code models (tests, contracts) → marts + semantic layer → NL query / AI-assisted corrections.
