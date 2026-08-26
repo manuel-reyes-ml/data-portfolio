@@ -1419,6 +1419,7 @@ flowchart LR
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python 3.14+, pandas, numpy | S1 ✅ | Trigger framework, backtest engine |
+| **Polars** | ⬆️ S2 | Default engine for EDGAR/filings ingestion and bulk scans *(pandas retained **only** at the named boundaries: `openpyxl` template writes, the matplotlib/plotting hand-off, and any PandasAI surface, which requires a pandas frame)* — CORRECTION 35 |
 | SEC EDGAR retrieval | S1 ✅ | Filing ingestion — the grounding corpus |
 | DuckDB + partitioned Parquet lakehouse | S1 ✅ | Data spine (shared with Crucible) |
 | **PIT data + bias controls** | **S1 ✅** | **Survivorship/look-ahead defenses — the statistical-rigor story** |
@@ -1445,18 +1446,18 @@ flowchart LR
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which AFC needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which AFC needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Building with the Claude API · Building & Evaluating Advanced RAG · Improving the Accuracy of LLM Applications · IBM Generative AI Engineering PC (RAG modules) · Pre-processing Unstructured Data for LLM Applications
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals — for the EDGAR/filings lakehouse + signalcore primitives
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC** — *Reproducible Training Data* (**point-in-time correctness**, leakage/contamination) and *Vector Databases & Retrieval Data Engineering* (**retrieval governance**, recall/latency/drift evaluation) both land directly on the GraphRAG financial-KG (CORRECTION 43) — for the EDGAR/filings lakehouse + signalcore primitives
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · Knowledge Graphs for RAG (DL.AI × Neo4j) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · LangChain Academy · Automated Testing for LLMOps
+- **Courses:** Neo4j GraphAcademy (Knowledge Graphs & GraphRAG) · Knowledge Graphs for RAG (DL.AI × Neo4j) · **HuggingFace LLM Course** (formerly the NLP Course — 🔄 restored to core in v10.0) · NVIDIA DLI: Building RAG Agents with LLMs · LangChain Academy · Automated Testing for LLMOps
 - **Certifications:** **Neo4j Certified Professional** (FREE — backs the GraphRAG layer) · **NVIDIA NCA-GENL** ($125) · **Anthropic CCA-F** ($125) · **Databricks GenAI Engineer Associate** ($200 — optional)
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
