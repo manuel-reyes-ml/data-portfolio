@@ -448,6 +448,7 @@ Design approved (June 10, 2026):
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python 3.14+, pandas | S1 ✅ | Slice tooling |
+| **Polars** | ⬆️ S2 | Default engine for filing-scale scans and Parquet IO; pandas stays at the plotting hand-off (CORRECTION 35) |
 | SEC EDGAR retrieval | S1 ✅ | Filing corpus — the grounding source |
 | LLM SDK (provider-agnostic) | S1 ✅ | The analyst under evaluation |
 | Pydantic v2 | S1 ✅ | Structured analyst output (the eval target) |
@@ -491,18 +492,18 @@ Design approved (June 10, 2026):
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which this AFC eval-first slice needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which this AFC eval-first slice needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications (eval-from-scratch) · Pre-processing Unstructured Data for LLM Applications
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody · dbt Fundamentals — feeds AFC's S2 EDGAR/filings lakehouse + signalcore
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) *(shared with parent AFC scope)*
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) — the slice tooling moves to Polars for filing-scale scans; pandas stays only at the plotting hand-off · 🆕 **IBM AI-Native Data Engineering PC** — *Reproducible Training Data & ML-Ready Pipelines* is the direct one: **point-in-time correctness, leakage and contamination detection**, which is exactly what the faithfulness golden set and the `signalcore` boundary depend on (CORRECTION 43) — feeds AFC's S2 EDGAR/filings lakehouse + signalcore
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed) *(shared with parent AFC scope)*
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** Neo4j GraphAcademy (GraphRAG) · HuggingFace NLP + LLM Course · NVIDIA DLI: Building RAG Agents with LLMs · Automated Testing for LLMOps
+- **Courses:** Neo4j GraphAcademy (GraphRAG) · **HuggingFace LLM Course** (formerly the NLP Course — 🔄 restored to core in v10.0) · NVIDIA DLI: Building RAG Agents with LLMs · Automated Testing for LLMOps
 - **Certifications:** **NVIDIA NCA-GENL** ($125) · **Neo4j Certified Professional** (FREE) · **Anthropic CCA-F** ($125)
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
