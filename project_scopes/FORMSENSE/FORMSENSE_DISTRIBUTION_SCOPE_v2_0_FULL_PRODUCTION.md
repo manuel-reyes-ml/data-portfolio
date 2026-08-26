@@ -498,6 +498,7 @@ formsense/
 | Skill | Stage | How FormSense Uses It |
 |-------|-------|------------------------|
 | Python, pandas, Pydantic | S1 ✅ | Schemas, structured outputs, reconciliation |
+| **Polars** | ⬆️ S2 | Extraction-result tables and reconciliation frames (CORRECTION 35) |
 | Multimodal LLM SDK (Gemini Vision; Claude/GPT-4o fallback) | S1 ✅ | Form reading (checkboxes, handwriting, layout) |
 | Business-rule / validation engineering | S1 ✅ | ERISA-aware YAML rule engine |
 | GEval, DeepEval | S1 ✅ | Extraction-accuracy evaluation |
@@ -597,19 +598,19 @@ formsense/
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs are noted.*
+*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which FormSense needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** AI Python for Beginners (Andrew Ng) · Building with the Claude API (Anthropic Academy — structured outputs + multimodal) · Pre-processing Unstructured Data for LLM Applications · Document AI: From OCR to Agentic Doc Extraction (finance-critical core) · MCP primer [Academy: Introduction to Model Context Protocol] (DeepLearning.AI) · Docker for Beginners · 30 Days of Streamlit
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals (HashiCorp) — AWS SQS/batch patterns absorbed via AWS DEA-C01 prep
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals (HashiCorp) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC — *Unstructured Data Engineering for AI***: OCR-aware processing, **PII-safe corpus preparation**, chunking/metadata for citation, plus licensing and source-quality gates (CORRECTION 43) — AWS SQS/batch patterns absorbed via AWS DEA-C01 prep
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** Document AI: From OCR to Agentic Doc Extraction (deep) · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · MCP: Build Rich-Context AI Apps (full) [Academy: MCP — Advanced Topics]
-- **Certifications:** **Anthropic CCA-F** ($125 — agentic orchestration / MCP source-of-truth) · **AI-103** Azure AI Apps & Agents Developer (employer-reimbursed) · **Databricks Certified GenAI Engineer Associate** ($200 — optional, for the agentic-workflow signal)
+- **Certifications:** **Anthropic CCA-F** ($125 — agentic orchestration / MCP source-of-truth) · **AI-103** Azure AI Apps & Agents Developer (**$165** · ✅ committed · self-funded) · **Databricks Certified GenAI Engineer Associate** ($200 — optional, for the agentic-workflow signal)
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** multimodal multi-source extraction (handwriting, checkboxes, email body) · field-level confidence + reconciliation · ERISA business-rule routing (complete→ticket / incomplete→advisor email) · GEval accuracy · MCP action tools · form-history vector RAG.
