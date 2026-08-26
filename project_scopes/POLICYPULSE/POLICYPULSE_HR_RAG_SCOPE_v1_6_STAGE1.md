@@ -1311,6 +1311,7 @@ flowchart LR
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python, pandas, Pydantic v2 | S1 ✅ | Data models, structured cited answers |
+| **Polars** | ⬆️ S2 | Default engine for corpus manifests, chunk/metadata tables and eval-result frames; pandas at the plotting hand-off (CORRECTION 35) |
 | LLM SDK (Anthropic primary), Streamlit | S1 ✅ | RAG generation + chat UI |
 | **RAG (chunking, embeddings, semantic search)** | **S1 ✅** | **The retrieval foundation — THIS SCOPE** |
 | ChromaDB | S1 ✅ | Vector store |
@@ -1332,19 +1333,19 @@ flowchart LR
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** IBM Generative AI Engineering PC (RAG/LangChain spine) · Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications · MCP primer [Academy: Introduction to Model Context Protocol] (DL.AI, Elie Schoppik — before the FastMCP build) · Docker for Beginners · 30 Days of Streamlit · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + Advanced · Astronomer Academy (Airflow) · Terraform Fundamentals · Pre-processing Unstructured Data · Vector Databases: from Embeddings to Applications · Knowledge Graphs for RAG (GraphRAG on-ramp)
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional (take ONE):* SnowPro Core / DP-750
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + Advanced · Astronomer Academy (Airflow) · Terraform Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC** — the two courses that go where PolicyPulse actually needs depth: *Vector Databases & Retrieval Data Engineering* (**metadata-rich vector schemas + security/governance on retrieval** — the course behind access-control-aware retrieval, which had none) and *Unstructured Data Engineering for AI* (**PII-safe corpus preparation**, citation-grade chunking). Both supersede the 1–2 hr shorts below (CORRECTION 43) · Pre-processing Unstructured Data · Vector Databases: from Embeddings to Applications · Knowledge Graphs for RAG (GraphRAG on-ramp)
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional (take ONE):* SnowPro Core / DP-750
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** MCP full [Academy: MCP — Advanced Topics] · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · HuggingFace NLP + LLM · Neo4j GraphAcademy · NVIDIA DLI Building RAG Agents
-- **Certifications:** **Neo4j Certified Professional** (FREE) · **NVIDIA NCA-GENL** ($125) · **Databricks GenAI Associate** ($200) · **AI-103** (employer) · **Anthropic CCA-F** ($125)
+- **Certifications:** **Neo4j Certified Professional** (FREE) · **NVIDIA NCA-GENL** ($125) · **Databricks GenAI Associate** ($200) · **AI-103** (**$165** · self-funded) · **Anthropic CCA-F** ($125)
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · access-control retrieval · RAGAS/SelfCheckGPT eval · MCP read→approval-gated write.
