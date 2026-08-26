@@ -482,7 +482,7 @@ validation:
 | Category | Technology | Rationale |
 |----------|------------|-----------|
 | Language | Python 3.14+ | Consistent with all portfolio projects |
-| Data Processing | pandas, numpy | Analytics engine |
+| Data Processing | **Polars** (default engine) · pandas, numpy *(boundary-scoped: plotting hand-off)* | Analytics engine. ⚠️ Honest framing: the dataset here is small, so **this is a consistency decision, not a performance one** — the point is that one engine policy holds across every repo (CORRECTION 35) |
 | Data Validation | Pydantic v2 | Type-safe models + AI structured outputs |
 | API Client | httpx (async) | Same pattern as Attention-Flow Catalyst |
 | Configuration | YAML | Service pricing database |
@@ -998,6 +998,7 @@ flowchart LR
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python, pandas, Pydantic v2 | S1 ✅ | Core models, analytics engine |
+| **Polars** | ⬆️ S2 | Default engine for SS01–SS07 metric computation; pandas at the plotting boundary (CORRECTION 35) |
 | LLM SDK, Streamlit | S1 ✅ | Advisory dashboard + rotation planner |
 | Content/pricing API ingestion (Watchmode/TMDB) | S1 ✅ | The data source |
 | Ollama (local LLM) | S1 ✅ | Privacy-preserving recommendations |
@@ -1017,14 +1018,14 @@ flowchart LR
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Building with the Claude API · 30 Days of Streamlit · Docker for Beginners
-- **Certifications:** Employer-track **AI-901 / AB-620** (shared with the lead projects; nothing StreamSmart-specific)
+- **Certifications:** **AI-901** (**$99** · ✅ committed · self-funded); ⏸️ **AB-620** conditional (~$165) — both shared with the lead projects; nothing StreamSmart-specific
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** dbt Fundamentals · Astronomer Academy (Airflow) · Terraform Fundamentals · Apache Kafka 101 (Confluent)
+- **Courses:** dbt Fundamentals · Astronomer Academy (Airflow) · Terraform Fundamentals · Apache Kafka 101 (Confluent) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) — *the AI-Native DE PC is deliberately **not** listed here: this is a backlog consumer app with no corpus, no vector layer and no training data, so the three gap-filling courses have nothing to bite on*
 - **Certifications:** Committed **DP-700 + AWS DEA-C01** carry over (shared)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
