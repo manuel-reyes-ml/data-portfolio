@@ -1356,6 +1356,7 @@ streamsmart-optimizer/
 | Skill | Stage | How StreamSmart Uses It |
 |-------|-------|------------------------|
 | Python, pandas, Pydantic | S1 ✅ | Core data models, analytics engine |
+| **Polars** | ⬆️ S2 | Default engine for the analytics layer; pandas at the plotting boundary (CORRECTION 35) |
 | LLM SDK, Streamlit | S1 ✅ | Stage-1 advisory dashboard |
 | Ollama (local LLMs) | S1 | Privacy-preserving recommendations |
 | **dbt + data contracts** | **S2** | **Content/pricing models + cost-optimization marts + quality gates** |
@@ -1513,14 +1514,14 @@ flowchart LR
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. Employer-reimbursable certs are noted.*
+*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Building with the Claude API (Anthropic Academy) · 30 Days of Streamlit · Docker for Beginners
-- **Certifications:** Employer-track **AI-901 / AB-620** (shared with the lead projects; nothing StreamSmart-specific)
+- **Certifications:** **AI-901** (**$99** · ✅ committed · self-funded); ⏸️ **AB-620** conditional (~$165) — both shared with the lead projects; nothing StreamSmart-specific
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** dbt Fundamentals · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals · Apache Kafka 101 (Confluent — API/content ingestion)
+- **Courses:** dbt Fundamentals · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals · Apache Kafka 101 (Confluent — API/content ingestion) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) — *AI-Native DE PC deliberately **not** listed: no corpus, no vector layer, no training data on a backlog consumer app*
 - **Certifications:** Committed **DP-700 + AWS DEA-C01** carry over (shared; nothing StreamSmart-specific)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
