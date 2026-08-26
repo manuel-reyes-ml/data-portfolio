@@ -851,6 +851,7 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 |-------|-------|--------------------------|
 | Python 3.14+, SQL | S1 ✅ | Core engine + research queries |
 | pandas, numpy | S1 ✅ | Bar data, signal computation |
+| **Polars** | ⬆️ S2 | Default engine for **offline** bar ingestion, PIT-safe joins and Parquet IO. ⚠️ Scope limit: numpy stays the signal-computation layer and the backtest engine keeps its own data model — Polars is the *ingestion and lakehouse* engine here, not a rewrite of the harness (CORRECTION 35) |
 | Own backtest harness | S1 ✅ | You own fill/look-ahead logic — the integrity story you can defend in interview |
 | **PIT data discipline, walk-forward CV, engine-parity gate** | **S1 ✅** | **The Wall, sealed OOS vault, overfitting ledger — the anti-overfitting spine** |
 | DuckDB + partitioned Parquet | S1 ✅ | Data spine (shared with AFC) |
@@ -914,15 +915,15 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which Crucible needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which Crucible needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Python for Everybody · AI Python for Beginners · Building with the Claude API · Improving the Accuracy of LLM Applications (eval) · Docker for Beginners · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals · Databricks Academy (Spark) — for the PIT market-data lakehouse + signalcore library
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals · Databricks Academy (Spark) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC — *Reproducible Training Data and ML-Ready Data Pipelines***: **point-in-time correctness, leakage and contamination detection**, dataset versioning and release control — the sealed OOS vault and overfitting-budget ledger stated as curriculum (CORRECTION 43) — for the PIT market-data lakehouse + signalcore library
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** AI Agents in LangGraph (HITL pattern behind the mandatory sign-off gate) · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps
