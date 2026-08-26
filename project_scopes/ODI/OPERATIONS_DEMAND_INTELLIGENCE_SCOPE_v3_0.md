@@ -684,7 +684,7 @@ disclaimer:
 | Category | Technology |
 |----------|------------|
 | Language | Python 3.14+ |
-| Data Processing | pandas, numpy |
+| Data Processing | **Polars** (default engine — pipeline ingestion, normalization, bulk aggregation) · pandas, numpy *(boundary-scoped)*. ⚠️ **Named boundary specific to ODI: PandasAI operates on a pandas DataFrame**, so the supplementary NL-query surface materializes a pandas frame at that edge by design — that is a third named boundary alongside `openpyxl` writes and the plotting hand-off, not a leak (CORRECTION 35) |
 | Excel Handling | openpyxl |
 | Storage | Parquet |
 | Synthetic Data | Faker |
@@ -1103,6 +1103,7 @@ flowchart LR
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python 3.14+, pandas | S1 ✅ | Workflow-demand pipeline |
+| **Polars** | ⬆️ S2 | Default engine for the workflow-demand pipeline; pandas materialized only at the PandasAI and plotting boundaries (CORRECTION 35) |
 | SQL | S1 ✅ | Demand aggregation queries |
 | Pydantic v2 | S1 ✅ | Schema validation |
 | Synthetic data generation | S1 ✅ | Public-repo safety — real plan-operations data stays private |
@@ -1128,19 +1129,19 @@ flowchart LR
 
 ## 📚 Courses & Certifications — per Stage (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which ODI needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. Employer-reimbursable certs noted. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which ODI needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
 ### 🎓 Stage 1 — Foundation (GenAI-first core)
 - **Courses:** Python for Everybody · Building with the Claude API · Mode SQL Tutorial · 30 Days of Streamlit
-- **Certifications:** **AI-901** Azure AI Fundamentals (employer-reimbursed) · **AB-620** AI Agent Builder Associate (employer-reimbursed)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals
-- **Certifications:** **DP-700** Fabric Data Engineer (✅ committed · employer-reimbursed) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
+- **Courses:** PostgreSQL for Everybody · dbt Fundamentals + dbt Advanced Learning Paths · Astronomer Academy (Airflow) · Terraform Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC — *Reproducible Training Data and ML-Ready Data Pipelines*** (dataset versioning, lineage, CI gates for schema/slice/distribution drift — the governance layer a staffing-analytics mart needs before anyone acts on it, CORRECTION 43)
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed)
 
 ### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
 - **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps
-- **Certifications:** **Anthropic CCA-F** (optional; shared) · **AI-103** (employer-reimbursed; optional)
+- **Certifications:** **Anthropic CCA-F** (optional; shared) · **AI-103** (**$165** · self-funded; shared)
 - **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
 **Focus thread:** workflow-demand pipeline → dbt time-series marts + semantic layer → NL query / forecast-narrative insights.
