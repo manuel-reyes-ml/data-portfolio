@@ -555,7 +555,8 @@ def test_report_header_carries_agent_rulepack_and_prompt_version(): ...
 | PDF | `pypdf` inventory; page rasterization for scans |
 | Vision / LLM | **Provider-agnostic interface** (`ai/provider.py`, sole boundary — no provider SDK imported elsewhere). 🆕 **Three named substrates (ADR-009):** **Anthropic SDK** (primary) · **Azure OpenAI via Microsoft Foundry** (OpenAI-compatible client — a config change, not a rewrite) · **Ollama** (local, **mandatory for any non-synthetic run**). Gemini and OpenAI-direct are interface-supported but **not benchmarked**. |
 | Schemas / config | `pydantic`, `pydantic-settings`, `SecretStr` |
-| Money | `decimal.Decimal` — never `float` |
+| Dataframes | ⬆️ **S2 — Polars** (default engine) for event-log frames, `render_xlsx` inputs, eval-result tables and the dbt-facing Parquet layer. ⚠️ **Does not touch the parse path**: `openpyxl` + `SORTORDER` dispatch stays deterministic and row-wise, and `pandas.read_excel` on the raw sheet remains banned (§3.1). Polars begins *after* the export is parsed. Reviewable artifact = **ADR-0010** + a `.explain()` plan (CORRECTION 35) |
+| Money | `decimal.Decimal` — never `float`. ⚠️ **Engine caveat:** `Decimal` survives the Polars boundary only via an explicit `Decimal128` dtype or by keeping money as string→`Decimal` at the edge — money is **never** materialized as `Float64` for convenience |
 | Retries | `stamina` |
 | Logging | `structlog` + `ProcessorFormatter` + `redact_pii` |
 | Report | `python-docx` |
@@ -573,7 +574,10 @@ def test_report_header_carries_agent_rulepack_and_prompt_version(): ...
 postcheck/
 ├── pyproject.toml · uv.lock · .pre-commit-config.yaml
 ├── Dockerfile · docker-compose.yml · .github/workflows/ci.yml
-├── AGENTS.md · opencode.jsonc · .cursor/rules/ · .opencode/
+├── AGENTS.md                       # portable behavioural contract — one source for both harnesses
+├── .opencode/ · opencode.jsonc · .claude/ · .cursor/rules/   # dual harness: OpenCode + Claude Code
+├── hooks/guard.py                  # PreToolUse — blocks git commit/push + sensitive paths
+├── .env.example                    # pydantic-settings surface, no real values
 ├── README.md                       # ① Production ② Cost ③ Architecture
 ├── docs/
 │   ├── adr/
@@ -585,9 +589,11 @@ postcheck/
 │   │   ├── 0006-read-only-advisory-boundary.md
 │   │   ├── 0007-mypy-ci-only.md
 │   │   ├── 0008-no-typescript-layer.md
-│   │   └── 0009-provider-strategy-three-substrates.md
+│   │   ├── 0009-provider-strategy-three-substrates.md
+│   │   └── 0010-dataframe-engine-boundary.md      # 🆕 Polars default / pandas boundaries / parse path excluded
 │   ├── architecture.dsl · rule_catalog.md · nigo_taxonomy.md · data_dictionary.md
 ├── src/postcheck/
+│   ├── py.typed
 │   ├── config.py
 │   ├── intake/       watcher.py · poller.py · stability.py · claims.py · leases.py
 │   ├── parsing/      ledger_export.py · column_map.py · contracts.py · flat_baseline.py
@@ -610,6 +616,7 @@ postcheck/
 │   ├── generator/    packets.py · perturbations.py · scans.py
 │   ├── golden/       v1/ (200 packets + labels, frozen)
 │   └── suites/       field_f1.py · false_nigo_gate.py · baseline_delta.py · format.py
+├── docs/demo/        postcheck_run.gif          # 15–30s: watched folder → verdict → escalation
 ├── notebooks/        01_export_structure.ipynb · 02_rule_derivation.ipynb
 │                     03_eval_analysis.ipynb            # nbstripout-enforced
 └── tests/
@@ -679,7 +686,32 @@ postcheck/
 - [x] Project name **PostCheck** approved
 - [x] **ADR-009 provider strategy approved** — three named substrates; Copilot Studio and M365 Agents SDK declined with recorded falsifiers
 - [ ] ⚖️ **Open ruling:** whether tenant-isolated Azure OpenAI is a third privacy category. **The binary rule (proprietary → local) stands until explicitly amended.**
+- [ ] 🆕 **Dataframe engine boundary approved (ADR-0010)** — Polars default from S2, parse path explicitly excluded, `Decimal` never widened to float
+- [ ] 🆕 **Courses & Certifications section approved** (§17) — this scope was the only one of the fifteen without one
 - [ ] 8-week phasing realistic against the 25 hrs/week baseline
+
+---
+
+## 17. 📚 Courses & Certifications — per Stage (v10.0 reference)
+
+*Synced to roadmap **v10.0** (through CORRECTION 43). Names match the roadmap's stage tables; ordered by the stage in which PostCheck needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+
+### 🎓 Stage 1 — Foundation (deterministic core + multimodal extraction)
+- **Courses:** **IBM Generative AI Engineering Professional Certificate** (16 courses — the S1 spine; structured outputs and the provider interface) · Building with the Claude API (Anthropic Academy — structured outputs + multimodal, the source-of-truth for `ai/provider.py`) · **Document AI: From OCR to Agentic Doc Extraction** — *the single most on-target S1 course for the packet-vision layer* · Improving the Accuracy of LLM Applications (the eval-first premise behind the blocking gate) · **Architecture Documentation: C4 + ADR** (the ten ADRs in `docs/adr/` are the artifact) · **Pre-Commit Hooks — Stefanie Molin series** (Tier A + B, `nbstripout` is what makes *synthetic-only* mechanical) · **uv — Python Packaging** (Astral docs) · Introduction to Git and GitHub (Google — branch → PR → self-review) · Docker for Beginners (KodeKloud)
+- **Certifications:** **AI-901** Azure AI Fundamentals (**$99** · ✅ committed · self-funded) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165** · **CONDITIONAL, not committed** — CORRECTION 37). ⚠️ **Note for ADR-009:** the ADR's reasoning was written when AB-620 was committed. The provider-agnostic ruling is *unaffected* — it rests on the target roles deploying into the customer's stack, not on holding a Microsoft credential — but the Azure-side credential that actually backs Substrate 2 is **AI-103** (S3, code-first Foundry), not AB-620.
+
+### 🎓 Stage 2 — The Analytics-Engineer half (event log → quality mart)
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · **dbt Fundamentals + dbt Advanced Learning Paths** — the `transform/` project and the declared grain · **Astronomer Academy (Airflow 101 + DAG Authoring)** · Terraform Fundamentals (HashiCorp) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, the course behind **ADR-0010**) · 🆕 **IBM AI-Native Data Engineering Professional Certificate** (CORRECTION 43) — two of its three gap-filling courses land directly on this project: ***Unstructured Data Engineering for AI*** (OCR-aware processing, **PII-safe corpus preparation**, chunking + metadata for citation — the discipline behind §8's synthetic packet corpus) and ***Reproducible Training Data and ML-Ready Data Pipelines*** (**dataset versioning, lineage and release control** — the frozen, stratified golden set in §9.2 stated as curriculum). *The third, Vector Databases & Retrieval Data Engineering, is **not** claimed here: PostCheck has no vector layer, and §5's ruling is that retrieval is the wrong tool for a keyed-transaction check.*
+- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (**$150** · ✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03 $175) / DP-750 Azure Databricks ($165) / Databricks DE Associate ($200); ⏸️ **dbt Analytics Engineering (~$200)** — *the tested `transform/` project with a CI gate is the primary signal; the cert is a tiebreaker, not the unlock*
+
+### 🎓 Stage 3 — The Applied-AI half (agentic adjudication + eval)
+- **Courses:** **Evaluating AI Agents** and **Automated Testing for LLMOps** — the two that carry the Layer-2 adjudication loop and the four eval layers in §12.3 · MCP: Build Rich-Context AI Apps (full) · AI Agents in LangGraph (**HITL pattern** behind the escalation boundary) · **Agent Skills with Anthropic** · Claude Code: A Highly Agentic Coding Assistant · **AI-103 Learning Path — Microsoft Foundry & Azure AI Agents** (Microsoft Learn, FREE — CORRECTION 38; backs **Substrate 2**) · **Build Custom Engine Agents with the Microsoft 365 Agents SDK** (Microsoft Learn, FREE — CORRECTION 38; **the S3 channel layer only**, and **ADR-009 survives intact** — Agent 365 works with agents built on any SDK, so the Anthropic SDK stays primary and this is packaging, not a brain transplant)
+- **Certifications:** **Anthropic CCA-F** (**~$125** — agentic orchestration source-of-truth; **Domain 1 maps directly to the workflow-vs-agent distinction** this project turns on) · **AI-103** Azure AI Apps & Agents Developer (**$165** · ✅ committed · self-funded — the code-first credential behind Substrate 2) · **Databricks GenAI Engineer Associate** (**$200** — optional; also reads as a DE cert)
+- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format. PostCheck is the strongest candidate for this rehearsal: the `SORTORDER` parse ruling, the rules-first inversion, the false-NIGO gate and the read-only boundary are four decisions with named rejected alternatives.
+
+**Focus thread:** watched folder → exactly-once claim → deterministic `SORTORDER` parse → packet segmentation + multimodal extraction → pairing → liveness → 15-item adjudication vs a versioned SOP → IGO/NIGO → report + escalation → append-only event log → **dbt quality mart** (first-pass IGO rate · reason Pareto · agent-vs-human agreement).
+
+> **Cert discipline (v10.0):** committed canon = **DP-700 + AWS DEA-C01** (S2) and the S3 GenAI set. Platform certs are a **conditional menu — take exactly ONE**. Keyword-density is a negative signal.
 
 ---
 
