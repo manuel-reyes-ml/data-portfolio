@@ -605,6 +605,7 @@ A processor who receives five bad escalations for every good one **stops trustin
 | Eval | **DeepEval**, **GEval**, `extract-eval` | Field-level P/R/F1 with omission/hallucination/mismatch |
 | Observability | **Arize Phoenix** (OTel) | S3 |
 | Orchestration | **Airflow** | S2. ⚠️ Constraint-file caveat applies — fall back to the 3.13 constraint file for the Airflow service only; the interpreter stays 3.14 |
+| Dataframes | ⬆️ **Polars** (default engine, S2) | Event-log frames, `render_xlsx` inputs, eval tables, dbt-facing Parquet. **ADR-0010.** ⚠️ Never on the parse path — `openpyxl` + `SORTORDER` stays row-wise and deterministic; `Decimal` is never widened to `Float64` |
 | Transform | **dbt** + **Great Expectations** | S2 |
 | Warehouse | PostgreSQL → S3/warehouse | S2 |
 | Report render | `python-docx` | Per-pair artifact |
@@ -616,7 +617,7 @@ A processor who receives five bad escalations for every good one **stops trustin
 
 ### 14.1 🆕 ADR-009 — Provider strategy: agnostic interface, three named substrates
 
-**Context.** The target roles deploy into *the customer's* stack, not a chosen one. The incumbent QA reviewer lives on a Microsoft surface. **AB-620** and **AI-103** are both committed certifications and both bear directly on this decision. Meanwhile the vendor landscape has stopped being single-model: Microsoft now routes SharePoint's AI through Anthropic's Claude rather than OpenAI, building a multi-model architecture where the best model for each task is routed to that task regardless of which company built it. **"Azure means OpenAI" is outdated** — which strengthens provider-agnosticism rather than undermining it.
+**Context.** The target roles deploy into *the customer's* stack, not a chosen one. The incumbent QA reviewer lives on a Microsoft surface. **AI-103** is a committed certification and bears directly on this decision. *(Correction, CORRECTION 37: **AB-620 has since moved to conditional** — the low-code Copilot Studio path is not the evidence standard here. The ruling below is unaffected: it rests on the target roles deploying into the customer's stack, not on holding any particular Microsoft credential.)* Meanwhile the vendor landscape has stopped being single-model: Microsoft now routes SharePoint's AI through Anthropic's Claude rather than OpenAI, building a multi-model architecture where the best model for each task is routed to that task regardless of which company built it. **"Azure means OpenAI" is outdated** — which strengthens provider-agnosticism rather than undermining it.
 
 **Decision.** `ai/provider.py` remains the **sole** boundary; no provider SDK is imported anywhere else in the tree. **Three named, tested substrates:**
 
@@ -694,12 +695,14 @@ Three-layer PII defence (source boundary → `redact_pii` log processor → `nbs
 ```
 postcheck/
 ├── pyproject.toml · uv.lock · .pre-commit-config.yaml · Dockerfile
-├── AGENTS.md · opencode.jsonc · .cursor/rules/ · .opencode/
+├── AGENTS.md · .opencode/ · opencode.jsonc · .claude/ · .cursor/rules/   # dual harness: OpenCode + Claude Code
+├── hooks/guard.py · .env.example · docker-compose.yml · .github/workflows/ci.yml
 ├── docs/
 │   ├── adr/                        # ADR-001 parse · 002 rules-first · 003 intake
 │   │                               # 004 grain · 005 false-NIGO gate · 006 synthetic-only
 │   │                               # 007 mypy CI-only · 008 no-TypeScript
 │   │                               # 009 provider strategy (3 substrates)
+│   │                               # 010 dataframe engine boundary (Polars default, parse path excluded)
 │   ├── architecture.dsl            # Structurizr → Mermaid export
 │   ├── rule_catalog.md · nigo_taxonomy.md · data_dictionary.md
 ├── src/postcheck/
@@ -791,6 +794,7 @@ postcheck/
 | Skill | Stage | How PostCheck uses it |
 |---|---|---|
 | Python, Pydantic, `openpyxl` | S1 ✅ | Deterministic parsing, schemas, structured outputs |
+| **Polars** | ⬆️ S2 | Event-log frames, `render_xlsx` inputs, eval-result tables and the dbt-facing Parquet layer. ⚠️ **Does not touch the parse path** — `openpyxl` + `SORTORDER` dispatch stays deterministic and row-wise; Polars starts *after* the export is parsed (CORRECTION 35) |
 | Multimodal LLM — **provider-agnostic across 3 substrates** | S1 ✅ | Scanned/handwritten packet extraction; **Anthropic · Azure OpenAI (Foundry) · Ollama**, one eval suite across all three (ADR-009) |
 | Event-driven systems, idempotency, leases | S1 ✅ | Exactly-once intake — **rare and high-signal in a portfolio** |
 | Rule-engine design, versioned rule tables | S1 ✅ | The SOP as executable, diffable code |
@@ -883,7 +887,7 @@ postcheck/
 - **Certifications:** **AI-901** · **AB-620**
 
 ### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals · **Document AI**
+- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + Advanced Learning Paths · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC** — *Unstructured Data Engineering for AI* (**PII-safe corpus preparation**, OCR-aware processing — the synthetic packet corpus) and *Reproducible Training Data* (**dataset versioning and release control** — the frozen golden set) (CORRECTION 43) · **Document AI**
 - **Certifications:** **DP-700** · **AWS DEA-C01** · *conditional — ONE only:* DP-750 / SnowPro Core / Databricks DE Associate (deciding input = target employer stack, unknowable until the apply window)
 
 ### 🎓 Stage 3 — Applied AI
