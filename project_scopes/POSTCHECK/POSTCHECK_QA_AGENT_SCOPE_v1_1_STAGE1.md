@@ -692,26 +692,59 @@ postcheck/
 
 ---
 
-## 17. 📚 Courses & Certifications — per Stage (v10.0 reference)
+## 📚 Courses & Certifications — take-order table (v10.0 reference)
 
-*Synced to roadmap **v10.0** (through CORRECTION 43). Names match the roadmap's stage tables; ordered by the stage in which PostCheck needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0** (through CORRECTION 43). **The table is ordered: take them top to bottom.** Numbering is continuous across all three stages — #1 is the next thing to start, not the first item of an unordered list. Names match the roadmap's stage tables. 🎖️ = committed certification; ⏸️ = conditional, taken only on a named trigger and **never stacked**. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
-### 🎓 Stage 1 — Foundation (deterministic core + multimodal extraction)
-- **Courses:** **IBM Generative AI Engineering Professional Certificate** (16 courses — the S1 spine; structured outputs and the provider interface) · Building with the Claude API (Anthropic Academy — structured outputs + multimodal, the source-of-truth for `ai/provider.py`) · **Document AI: From OCR to Agentic Doc Extraction** — *the single most on-target S1 course for the packet-vision layer* · Improving the Accuracy of LLM Applications (the eval-first premise behind the blocking gate) · **Architecture Documentation: C4 + ADR** (the ten ADRs in `docs/adr/` are the artifact) · **Pre-Commit Hooks — Stefanie Molin series** (Tier A + B, `nbstripout` is what makes *synthetic-only* mechanical) · **uv — Python Packaging** (Astral docs) · Introduction to Git and GitHub (Google — branch → PR → self-review) · Docker for Beginners (KodeKloud)
-- **Certifications:** **AI-901** Azure AI Fundamentals (**$99** · ✅ committed · self-funded) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165** · **CONDITIONAL, not committed** — CORRECTION 37). ⚠️ **Note for ADR-009:** the ADR's reasoning was written when AB-620 was committed. The provider-agnostic ruling is *unaffected* — it rests on the target roles deploying into the customer's stack, not on holding a Microsoft credential — but the Azure-side credential that actually backs Substrate 2 is **AI-103** (S3, code-first Foundry), not AB-620.
+### 🎓 Take-order — PostCheck (dual-target flagship)
 
-### 🎓 Stage 2 — The Analytics-Engineer half (event log → quality mart)
-- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · **dbt Fundamentals + dbt Advanced Learning Paths** — the `transform/` project and the declared grain · **Astronomer Academy (Airflow 101 + DAG Authoring)** · Terraform Fundamentals (HashiCorp) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, the course behind **ADR-0010**) · 🆕 **IBM AI-Native Data Engineering Professional Certificate** (CORRECTION 43) — two of its three gap-filling courses land directly on this project: ***Unstructured Data Engineering for AI*** (OCR-aware processing, **PII-safe corpus preparation**, chunking + metadata for citation — the discipline behind §8's synthetic packet corpus) and ***Reproducible Training Data and ML-Ready Data Pipelines*** (**dataset versioning, lineage and release control** — the frozen, stratified golden set in §9.2 stated as curriculum). *The third, Vector Databases & Retrieval Data Engineering, is **not** claimed here: PostCheck has no vector layer, and §5's ruling is that retrieval is the wrong tool for a keyed-transaction check.*
-- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (**$150** · ✅ committed) · *conditional — take ONE only if the apply-list demands:* SnowPro Core (COF-C03 $175) / DP-750 Azure Databricks ($165) / Databricks DE Associate ($200); ⏸️ **dbt Analytics Engineering (~$200)** — *the tested `transform/` project with a CI gate is the primary signal; the cert is a tiebreaker, not the unlock*
+| # | Course / Certification | Source | Cost | Stage | Why here, in this position |
+|---|---|---|---|---|---|
+| 1 | uv — Python Packaging & Environments | Astral docs + Sweigart quickstart | Free | S1 | Before the first commit. |
+| 2 | Pre-Commit Hooks — Molin four-part series | Blog series | Free | S1 | Hooks before history — the synthetic-only guarantee is mechanical, not remembered. |
+| 3 | Introduction to Git and GitHub | Coursera · Google | Free (audit) | S1 | Branch → PR → self-review. |
+| 4 | Architecture Documentation: C4 + ADR | c4model.com + AWS Prescriptive Guidance | Free | S1 | **Before ADR-001** — this project carries ten ADRs and they are the reviewable artifact. |
+| 5 | Building with the Claude API | Anthropic Academy | Free | S1 | Structured outputs — every adjudication returns a typed verdict object. |
+| 6 | IBM Generative AI Engineering PC (16 courses) | Coursera · IBM | Coursera Plus | S1 | The S1 spine; long-running, start early. |
+| 7 | Document AI: From OCR to Agentic Doc Extraction | DeepLearning.AI | Free | S1/S3 | **The most on-target S1 course for the packet-vision layer.** |
+| 8 | Pre-processing Unstructured Data for LLM Apps | DeepLearning.AI | Free | S1 | Directly load-bearing — the packet is a scanned multi-document bundle. |
+| 9 | Improving Accuracy of LLM Applications | DeepLearning.AI | Free | S1 | Eval-from-scratch, before the blocking gate is designed. |
+| 10 | MCP: Build Rich-Context AI Apps — primer | DeepLearning.AI / Anthropic Academy | Free | S1 | *Before* the FastMCP build. |
+| 11 | Docker for Beginners with Hands-on Labs | KodeKloud | Free | S1 | Containerize; Compose for the local stack. |
+| 12 | CS50P — Introduction to Programming with Python | HarvardX | Free | S1 | Testing discipline — the safety invariant is a tested assertion. |
+| 13 | MITx 6.00.1x — CS & Programming with Python | edX · MIT | Free (audit) | S1 | CS foundations; background track. |
+| 14 | 🎖️ **AI-901** Azure AI Fundamentals | Microsoft · Pearson VUE | **$99** ✅ | S1 | Take once S1 build work is underway. |
+| 15 | ⏸️ **AB-620** AI Agent Builder Associate | Microsoft | ~$165 — **CONDITIONAL** | S1–S2 | **Not by default.** ⚠️ ADR-009 was written when this was committed; the provider-agnostic ruling is unaffected — the Azure credential backing Substrate 2 is **AI-103**. |
+| 16 | PostgreSQL for Everybody + use-the-index-luke.com | Coursera · U. Michigan + web | Free (audit) | S2 | Opens S2 — the claim store moves SQLite → PostgreSQL here. |
+| 17 | dbt Fundamentals | dbt Labs | Free | S2 | **The `transform/` project and the declared grain** — the AE half of this flagship. |
+| 18 | dbt Advanced Learning Paths (Analytics Engineering) | dbt Labs | Free | S2 | AE depth on the quality mart. |
+| 19 | ⚡ Dataframe Engine Boundary — Polars-first pipelines | Polars User Guide (roadmap S2 row 6.5) | Free | S2 | Before the event-log and eval frames are built. **The course behind ADR-0010.** |
+| 20 | Astronomer Academy — Airflow 101 + DAG Authoring | Astronomer | Free | S2 | Scheduling the review runs. |
+| 21 | Terraform Fundamentals | HashiCorp Developer | Free | S2 | Infrastructure for the ECS deploy. |
+| 22 | 🆕 IBM AI-Native Data Engineering PC | Coursera · IBM (CORRECTION 43) | Coursera Plus | S2 | Two of three land here: ***Unstructured Data Engineering*** (PII-safe corpus prep, OCR-aware processing — the synthetic packet corpus) and ***Reproducible Training Data*** (dataset versioning and release control — the frozen golden set). *The vector course is **not** claimed: §5 rules retrieval is the wrong tool for a keyed-transaction check.* |
+| 23 | 🎖️ **DP-700** Fabric Data Engineer | Microsoft | **$165** ✅ | S2 | After the dbt + orchestration work exists. |
+| 24 | 🎖️ **AWS DEA-C01** Data Engineer Associate | AWS | **$150** ✅ | S2 | Deploy-target credential. |
+| 25 | ⏸️ Lakehouse slot — **take exactly ONE**: DP-750 / SnowPro Core / Databricks DE | Microsoft / Snowflake / Databricks | $165–200 — **CONDITIONAL** | S2 | Deferred — target-employer stack decides. |
+| 26 | ⏸️ **dbt Analytics Engineering** | dbt Labs | ~$200 — **CONDITIONAL** | S2 | Only if the apply-list names it. |
+| 27 | Evaluating AI Agents | DeepLearning.AI | Free | S3 | **Opens S3 — carries the Layer-2 adjudication loop.** |
+| 28 | Automated Testing for LLMOps | DeepLearning.AI | Free | S3 | The four eval layers as merge conditions. |
+| 29 | AI Agents in LangGraph | DeepLearning.AI | Free | S3 | HITL pattern behind the escalation boundary. |
+| 30 | LangChain Academy (LangGraph + LangSmith) | LangChain | Free | S3 | Tracing the adjudication loop. |
+| 31 | Agent Skills with Anthropic | Anthropic Academy | Free | S3 | Reusable adjudication capability. |
+| 32 | MCP — Advanced Topics (full) | Anthropic Academy | Free | S3 | Read tools now; approval-gated writes never. |
+| 33 | AI-103 Learning Path — Foundry & Azure AI Agents | Microsoft Learn | Free | S3 | Free path backing AI-103 and **Substrate 2**. |
+| 34 | M365 Agents SDK — Custom Engine Agents | Microsoft Learn | Free | S3 | **S3 channel layer only.** ADR-009 survives intact — Agent 365 works with agents built on any SDK, so the Anthropic SDK stays primary. |
+| 35 | NVIDIA DLI: Building RAG Agents with LLMs | NVIDIA | Free | S3 | RAG agents; breadth. |
+| 36 | 🎖️ **Anthropic CCA-F** | Anthropic · Pearson VUE | **~$125** ✅ ⚠️ | S3 | Agentic orchestration source-of-truth. |
+| 37 | 🎖️ **AI-103** Azure AI Apps & Agents Developer | Microsoft | **$165** ✅ | S3 | The code-first credential behind Substrate 2. |
+| 38 | 🎖️ **NVIDIA NCA-GENL** | NVIDIA | **$125** ✅ | S3 | GenAI credential. |
+| 39 | 🎖️ **Databricks GenAI Engineer Associate** | Databricks | **$200** ✅ | S3 | Optional. |
 
-### 🎓 Stage 3 — The Applied-AI half (agentic adjudication + eval)
-- **Courses:** **Evaluating AI Agents** and **Automated Testing for LLMOps** — the two that carry the Layer-2 adjudication loop and the four eval layers in §12.3 · MCP: Build Rich-Context AI Apps (full) · AI Agents in LangGraph (**HITL pattern** behind the escalation boundary) · **Agent Skills with Anthropic** · Claude Code: A Highly Agentic Coding Assistant · **AI-103 Learning Path — Microsoft Foundry & Azure AI Agents** (Microsoft Learn, FREE — CORRECTION 38; backs **Substrate 2**) · **Build Custom Engine Agents with the Microsoft 365 Agents SDK** (Microsoft Learn, FREE — CORRECTION 38; **the S3 channel layer only**, and **ADR-009 survives intact** — Agent 365 works with agents built on any SDK, so the Anthropic SDK stays primary and this is packaging, not a brain transplant)
-- **Certifications:** **Anthropic CCA-F** (**~$125** — agentic orchestration source-of-truth; **Domain 1 maps directly to the workflow-vs-agent distinction** this project turns on) · **AI-103** Azure AI Apps & Agents Developer (**$165** · ✅ committed · self-funded — the code-first credential behind Substrate 2) · **Databricks GenAI Engineer Associate** (**$200** — optional; also reads as a DE cert)
-- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format. PostCheck is the strongest candidate for this rehearsal: the `SORTORDER` parse ruling, the rules-first inversion, the false-NIGO gate and the read-only boundary are four decisions with named rejected alternatives.
+> **🎯 Stage 3 deliverable (CORRECTION 8):** ADR set + C4 + **architecture-defence rehearsal**, mirroring the FDE panel format. **This project is the recommended subject** — the `SORTORDER` parse ruling, the rules-first inversion, the false-NIGO gate and the read-only boundary are four decisions with named rejected alternatives.
 
-**Focus thread:** watched folder → exactly-once claim → deterministic `SORTORDER` parse → packet segmentation + multimodal extraction → pairing → liveness → 15-item adjudication vs a versioned SOP → IGO/NIGO → report + escalation → append-only event log → **dbt quality mart** (first-pass IGO rate · reason Pareto · agent-vs-human agreement).
+**Focus thread:** watched folder → exactly-once claim → deterministic `SORTORDER` parse → packet segmentation + multimodal extraction → pairing → liveness → 15-item adjudication vs a versioned SOP → IGO/NIGO → report + escalation → append-only event log → **dbt quality mart**.
 
-> **Cert discipline (v10.0):** committed canon = **DP-700 + AWS DEA-C01** (S2) and the S3 GenAI set. Platform certs are a **conditional menu — take exactly ONE**. Keyword-density is a negative signal.
+> **Cert discipline (v10.0):** the shipped, production-grade project is the primary hiring signal; certs are tiebreakers. Platform certs are a **conditional menu — take exactly ONE**, matched to a concrete apply-list's stack. Keyword-density is a negative signal.
 
 ---
 
