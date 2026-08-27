@@ -33,7 +33,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **🆕 `.pre-commit-config.yaml` — pinned hook set, enforced locally (v10.0 CORRECTION 21)**. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **🆕 `.pre-commit-config.yaml` — pinned hook set, enforced locally (v10.0 CORRECTION 21)**. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Dual agentic harness (July 2026; CORRECTION 42):** every repo carries **both** harnesses — **`.opencode/`** and **`.claude/`** — generated from one shared prompt layer and governed by a single portable **`AGENTS.md`** contract, plus a **`hooks/guard.py`** `PreToolUse` guard that blocks `git commit`/`push` so every commit is human by construction. Concretely, `.opencode/` carries (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
 
 > **🆕 Pre-commit standard (roadmap v10.0 CORRECTION 21, August 2026).** This repo carries a pinned `.pre-commit-config.yaml`. **Governing rule: the hook set is a strict *subset* of the CI gate — CI stays authoritative, and no check exists locally that does not also run in CI.** Hooks are pinned by `rev:`, never floating. **Tier A (this repo):** `pre-commit/pre-commit-hooks` (`trailing-whitespace`, `end-of-file-fixer`, `check-yaml`, `check-toml`, `check-added-large-files`, `check-merge-conflict`, `detect-private-key`) · `astral-sh/ruff-pre-commit` → **`ruff-check` (with `--fix`) placed *before* `ruff-format`**, because the linter's fix behaviour can emit changes that then need reformatting (note: the linter hook id is `ruff-check`; the retired bare `ruff` id is not used) · `astral-sh/uv-pre-commit` → **`uv-lock`**, which is what turns the CORRECTION 13 reproducible-build claim from an assertion into an enforced invariant · **`gitleaks`** for secret scanning. **Tier C (`commit-msg` stage):** `conventional-pre-commit` — the Conventional Commits standard above is now **enforced, not merely declared**; install with `pre-commit install --hook-type commit-msg`.
 >
@@ -765,7 +765,9 @@ policypulse/
 │   └── plans/                    # Saved task briefs per Issue
 │       └── issue-XX-task-brief.md
 ├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
-├── .opencode/                    # OpenCode agentic harness (mirrors .cursor/; portable across editors)
+├── .opencode/                    # OpenCode side of the dual harness (mirrors .cursor/; portable across editors)
+├── .claude/                      # Claude Code side — generated from the same shared prompt layer
+├── hooks/guard.py                # PreToolUse — blocks git commit/push; commits stay human
 │   ├── agents/                   # subagent defs — filename = agent name (per OpenCode spec)
 │   │   ├── docs-fix.md           # repairs drift in README / scope docs
 │   │   ├── docs-sync.md          # keeps the 3 public docs aligned to the roadmap
@@ -1331,21 +1333,59 @@ flowchart LR
 
 ---
 
-## 📚 Courses & Certifications — per Stage (v10.0 reference)
+## 📚 Courses & Certifications — take-order table (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Names match the roadmap's stage tables; ordered by the stage in which PolicyPulse needs them. ✅ = committed canon; conditional/platform certs are **take-ONE-only**, matched to a concrete apply-list. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
+*Synced to roadmap **v10.0** (through CORRECTION 43). **The table is ordered: take them top to bottom.** Numbering is continuous across all three stages — #1 is the next thing to start, not the first item of an unordered list. Names match the roadmap's stage tables. 🎖️ = committed certification; ⏸️ = conditional, taken only on a named trigger and **never stacked**. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
-### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** IBM Generative AI Engineering PC (RAG/LangChain spine) · Building with the Claude API · Building & Evaluating Advanced RAG (RAG Triad) · Improving the Accuracy of LLM Applications · MCP primer [Academy: Introduction to Model Context Protocol] (DL.AI, Elie Schoppik — before the FastMCP build) · Docker for Beginners · 30 Days of Streamlit · **CS50P** (Harvard — Python + unit tests/debugging) · **MITx 6.00.1x** (MIT — CS foundations; IBM Applied SWE Fundamentals as secondary)
-- **Certifications:** **AI-901** Azure AI Fundamentals (**$99 · ✅ committed · self-funded**) · ⏸️ **AB-620** AI Agent Builder Associate (**~$165 · CONDITIONAL, not committed** — CORRECTION 37: it is the low-code Copilot Studio maker path, and the evidence standard here is production Python. Single trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed code-first Azure credential is **AI-103**, S3)
+### 🎓 Take-order — PolicyPulse (Applied-AI flagship)
 
-### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** PostgreSQL for Everybody + use-the-index-luke.com · dbt Fundamentals + Advanced · Astronomer Academy (Airflow) · Terraform Fundamentals · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) · 🆕 **IBM AI-Native Data Engineering PC** — the two courses that go where PolicyPulse actually needs depth: *Vector Databases & Retrieval Data Engineering* (**metadata-rich vector schemas + security/governance on retrieval** — the course behind access-control-aware retrieval, which had none) and *Unstructured Data Engineering for AI* (**PII-safe corpus preparation**, citation-grade chunking). Both supersede the 1–2 hr shorts below (CORRECTION 43) · Pre-processing Unstructured Data · Vector Databases: from Embeddings to Applications · Knowledge Graphs for RAG (GraphRAG on-ramp)
-- **Certifications:** **DP-700** Fabric Data Engineer (**$165** · ✅ committed · self-funded) · **AWS DEA-C01** Data Engineer Associate (✅ committed) · *conditional (take ONE):* SnowPro Core / DP-750
+| # | Course / Certification | Source | Cost | Stage | Why here, in this position |
+|---|---|---|---|---|---|
+| 1 | uv — Python Packaging & Environments | Astral docs + Sweigart quickstart | Free | S1 | **Before the first commit** — the repo standard depends on it. |
+| 2 | Pre-Commit Hooks — Molin four-part series | Blog series | Free | S1 | Hooks before history; `gitleaks` + `nbstripout` make *synthetic-only* mechanical. |
+| 3 | Introduction to Git and GitHub | Coursera · Google | Free (audit) | S1 | Branch → PR → self-review. |
+| 4 | Architecture Documentation: C4 + ADR | c4model.com + AWS Prescriptive Guidance | Free | S1 | Before the first retrieval-strategy ADR is written. |
+| 5 | Building with the Claude API | Anthropic Academy | Free | S1 | The SDK source-of-truth; everything downstream calls through it. |
+| 6 | IBM Generative AI Engineering PC (16 courses) | Coursera · IBM | Coursera Plus | S1 | The S1 spine — RAG, LangChain, fine-tuning, deployment. Long-running; start early. |
+| 7 | Building & Evaluating Advanced RAG | DeepLearning.AI | Free | S1 | The RAG Triad — the vocabulary the eval gates are written in. |
+| 8 | Improving Accuracy of LLM Applications | DeepLearning.AI | Free | S1 | Eval-from-scratch. **Take before building the gate, not after.** |
+| 9 | MCP: Build Rich-Context AI Apps — primer | DeepLearning.AI / Anthropic Academy | Free | S1 | *Before* the FastMCP build, so the server is designed rather than discovered. |
+| 10 | Docker for Beginners with Hands-on Labs | KodeKloud | Free | S1 | Containerize the retrieval service. |
+| 11 | 30 Days of Streamlit | Streamlit | Free | S1 | The S1 answer surface. |
+| 12 | CS50P — Introduction to Programming with Python | HarvardX | Free | S1 | Testing and debugging discipline. |
+| 13 | MITx 6.00.1x — CS & Programming with Python | edX · MIT | Free (audit) | S1 | CS foundations; background track. |
+| 14 | 🎖️ **AI-901** Azure AI Fundamentals | Microsoft · Pearson VUE | **$99** ✅ | S1 | Take once S1 build work is underway. |
+| 15 | ⏸️ **AB-620** AI Agent Builder Associate | Microsoft | ~$165 — **CONDITIONAL** | S1–S2 | **Not by default** — trigger is a Microsoft-ecosystem specialization. |
+| 16 | PostgreSQL for Everybody + use-the-index-luke.com | Coursera · U. Michigan + web | Free (audit) | S2 | Opens S2 — metadata and chunk tables live in a real database. |
+| 17 | dbt Fundamentals | dbt Labs | Free | S2 | Corpus and eval-result modelling. |
+| 18 | dbt Advanced Learning Paths (Analytics Engineering) | dbt Labs | Free | S2 | AE depth. |
+| 19 | ⚡ Dataframe Engine Boundary — Polars-first pipelines | Polars User Guide (roadmap S2 row 6.5) | Free | S2 | Before rebuilding corpus manifests and eval frames. |
+| 20 | Astronomer Academy — Airflow 101 + DAG Authoring | Astronomer | Free | S2 | Scheduled re-index and eval runs. |
+| 21 | Terraform Fundamentals | HashiCorp Developer | Free | S2 | Infrastructure for the deployed service. |
+| 22 | 🆕 IBM AI-Native Data Engineering PC | Coursera · IBM (CORRECTION 43) | Coursera Plus | S2 | **The two that fill PolicyPulse's real gaps:** *Vector DBs & Retrieval DE* (vector schemas + retrieval security/governance — the course behind access-control-aware retrieval, which had none) and *Unstructured Data Engineering* (PII-safe corpus prep, citation-grade chunking). |
+| 23 | Vector Databases: from Embeddings to Applications | DeepLearning.AI | Free | S2 | Short; largely superseded by the AI-Native course above — skim if hours are tight. |
+| 24 | Pre-processing Unstructured Data for LLM Apps | DeepLearning.AI | Free | S1 | Same — the 1-hour version of what AI-Native teaches in 24. |
+| 25 | Knowledge Graphs for RAG | DeepLearning.AI × Neo4j | Free | S2 | The GraphRAG on-ramp before Neo4j work begins. |
+| 26 | 🎖️ **DP-700** Fabric Data Engineer | Microsoft | **$165** ✅ | S2 | After the S2 data work exists. |
+| 27 | 🎖️ **AWS DEA-C01** Data Engineer Associate | AWS | **$150** ✅ | S2 | Deploy-target credential. |
+| 28 | ⏸️ Lakehouse slot — **take exactly ONE**: DP-750 / SnowPro Core / Databricks DE | Microsoft / Snowflake / Databricks | $165–200 — **CONDITIONAL** | S2 | Deferred — decided by the target employer's stack. |
+| 29 | MCP — Advanced Topics (full) | Anthropic Academy | Free | S3 | Opens S3 — read → approval-gated write boundary. |
+| 30 | AI Agents in LangGraph | DeepLearning.AI | Free | S3 | Agentic retrieval with a human gate. |
+| 31 | LangChain Academy (LangGraph + LangSmith) | LangChain | Free | S3 | LangSmith tracing for the eval spine. |
+| 32 | Agent Skills with Anthropic | Anthropic Academy | Free | S3 | Packaging reusable capability. |
+| 33 | Automated Testing for LLMOps | DeepLearning.AI | Free | S3 | Regression gates as merge conditions. |
+| 34 | HuggingFace LLM Course (formerly the NLP Course) | HuggingFace | Free | S3 | Restored to core in v10.0 — embeddings and tokenization depth. |
+| 35 | Neo4j GraphAcademy — Knowledge Graphs & GraphRAG | Neo4j | Free | S3 | GraphRAG, straight after the KG on-ramp. |
+| 36 | NVIDIA DLI: Building RAG Agents with LLMs | NVIDIA | Free | S3 | RAG agents; doubles as PolicyPulse evidence. |
+| 37 | AI-103 Learning Path — Foundry & Azure AI Agents | Microsoft Learn | Free | S3 | Free path backing the AI-103 exam. |
+| 38 | 🎖️ **Neo4j Certified Professional** | Neo4j | **Free** ✅ | S3 | Free — take as soon as GraphAcademy is done. |
+| 39 | 🎖️ **NVIDIA NCA-GENL** | NVIDIA | **$125** ✅ | S3 | GenAI credential. |
+| 40 | 🎖️ **AI-103** Azure AI Apps & Agents Developer | Microsoft | **$165** ✅ | S3 | Code-first Azure/Foundry. |
+| 41 | 🎖️ **Anthropic CCA-F** | Anthropic · Pearson VUE | **~$125** ✅ ⚠️ | S3 | Primary-SDK source-of-truth. |
+| 42 | 🎖️ **Databricks GenAI Engineer Associate** | Databricks | **$200** ✅ | S3 | Optional. |
 
-### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** MCP full [Academy: MCP — Advanced Topics] · AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Agent Skills with Anthropic [Academy: Introduction to agent skills] · Automated Testing for LLMOps · HuggingFace NLP + LLM · Neo4j GraphAcademy · NVIDIA DLI Building RAG Agents
-- **Certifications:** **Neo4j Certified Professional** (FREE) · **NVIDIA NCA-GENL** ($125) · **Databricks GenAI Associate** ($200) · **AI-103** (**$165** · self-funded) · **Anthropic CCA-F** ($125)
-- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
+> **🎯 Stage 3 deliverable (CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
 
-**Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · access-control retrieval · RAGAS/SelfCheckGPT eval · MCP read→approval-gated write.
+**Focus thread:** document → chunk → embed → retrieve (vector + graph) → verify → cited answer · access-control retrieval · RAGAS/SelfCheckGPT eval · MCP read → approval-gated write.
+
+> **Cert discipline (v10.0):** the shipped, production-grade project is the primary hiring signal; certs are tiebreakers. Platform certs are a **conditional menu — take exactly ONE**, matched to a concrete apply-list's stack. Keyword-density is a negative signal.
