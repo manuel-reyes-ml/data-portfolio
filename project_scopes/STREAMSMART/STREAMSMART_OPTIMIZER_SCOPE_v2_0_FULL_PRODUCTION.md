@@ -35,7 +35,7 @@
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
 
-**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **🆕 `.pre-commit-config.yaml` — pinned hook set, enforced locally (v10.0 CORRECTION 21)**. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Agentic harness (July 2026):** every repo also carries **`.opencode/`** (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
+**Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **🆕 `.pre-commit-config.yaml` — pinned hook set, enforced locally (v10.0 CORRECTION 21)**. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Dual agentic harness (July 2026; CORRECTION 42):** every repo carries **both** harnesses — **`.opencode/`** and **`.claude/`** — generated from one shared prompt layer and governed by a single portable **`AGENTS.md`** contract, plus a **`hooks/guard.py`** `PreToolUse` guard that blocks `git commit`/`push` so every commit is human by construction. Concretely, `.opencode/` carries (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
 
 > **🆕 Pre-commit standard (roadmap v10.0 CORRECTION 21, August 2026).** This repo carries a pinned `.pre-commit-config.yaml`. **Governing rule: the hook set is a strict *subset* of the CI gate — CI stays authoritative, and no check exists locally that does not also run in CI.** Hooks are pinned by `rev:`, never floating. **Tier A (this repo):** `pre-commit/pre-commit-hooks` (`trailing-whitespace`, `end-of-file-fixer`, `check-yaml`, `check-toml`, `check-added-large-files`, `check-merge-conflict`, `detect-private-key`) · `astral-sh/ruff-pre-commit` → **`ruff-check` (with `--fix`) placed *before* `ruff-format`**, because the linter's fix behaviour can emit changes that then need reformatting (note: the linter hook id is `ruff-check`; the retired bare `ruff` id is not used) · `astral-sh/uv-pre-commit` → **`uv-lock`**, which is what turns the CORRECTION 13 reproducible-build claim from an assertion into an enforced invariant · **`gitleaks`** for secret scanning. **Tier C (`commit-msg` stage):** `conventional-pre-commit` — the Conventional Commits standard above is now **enforced, not merely declared**; install with `pre-commit install --hook-type commit-msg`.
 >
@@ -1192,7 +1192,9 @@ streamsmart-optimizer/
 │   └── plans/                    # Saved task briefs per Issue
 │       └── issue-XX-task-brief.md
 ├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
-├── .opencode/                    # OpenCode agentic harness (mirrors .cursor/; portable across editors)
+├── .opencode/                    # OpenCode side of the dual harness (mirrors .cursor/; portable across editors)
+├── .claude/                      # Claude Code side — generated from the same shared prompt layer
+├── hooks/guard.py                # PreToolUse — blocks git commit/push; commits stay human
 │   ├── agents/                   # subagent defs — filename = agent name (per OpenCode spec)
 │   │   ├── docs-fix.md           # repairs drift in README / scope docs
 │   │   ├── docs-sync.md          # keeps the 3 public docs aligned to the roadmap
@@ -1512,26 +1514,39 @@ flowchart LR
 *"Agentic subscription manager with mandatory human-in-the-loop, MCP browser actions, and an LLM-as-judge eval gate — a production-grade **Applied AI Engineer → FDE** portfolio piece (backlog / positioned-last)."*
 ---
 
-## 📚 Courses & Certifications — per Stage (v10.0 reference)
+## 📚 Courses & Certifications — take-order table (v10.0 reference)
 
-*Synced to roadmap **v10.0**. Course/cert names match the roadmap's stage tables; ordered by the stage in which StreamSmart needs them. Certs follow the roadmap's **replace-not-stack** rule — committed certs are marked ✅; conditional/platform certs are **take-ONE-only**. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken.*
+*Synced to roadmap **v10.0** (through CORRECTION 43). **The table is ordered: take them top to bottom.** Numbering is continuous across all three stages — #1 is the next thing to start, not the first item of an unordered list. Names match the roadmap's stage tables. 🎖️ = committed certification; ⏸️ = conditional, taken only on a named trigger and **never stacked**. **All certifications are self-funded** — the prior employer track ended, and CORRECTION 37 moved AB-620 to conditional: **eight committed ≈ $1,029**, ≈ **$1,594** if every conditional is taken. The shipped production-grade project is the primary hiring signal — certs are tiebreakers.*
 
-### 🎓 Stage 1 — Foundation (GenAI-first core)
-- **Courses:** Building with the Claude API (Anthropic Academy) · 30 Days of Streamlit · Docker for Beginners
-- **Certifications:** **AI-901** (**$99** · ✅ committed · self-funded); ⏸️ **AB-620** conditional (~$165) — both shared with the lead projects; nothing StreamSmart-specific
+### 🎓 Take-order — StreamSmart (consumer AI, backlog)
 
-### 🎓 Stage 2 — DE/AE hardening
-- **Courses:** dbt Fundamentals · Astronomer Academy (Airflow 101 + DAG Authoring) · Terraform Fundamentals · Apache Kafka 101 (Confluent — API/content ingestion) · **Dataframe Engine Boundary — Polars-first pipelines** (Polars User Guide, FREE — roadmap S2 row 6️⃣.5, CORRECTION 35) — *AI-Native DE PC deliberately **not** listed: no corpus, no vector layer, no training data on a backlog consumer app*
-- **Certifications:** Committed **DP-700 + AWS DEA-C01** carry over (shared; nothing StreamSmart-specific)
+| # | Course / Certification | Source | Cost | Stage | Why here, in this position |
+|---|---|---|---|---|---|
+| 1 | uv — Python Packaging & Environments | Astral docs + Sweigart quickstart | Free | S1 | Before the first commit. |
+| 2 | Pre-Commit Hooks — Molin four-part series | Blog series | Free | S1 | Hooks before history. |
+| 3 | Introduction to Git and GitHub | Coursera · Google | Free (audit) | S1 | Branch → PR → self-review. |
+| 4 | Building with the Claude API | Anthropic Academy | Free | S1 | Structured outputs for the recommendation surface. |
+| 5 | 30 Days of Streamlit | Streamlit | Free | S1 | The app surface. |
+| 6 | Docker for Beginners with Hands-on Labs | KodeKloud | Free | S1 | Containerize. |
+| 7 | 🎖️ **AI-901** Azure AI Fundamentals | Microsoft · Pearson VUE | **$99** ✅ | S1 | Shared with the lead projects; nothing StreamSmart-specific. |
+| 8 | ⏸️ **AB-620** AI Agent Builder Associate | Microsoft | ~$165 — **CONDITIONAL** | S1–S2 | **Not by default.** |
+| 9 | dbt Fundamentals | dbt Labs | Free | S2 | Cost-optimization marts. |
+| 10 | ⚡ Dataframe Engine Boundary — Polars-first pipelines | Polars User Guide (roadmap S2 row 6.5) | Free | S2 | Metric computation. ⚠️ **Honest framing: a consistency decision, not a performance one** — the dataset is small; the point is one engine policy across every repo. |
+| 11 | Astronomer Academy — Airflow 101 + DAG Authoring | Astronomer | Free | S2 | Scheduled content/pricing ingestion. |
+| 12 | Apache Kafka 101 | Confluent Developer | Free | S2 | API/content ingestion patterns. |
+| 13 | Terraform Fundamentals | HashiCorp Developer | Free | S2 | Infrastructure. |
+| 14 | 🎖️ **DP-700** Fabric Data Engineer | Microsoft | **$165** ✅ | S2 | Shared committed cert; carries over. |
+| 15 | 🎖️ **AWS DEA-C01** Data Engineer Associate | AWS | **$150** ✅ | S2 | Shared committed cert; carries over. |
+| 16 | AI Agents in LangGraph | DeepLearning.AI | Free | S3 | Opens S3 — agentic rotation with mandatory HITL. |
+| 17 | LangChain Academy (LangGraph + LangSmith) | LangChain | Free | S3 | Tracing. |
+| 18 | Automated Testing for LLMOps | DeepLearning.AI | Free | S3 | LLM-as-judge eval gate. |
+| 19 | 🎖️ **Anthropic CCA-F** | Anthropic · Pearson VUE | **~$125** ✅ ⚠️ | S3 | Optional; shared — not required for a backlog project. |
 
-### 🎓 Stage 3 — Applied AI (RAG / agentic + eval)
-- **Courses:** AI Agents in LangGraph · LangChain Academy (LangGraph + LangSmith) · Automated Testing for LLMOps · *(optional)* AI Engineer Agentic Track
-- **Certifications:** **Anthropic CCA-F** (optional; shared with the lead projects — not required for a backlog project)
-- **🆕 Stage 3 deliverable — architecture-defense (v10.0 CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
+> **🎯 Stage 3 deliverable (CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
+
+> ⛔ **The IBM AI-Native DE PC is deliberately absent from this table** — no corpus, no vector layer and no training data on a backlog consumer app, so all three gap-filling courses have nothing to bite on. Recorded as a decision, not an omission.
 
 **Focus thread:** content/pricing ingestion → cost-optimization marts → agentic rotation with mandatory HITL → LLM-as-judge eval gate; never stores credentials, never enters payment.
-
-> **Cert discipline (v10.0):** the shipped, production-grade project is the primary hiring signal; certs are tiebreakers. Committed canon = **DP-700 + AWS DEA-C01** (S2) and the S3 GenAI set. Platform certs (SnowPro Core / DP-750 / Databricks DE / dbt AE) are a **conditional menu — take exactly ONE**, matched to a concrete apply-list's stack. Keyword-density is a negative signal.
 
 ---
 
