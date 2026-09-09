@@ -762,8 +762,9 @@ policypulse/
 │   ├── hooks/                    # Auto-run scripts
 │   │   └── format.sh             # Auto-format (`ruff format` + `ruff check --fix`) after agent edits — black retired per CORRECTION 21
 │   ├── hooks.json                # Hook configuration
-│   └── plans/                    # Saved task briefs per Issue
-│       └── issue-XX-task-brief.md
+│   └── # (no plans/ — 🆕 ADR-0002, Sept 2026: Gate 1 task briefs relocated to
+│     #  .github/plans/ so both harnesses read and write one harness-neutral path.
+│     #  OpenCode's plan-cloud agent is edit-denied everywhere EXCEPT that glob.)
 ├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
 ├── .opencode/                    # OpenCode side of the dual harness (mirrors .cursor/; portable across editors)
 ├── .claude/                      # Claude Code side — generated from the same shared prompt layer
@@ -791,6 +792,9 @@ policypulse/
 ├── AGENTS.md                     # standing instructions; combined with opencode.jsonc instructions[]
 ├── opencode.jsonc                # harness config — model routing, permissions, instructions[]
 ├── .github/
+│   ├── plans/                    # 🆕 ADR-0002 — Gate 1 task briefs, one per Issue,
+│   │   │                         #  committed as evidence of plan-then-execute
+│   │   └── issue-XX-task-brief.md  # frontmatter status: PROPOSAL until I approve by hand
 │   ├── templates/                # Production workflow templates
 │   │   ├── issue_template.md     # GitHub Issue format
 │   │   ├── project_labels.md     # Approved labels + definitions
