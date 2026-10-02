@@ -6,7 +6,7 @@
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
 **Document Version:** 3.1 (🎯 **STAGE-1 REFOCUS** — repositioned as the Stage-1 build sheet; Phase 1 (backtest engine + integrity spine) is the S1 deliverable. S2 lakehouse and S3 paper→live agent architecture move to the Full-Production companion. Prior v3.0 note follows.) — v3.0 note: (🎯 **v10.0 REALIGNMENT** — restored **lead Flagship**; 3-stage arc (S1 backtest/integrity → S2 market-data lakehouse + signalcore-as-library → S3 paper→live agent w/ HITL + kill-switch). Destination Applied AI Engineer → FDE. "First project" framing retired; intraday-vs-swing identity flagged for roadmap reconciliation. Prior v2.6 note archived below.)
-**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** propagation — `SAR-on-stop` backlog hypothesis §4.1 + order-intent pointers; additive, same version)
+**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** propagation — `SAR-on-stop` backlog hypothesis §4.1 + order-intent pointers; additive, same version) · 🆕 follow-up: Rule 201 exclusion sourced from `signalcore.shortsale`; boundary-spec references made explicit (`_v1_5`)
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
 **Codename:** **Crucible** — the vessel where raw material is subjected to extreme heat until only what's pure survives. Every strategy must survive the crucible of backtest → paper → live before it touches real money.
@@ -96,6 +96,8 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 **v2.5 → v2.6 (this revision):** added the **Agentic Loop Spec** (§2 intro) per roadmap v8.8's Loop Engineering addition — names the two-speed execution loop, its verifier (3-gate/parity/OOS-vault/overfitting-ledger), and the **mandatory human sign-off + kill-switch on the LIVE path** (irreversible action). No other functional scope changes.
 
 **v3.1 additive (October 2026 — roadmap v10.0 CORRECTION 45, same version):** adds (1) **`SAR-on-stop`** as strategy-roadmap row 7 with a **pre-registered hypothesis spec** (§4.1) — stop-and-reverse is tested as a *strategy*, never adopted as a safeguard; (2) pointers from the Phase-2 risk gate's brackets and the Phase-3 guardrails to the Full-Production **order-intent classification** (§6.1a there) — bracket legs are signed with the entry and can never open or flip a position; (3) short-side regulatory notes (Rule 201, borrow/locates, the paper-gate blind spot) in §9; (4) a §13 risk row, a Phase-3 success metric and Locked Decision #15. **Phase-1 build scope unchanged.**
+
+**v3.1 additive follow-up (October 2026 — CORRECTION 45, same version):** the Rule 201 check is now a shared primitive, **`signalcore.shortsale.rule201_state`** (`Shared_SignalCore_Boundary_Spec_v1_5.md` §2); the §4.1 exclusion consumes it, with `unknown` treated as restricted (fail-safe, matching the kill-switch's *on ambiguity, halt*). Generic "Boundary Spec" references now name the file. No functional scope change.
 
 ---
 
@@ -334,7 +336,7 @@ sar_on_stop:
     exits: "own stop + target/time exit, fixed in config BEFORE the run"
     chain: "one reversal per parent trade; a stopped reversal exits to flat and never re-reverses"
   exclusions:                       # pre-registered
-    - "Rule 201 active: daily low <= 0.90 x prior close -> that day + next trading day"
+    - "Rule 201 restricted: signalcore.shortsale.rule201_state(...).restricted (low <= 0.90 x prior close -> that day + next session); unknown => excluded (fail-safe)"
     - "not shortable / not easy-to-borrow at decision time (unmodeled in backtest; see notes)"
   costs:
     - "standard slippage/spread model"
@@ -349,7 +351,7 @@ sar_on_stop:
 **Integrity notes.**
 - **Regime is reported, never retro-fitted.** The evidence says reversal logic pays only in trending regimes and bleeds in chop. Results are *reported* by regime tag; adding a regime gate after seeing results is a **new hypothesis** and spends overfitting budget.
 - **Historical borrow status is not in the free data stack**, so the backtest cannot honestly know whether a past short was locatable. The verdict must state this limitation, and the paper gate cannot close it (Alpaca paper does not simulate locates or borrow fees). **A live borrow-status check is a precondition of any short leg reaching the paper gate.**
-- **Squeeze context is not a default exclusion here.** Crucible's liquid universe (ADV ≥ 1M) imports nothing from `signalcore.shortinterest` (Boundary Spec §4). *Falsifier:* if `SAR-on-stop` is ever run on a lower-liquidity universe, add a short-interest exclusion — a new `signalcore` consumer, recorded by ADR.
+- **Squeeze context is not a default exclusion here.** Crucible's liquid universe (ADV ≥ 1M) imports nothing from `signalcore.shortinterest` (`Shared_SignalCore_Boundary_Spec_v1_5.md` §4). It *does* import `signalcore.shortsale` for the Rule 201 exclusion above — a different module with a different purpose. *Falsifier:* if `SAR-on-stop` is ever run on a lower-liquidity universe, add a short-interest exclusion — a new `signalcore` consumer, recorded by ADR.
 - **Engine prerequisite.** SW-A v3 and SW-B are long-side; a reversal needs short-position support in the harness (side on `Signal`, short fills, a borrow-cost field). If the Phase-1 harness lacks it, adding it is an **engine change decided by ADR when SAR is scheduled** — not a plugin-level change, and not a Phase-1 task.
 - **Execution path.** Every reversal entry is a **new risk-increasing proposal** → pre-checks → verifier → 👤 sign-off. It never auto-fires and never inherits the stopped trade's signature (Full-Production §6.1a / §6.5).
 - **Ledger hygiene.** Reversal trades log under `sar_on_stop:<parent>`, preserving the one-ticker-one-playbook bright line — the parent's losing trade is never re-labeled.
@@ -951,7 +953,7 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 |---|---------|--------------------|-----------------|
 | **①** | **Production** | The paper→live execution path with kill switches, monitoring, and reconciliation of *intended vs filled*. State what runs unattended, what halts it, and what is watched. | A stack list is not a production claim. If nothing depends on it and nothing watches it, it is not in production — say so and move the content to Architecture. |
 | **②** | **Cost** | Compute cost per backtest sweep, data-feed cost, and sweep efficiency (results per compute-hour). This is the honest Cost axis for a research system — not trading outcomes. | A number with no mechanism. And never a speed/cost win without its reliability disclosure — state the SLA the change held to. A win that hides a regression is the bait-and-switch reviewers watch for. |
-| **③** | **Architecture** | Multi-timeframe design, execution and risk-control ADRs, C4 Context + Container, and the `signalcore` boundary (primitives in, strategy logic out — see the Shared SignalCore Boundary Spec). | Diagrams shown without the decision behind them. The ADR is what turns a diagram into evidence of judgement. |
+| **③** | **Architecture** | Multi-timeframe design, execution and risk-control ADRs, C4 Context + Container, and the `signalcore` boundary (primitives in, strategy logic out — see `Shared_SignalCore_Boundary_Spec_v1_5.md`). | Diagrams shown without the decision behind them. The ADR is what turns a diagram into evidence of judgement. |
 
 **Everything else in the standard follows these three** — evaluation-metrics table, 15–30s demo GIF, "What I Learned", Conventional Commit history. Order changes; content does not.
 
