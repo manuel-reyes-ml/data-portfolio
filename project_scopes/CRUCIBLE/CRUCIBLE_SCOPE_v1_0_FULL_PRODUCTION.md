@@ -8,7 +8,7 @@
 **Document Version:** 1.0 (new — created under roadmap v10.0.)
 **Status:** 📋 DRAFT — v10.0-aligned. S2–S3 layers build progressively; the live-execution path is gated behind everything else.
 **Last aligned:** v10.0 (2026 Market Realignment).
-**Last Updated:** August 10, 2026 (CORRECTION 26 propagation).
+**Last Updated:** August 10, 2026 (CORRECTION 26 propagation). · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §6.1a order-intent classification + §6.5 stop-and-reverse ruling; additive, same version).
 
 ---
 
@@ -258,6 +258,25 @@ Agent proposes  →  Verifier checks  →  👤 HUMAN SIGN-OFF  →  Broker adap
 
 > **Why HITL is not negotiable here:** the roadmap's own taxonomy (per Anthropic's *Building Effective Agents*) distinguishes agentic **workflows** — control flow in predefined code — from **autonomous agents** with consequences. FormSense and AFC are workflows. **Crucible's live path is the one genuinely irreversible path in the entire portfolio.** Treating it identically to the others would be the single most damaging judgment error the portfolio could display.
 
+### 6.1a Order-Intent Classification — risk-reducing vs risk-increasing 🆕 *(roadmap v10.0 CORRECTION 45, October 2026 — additive, same version)*
+
+**Why this subsection exists.** A protective stop that fires while the human is away is an order nobody signed *at that moment*. Without a rule, that either violates "zero unsigned live orders" or forces a human to babysit every stop — and the obvious "safeguard" extension (reverse the position when the stop hits) would turn the agent's exit path into an unsigned *entry* path. This subsection closes the gap by classifying every order by **what it does to exposure**, not by who or what generated it.
+
+| Class | What qualifies | Authorization | Examples |
+|---|---|---|---|
+| **Risk-reducing** | Moves the position **toward flat** and **can never open or flip** one: `abs(position_after) < abs(position_before)` and the sign never changes | **Pre-authorized** — signed *with* the parent entry (bracket legs) or by the kill-switch actor | The entry's bracket stop-loss and take-profit (one-cancels-other); a time-exit defined in the signed proposal; tightening a stop; kill-switch flatten-all |
+| **Risk-increasing** | Opens, adds to, or flips a position, **or loosens an existing protection** | **Always a new proposal** → deterministic pre-checks → verifier → 👤 **human sign-off** | Any new entry; scaling in; **any reversal / stop-and-reverse**; widening or cancelling a stop |
+
+**Binding rules.**
+1. **Signature inheritance.** A signed entry proposal carries its bracket (stop, target, any time-exit) as part of the *same* signed object. When a bracket leg fires, it inherits the parent's signature — it is not an unsigned order. The §10 metric *"Unsigned live orders: Zero. Ever."* is measured on this definition: **every live order traces to a human signature — entries directly, protective legs through their parent.**
+2. **The flip test is deterministic and lives in Layer 1.** An order classified risk-reducing whose quantity would take the position past zero is **rejected, not resized**. A sell of 200 against a 100-share long is a 100-share exit *plus* a 100-share short entry; the second half needs its own signature. The check runs in the Python core behind the Wall — never in an LLM, never in a UI layer (consistent with the AI SDK 7 decline above).
+3. **Loosening is risk-increasing.** Moving a stop further from price, cancelling a bracket leg, or converting a stop into a reversal re-opens the sign-off requirement. Tightening a stop is risk-reducing — logged, not gated.
+4. **Reversal is a strategy, never a safeguard** (§6.5). It is always risk-increasing.
+
+**Testing (joins the adversarial suite — §6.2, §7):** inject an "exit" whose quantity exceeds the position → rejected; loosen a stop without sign-off → blocked; attempt a reversal through the exit path → blocked and logged; kill-switch flatten during an open bracket → bracket legs cancelled, position flat, no residual orders.
+
+**ADR obligation:** recorded as its own numbered ADR in `docs/adr/` — *context:* the unsigned-stop gap and the stop-and-reverse proposal → *decision:* classify by exposure effect + signature inheritance → *consequences:* bracket legs may fire unattended; reversals never can. *Falsifier: revisit only if a live broker adapter cannot attach protective legs atomically to the entry (no native bracket/OCO support) — the ADR must then specify how those legs are submitted under the parent signature without a window of unprotected exposure.*
+
 ### 6.2 The Kill-Switch (design detail — because "we have one" is not evidence)
 
 | Property | Requirement |
@@ -287,6 +306,21 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | `SchwabLiveBroker` (TOS) | Live | Existing account; live-only (TOS paperMoney is desktop-only), inherits parity from Alpaca paper |
 | `LocalSimBroker` | Fallback/testing | Replays data through the engine's fill model |
 
+### 6.5 Stop-and-Reverse — declined as a safeguard, re-entered as a strategy hypothesis 🆕 *(roadmap v10.0 CORRECTION 45, October 2026)*
+
+**Proposal evaluated (October 2026):** when the agent's long/short decision proves wrong and price runs the other way, automatically fire an order in the opposite direction to capture the move.
+
+**Ruling:** the *protective* half is adopted as the bracket stop under §6.1a. The *reversal* half is **declined as a safeguard** and re-entered as a **backlog strategy hypothesis** — `SAR-on-stop`, specified in the Stage-1 build sheet §4.1 — that must clear the 3-gate pipeline like any other plugin.
+
+**Why it is not a safeguard.**
+- A reversal **adds exposure at the moment the system has just been shown wrong**. It is a second bet, commonly sized at double the original order, which works directly against Layer 5 micro-sizing.
+- **The evidence is conditional.** Stop-loss rules reduce expected return when returns follow a random walk and add value only under momentum or regime-switching (Kaminski & Lo, *When Do Stop-Loss Rules Stop Losses?*, Journal of Financial Markets, 2014). A reversal is a stronger bet on that same momentum assumption; in range-bound markets every false flip is paid twice — the exit loss plus a new position facing the same chop.
+- **Short-side frictions the paper gate cannot see:** the SEC **Rule 201** circuit breaker (a ≥10% decline from the prior close restricts short sales to prices above the national best bid for the rest of that day and the next), borrow availability / locates, and borrow fees. Alpaca's paper environment does not simulate locates or borrow fees, so **a short-side strategy's paper gate is not, on its own, evidence of live executability** (see §11).
+
+**If `SAR-on-stop` ever reaches the execution path:** every reversal entry is a **new risk-increasing proposal** → pre-checks → verifier → 👤 sign-off. It never auto-fires, never inherits the stopped trade's signature, and is never sized above the parent position.
+
+> **Falsifier for the safeguard decline:** none — an automatic risk-increasing order contradicts the §6.1 HITL invariant by definition. The *strategy* hypothesis carries its own falsifier (Stage-1 build sheet §4.1). **Positioning:** consistent with the Skills note — the story is *"I evaluated a reversal rule and here is the ledger entry"*, never *"it generates gains."*
+
 ---
 
 ## 7. Agentic Evaluation (published, not claimed)
@@ -298,6 +332,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | **Verifier catch rate** | Measured on injected faults | The verifier layer actually earns its place |
 | **Kill-switch latency** | Measured, adversarially | The safety claim is tested, not asserted |
 | **HITL rejection rate** | Tracked over time | Honest signal about agent quality; a *rising* rate is information, not embarrassment |
+| **Order-intent misclassification** 🆕 | **0** on the adversarial suite | No exit-path order ever opens, adds to, or flips a position (§6.1a — CORRECTION 45) |
 | **Trajectory tracing** | **Arize Phoenix** (OTel-native, free) | Every decision inspectable end to end — no black-box execution |
 | **Drift vs. frozen golden set** | Regression blocks merge | Prompt/model changes cannot silently degrade behavior |
 
@@ -361,7 +396,8 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | **S3** | **Tool Correctness** | **1.0** |
 | **S3** | Task Completion | > 0.8 |
 | **S3** | Kill-switch adversarial suite | 100% pass, latency measured |
-| **S3** | **Unsigned live orders** | **Zero. Ever.** |
+| **S3** | **Unsigned live orders** | **Zero. Ever.** *(measured per §6.1a: protective legs inherit the parent entry's signature)* |
+| **S3** | **Order-intent flip test** 🆕 | **100% pass**; zero exposure-increasing orders via the exit path (§6.1a) |
 | **S3** | Live sizing | Micro — bounded blast radius |
 | **S3** | Trajectory coverage | 100% of decisions traced in Phoenix |
 
@@ -375,11 +411,13 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 |---|---|---|
 | **Agent executes an unintended order** | 🔴 Critical | Deterministic pre-checks + verifier + **mandatory HITL** + kill-switch + micro-sizing |
 | **Kill-switch doesn't work when needed** | 🔴 Critical | Adversarial test suite; persists across restart; fail-safe default; agent cannot intercept it |
+| **Protective exit becomes a disguised reversal or entry** 🆕 | 🔴 Critical | §6.1a order-intent classification; deterministic flip test in Layer 1; adversarial tests; reversal only as a signed new proposal (§6.5) |
 | **LLM contaminated by OOS data** | 🔴 Critical | **The Wall** — architectural, not procedural; sealed vault; the model sees in-sample only |
 | **Look-ahead bias inflates results** | 🔴 High | PIT lakehouse + retrieval-stamped bronze + the look-ahead assertion in CI |
 | **Overfitting via iteration** | 🔴 High | Pre-registered gate criteria + overfitting ledger + one-shot OOS |
 | **Broker API change breaks execution** | 🟡 Med | Pluggable adapter layer; parity tests; `LocalSimBroker` fallback |
 | **Real capital loss** | 🟡 Med | Micro-sizing; max-daily-loss limit; kill-switch; **paper gate mandatory before live** |
+| **Short-side paper results overstate live** 🆕 | 🟡 Med | Alpaca paper does not simulate locates or borrow fees → any short leg needs a live borrow-status check, modeled borrow cost and a Rule 201 exclusion before its paper gate counts (§6.5) |
 | **Scope creep into intraday too early** | 🟡 Med | Swing-first on-ramp; intraday only after swing clears all three gates |
 | **Project reads as "trading hobby"** | 🟡 Med | Lead with **safety engineering + DE evidence**, never with returns |
 
@@ -392,7 +430,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | **1** | S1 | Backtest engine + integrity spine + AI research loop behind The Wall | Look-ahead assertion green; ledger populated; ≥1 strategy through the backtest gate |
 | **2** | S2 | PIT market-data lakehouse + dbt/contracts/Airflow + `signalcore` library + NautilusTrader migration | PIT invariants in CI; engine-parity gate passed; `signalcore` semver'd + published; postmortem written |
 | **3a** | S3 | Paper-trading agent + verifier + Phoenix tracing + published agentic evals | Tool Correctness = 1.0; Task Completion > 0.8; paper gate passed |
-| **3b** | S3 | Live agent, micro-sized, **HITL + kill-switch** | Adversarial kill-switch suite green; **zero unsigned orders**; live gate criteria pre-registered and met |
+| **3b** | S3 | Live agent, micro-sized, **HITL + kill-switch** | Adversarial kill-switch suite green; **zero unsigned orders**; order-intent flip test green (§6.1a); live gate criteria pre-registered and met |
 
 > **Phase 3b is the last thing built in the entire portfolio.** It requires skills from every prior project and is the only path with irreversible consequences.
 
@@ -404,7 +442,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 |---|---|---|---|
 | **S1** | Foundation (GenAI-first core) | Backtest engine + integrity spine (The Wall, sealed OOS vault, overfitting ledger, PIT data, walk-forward CV, 3-gate pipeline) + AI research loop; swing-first. | Look-ahead assertion green; ledger public incl. failures; OOS unopened. |
 | **S2** | DE/AE hardening | PIT medallion lakehouse; feature/universe **dbt models + blocking tests**; Great Expectations contracts; idempotent Airflow; **`signalcore`** semver'd tested library; NautilusTrader + engine-parity gate; Docker/Terraform; monitoring + postmortem. **🆕 Market-infrastructure layer (§5.5): FIX adapter · time-series store · bitemporal PIT storage · measured latency budgets.** | PIT invariants CI-enforced **at the storage layer**; parity gate passed; `signalcore` published; postmortem written; **restatement-replay test green; latency-budget table published.** |
-| **S3** | Applied AI (agentic + eval) | Paper → live agent; deterministic pre-checks + **verifier agent** + **mandatory HITL** + **tested kill-switch** + micro-sizing; "LLM behind the Wall"; published agentic evals + **Arize Phoenix** trajectory tracing. | Tool Correctness = 1.0; Task Completion > 0.8; adversarial kill-switch suite green; **zero unsigned live orders**. |
+| **S3** | Applied AI (agentic + eval) | Paper → live agent; deterministic pre-checks + **verifier agent** + **mandatory HITL** + **tested kill-switch** + micro-sizing; "LLM behind the Wall"; published agentic evals + **Arize Phoenix** trajectory tracing. | Tool Correctness = 1.0; Task Completion > 0.8; adversarial kill-switch suite green; **zero unsigned live orders**; order-intent flip test green (§6.1a). |
 
 > **Optional beyond-portfolio extensions (earned-overlay gated, not required):** intraday strategy plugins (only after swing clears all gates); additional venues; multi-strategy capital allocation. **Not planned:** anything that weakens the HITL gate.
 
@@ -462,6 +500,8 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 - [ ] `signalcore` boundary consistent with `Shared_SignalCore_Boundary_Spec_v1_3.md`
 - [ ] **HITL mandatory on the live path — no confidence-threshold auto-approve anywhere**
 - [ ] Kill-switch adversarially tested, persists across restart, fail-safe default
+- [ ] 🆕 Order-intent classification (§6.1a): bracket legs signed with the entry; flip test deterministic in Layer 1; ADR recorded
+- [ ] 🆕 Stop-and-reverse never auto-fires — strategy hypothesis only (Stage-1 §4.1), HITL on every reversal entry (§6.5)
 - [ ] LLM never sees OOS data (architectural, not procedural)
 - [ ] Earned-overlay applied to the ML layer (beat base-rate or cut)
 - [ ] Success metrics are process-based; **P&L is not a claim**
