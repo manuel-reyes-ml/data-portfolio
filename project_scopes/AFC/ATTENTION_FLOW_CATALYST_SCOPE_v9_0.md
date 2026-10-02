@@ -4,7 +4,7 @@
 ## A Defensible Research System with Statistical Rigor
 
 **Document Version:** 9.0 (🎯 **v10.0 REALIGNMENT** — **downgraded from flagship to Supporting** (production-grade; size ≠ tier); 3-stage arc (S1 eval-first core → S2 financial-data lakehouse + signalcore → S3 GraphRAG research loop); destination Applied AI Engineer → FDE. "All 5 stages / Senior LLM Engineer" framing retired. Prior v8.6/8.7 note archived below.)
-**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §2 Q8 + §5.6 failed-signal follow-through; additive, same version)  
+**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §2 Q8 + §5.6 failed-signal follow-through; additive, same version · 🆕 follow-up: Rule 201 flag sourced from `signalcore.shortsale`)  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
 
@@ -423,7 +423,7 @@ failed_signal_follow_through:
   split_reported:
     - "T6 loaded vs not loaded (squeeze fuel — where a short reversal is most dangerous)"
   executability_flags:
-    - "Rule 201 active: daily low <= 0.90 x prior close -> that day + next trading day"
+    - "Rule 201 restricted: signalcore.shortsale.rule201_state(...).restricted (low <= 0.90 x prior close -> that day + next session); unknown reported as its own bucket"
     - "borrow availability: UNKNOWN historically for sub-$5 names — stated, never assumed"
   output_label: "gross, descriptive — not an executable short return"
   multiple_testing: "no new scenarios; the ~155-scenario surface (§4.8) is unchanged"
