@@ -8,7 +8,7 @@
 **Document Version:** 1.0 (new — created under roadmap v10.0.)
 **Status:** 📋 DRAFT — v10.0-aligned. S2–S3 layers build progressively; the live-execution path is gated behind everything else.
 **Last aligned:** v10.0 (2026 Market Realignment).
-**Last Updated:** August 10, 2026 (CORRECTION 26 propagation). · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §6.1a order-intent classification + §6.5 stop-and-reverse ruling; additive, same version).
+**Last Updated:** August 10, 2026 (CORRECTION 26 propagation). · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §6.1a order-intent classification + §6.5 stop-and-reverse ruling; additive, same version) · 🆕 follow-up: boundary-spec references repointed to `_v1_5`; Rule 201 check sourced from `signalcore.shortsale`.
 
 ---
 
@@ -60,7 +60,7 @@
 
 **Identity note (v10.0):** roadmap v10.0 labels Crucible an *intraday* execution platform; this scope's **multi-timeframe, swing-first** on-ramp is retained as the lower-risk Phase-1 path, with intraday plugins as later phases. Recommend reconciling the roadmap wording to **"multi-timeframe (swing → intraday)"**.
 
-**Relationship to AFC:** AFC = **read-only** small-cap swing *research* (epistemic safety — faithfulness). Crucible = liquid *execution* (consequential safety — money moves). ~70% shared engineering spine via **`signalcore`**; see `Shared_SignalCore_Boundary_Spec_v1_3.md`.
+**Relationship to AFC:** AFC = **read-only** small-cap swing *research* (epistemic safety — faithfulness). Crucible = liquid *execution* (consequential safety — money moves). ~70% shared engineering spine via **`signalcore`**; see `Shared_SignalCore_Boundary_Spec_v1_5.md`. *(🆕 reference updated from `_v1_3`, October 2026)*
 
 **🆕 Environment & packaging (v10.0 CORRECTION 13):** **uv (Astral)** is the default package/env manager across every project — committed `uv.lock`, `uv sync --frozen` in CI/Docker for byte-reproducible installs. **Conda is a conditional for Crucible *only*:** adopt it **only if** the stack grows heavy compiled numerical / GPU backends (TA-Lib, CUDA/cuDF, MKL/BLAS-linked scientific wheels) where Conda's binary channels beat PyPI wheels; otherwise stay uv-only. Source: Anaconda's free *Conda Basics* (the *cert* is paid-gated — learning evidence, not a recruiter credential). Never mix resolvers in one environment.
 
@@ -204,7 +204,7 @@ The shared spine with AFC (~70% overlap). Treated as a **real library**, not a f
 
 - Semantic versioning; breaking changes are breaking releases
 - Its own test suite, `py.typed`, ruff/mypy, published changelog
-- **Boundary contract** defined in `Shared_SignalCore_Boundary_Spec_v1_3.md` — status-neutral, ownership-explicit
+- **Boundary contract** defined in `Shared_SignalCore_Boundary_Spec_v1_5.md` — status-neutral, ownership-explicit *(🆕 reference updated from `_v1_3`, October 2026)*
 - Consumers (AFC, Crucible) pin versions; neither reaches into the other's internals
 
 > **Why this reads as senior:** extracting shared primitives into a versioned, tested library — rather than copy-pasting between two projects — is exactly the "system design + trade-off awareness" signal that separates a portfolio from a pile of scripts.
@@ -233,7 +233,7 @@ The shared spine with AFC (~70% overlap). Treated as a **real library**, not a f
 
 **Sequencing.** All four are **S2**, layered onto components that already exist — the broker interface (5.x), the medallion lakehouse (5.1), the `signalcore.data` accessor, and the NautilusTrader migration. **Priority within S2, if hours are scarce: #3 → #4 → #1 → #2.** Item 3 strengthens the integrity spine that everything else rests on; item 4 is nearly free because the engine already provides the substrate; items 1 and 2 are the two that add genuinely new surface area.
 
-**Boundary note.** None of these four belong in `signalcore`. FIX, the event loop, and latency budgets are **execution concerns — Crucible only**; AFC is read-only and never executes. The TSDB is a **backend behind** the `signalcore.data` accessor, never a dependency of it. The bitemporal contract *is* `signalcore.data`'s job and is specified there. See `Shared_SignalCore_Boundary_Spec_v1_3.md` (**now at header version v1.4** — filename unchanged per the standing convention that the version lives in the document header) §2, §4 and §7.
+**Boundary note.** None of these four belong in `signalcore`. FIX, the event loop, and latency budgets are **execution concerns — Crucible only**; AFC is read-only and never executes. The TSDB is a **backend behind** the `signalcore.data` accessor, never a dependency of it. The bitemporal contract *is* `signalcore.data`'s job and is specified there. See `Shared_SignalCore_Boundary_Spec_v1_5.md` (header version v1.5 — filename and header now match) §2, §4 and §7. *(🆕 reference updated from `_v1_3`, October 2026)*
 
 ---
 
@@ -315,7 +315,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 **Why it is not a safeguard.**
 - A reversal **adds exposure at the moment the system has just been shown wrong**. It is a second bet, commonly sized at double the original order, which works directly against Layer 5 micro-sizing.
 - **The evidence is conditional.** Stop-loss rules reduce expected return when returns follow a random walk and add value only under momentum or regime-switching (Kaminski & Lo, *When Do Stop-Loss Rules Stop Losses?*, Journal of Financial Markets, 2014). A reversal is a stronger bet on that same momentum assumption; in range-bound markets every false flip is paid twice — the exit loss plus a new position facing the same chop.
-- **Short-side frictions the paper gate cannot see:** the SEC **Rule 201** circuit breaker (a ≥10% decline from the prior close restricts short sales to prices above the national best bid for the rest of that day and the next), borrow availability / locates, and borrow fees. Alpaca's paper environment does not simulate locates or borrow fees, so **a short-side strategy's paper gate is not, on its own, evidence of live executability** (see §11).
+- **Short-side frictions the paper gate cannot see:** the SEC **Rule 201** circuit breaker (a ≥10% decline from the prior close restricts short sales to prices above the national best bid for the rest of that day and the next — 🆕 computed once, for both projects, by `signalcore.shortsale.rule201_state`; Crucible owns what to do about it), borrow availability / locates, and borrow fees. Alpaca's paper environment does not simulate locates or borrow fees, so **a short-side strategy's paper gate is not, on its own, evidence of live executability** (see §11).
 
 **If `SAR-on-stop` ever reaches the execution path:** every reversal entry is a **new risk-increasing proposal** → pre-checks → verifier → 👤 sign-off. It never auto-fires, never inherits the stopped trade's signature, and is never sized above the parent position.
 
@@ -497,7 +497,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 - [ ] End-state architecture matches the v10.0 execution-safety flagship claim
 - [ ] Integrity spine (Wall, vault, ledger, PIT, walk-forward, parity gate) is structural
 - [ ] Gate criteria pre-registered before tests run
-- [ ] `signalcore` boundary consistent with `Shared_SignalCore_Boundary_Spec_v1_3.md`
+- [ ] `signalcore` boundary consistent with `Shared_SignalCore_Boundary_Spec_v1_5.md` *(🆕 reference updated from `_v1_3`, October 2026)*
 - [ ] **HITL mandatory on the live path — no confidence-threshold auto-approve anywhere**
 - [ ] Kill-switch adversarially tested, persists across restart, fail-safe default
 - [ ] 🆕 Order-intent classification (§6.1a): bracket legs signed with the entry; flip test deterministic in Layer 1; ADR recorded
