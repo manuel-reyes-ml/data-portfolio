@@ -6,7 +6,7 @@
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
 **Document Version:** 3.1 (🎯 **STAGE-1 REFOCUS** — repositioned as the Stage-1 build sheet; Phase 1 (backtest engine + integrity spine) is the S1 deliverable. S2 lakehouse and S3 paper→live agent architecture move to the Full-Production companion. Prior v3.0 note follows.) — v3.0 note: (🎯 **v10.0 REALIGNMENT** — restored **lead Flagship**; 3-stage arc (S1 backtest/integrity → S2 market-data lakehouse + signalcore-as-library → S3 paper→live agent w/ HITL + kill-switch). Destination Applied AI Engineer → FDE. "First project" framing retired; intraday-vs-swing identity flagged for roadmap reconciliation. Prior v2.6 note archived below.)
-**Last Updated:** August 10, 2026
+**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** propagation — `SAR-on-stop` backlog hypothesis §4.1 + order-intent pointers; additive, same version)
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
 **Codename:** **Crucible** — the vessel where raw material is subjected to extreme heat until only what's pure survives. Every strategy must survive the crucible of backtest → paper → live before it touches real money.
@@ -94,6 +94,8 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 **v2.4 → v2.5 (prior revision):** re-synced the **§Courses & Certifications** reference to roadmap v8.6; confirmed GraphRAG/Neo4j is **N/A for Crucible** (liquid universe — no graph retrieval); v8.5 local-first toolchain already reflected. No functional scope changes.
 
 **v2.5 → v2.6 (this revision):** added the **Agentic Loop Spec** (§2 intro) per roadmap v8.8's Loop Engineering addition — names the two-speed execution loop, its verifier (3-gate/parity/OOS-vault/overfitting-ledger), and the **mandatory human sign-off + kill-switch on the LIVE path** (irreversible action). No other functional scope changes.
+
+**v3.1 additive (October 2026 — roadmap v10.0 CORRECTION 45, same version):** adds (1) **`SAR-on-stop`** as strategy-roadmap row 7 with a **pre-registered hypothesis spec** (§4.1) — stop-and-reverse is tested as a *strategy*, never adopted as a safeguard; (2) pointers from the Phase-2 risk gate's brackets and the Phase-3 guardrails to the Full-Production **order-intent classification** (§6.1a there) — bracket legs are signed with the entry and can never open or flip a position; (3) short-side regulatory notes (Rule 201, borrow/locates, the paper-gate blind spot) in §9; (4) a §13 risk row, a Phase-3 success metric and Locked Decision #15. **Phase-1 build scope unchanged.**
 
 ---
 
@@ -307,10 +309,51 @@ class SWB_TrendContinuation(_BaseStrategy):
 | 4 | VWAP Reclaim / Rejection | System v2 playbooks | Later (intraday) |
 | 5 | Failed Breakout (Trap) | System v2 (4/5 confirmations) | Later (intraday) |
 | 6 | Anchored-VWAP (Earnings-gap) | System v2 pilot | Later (intraday) |
+| 7 | **SAR-on-stop** — reversal overlay on a parent's stop-out 🆕 | CORRECTION 45 evaluation (§4.1) | **Backlog** — only after its parent strategy holds a validated OOS verdict; **never Phase 1** |
 
 The **comparison engine** runs all registered strategies through the identical harness and ranks them on out-of-sample, regime-tagged expectancy. Each strategy must clear the crucible **independently** (a playbook doesn't go live just because another one did).
 
 > **Anti-drift bright line (carried from the SW-A v3 / SW-B docs):** one ticker = one playbook per trade. A mandatory-VCP + RS ≥ 80 pivot breakout logs as **SW-B**; a pullback-to-MA reclaim or non-VCP base breakout with RS 70–79 logs as **SW-A v3**. The leaderboard must not double-count the same chart in both.
+
+### 4.1 `SAR-on-stop` — pre-registered hypothesis (backlog) 🆕 *(roadmap v10.0 CORRECTION 45, October 2026)*
+
+**Origin.** Proposed as a "safeguard": if the original buy/short decision is wrong and price runs the other way, fire an order in the opposite direction to capture the move. **Ruling (CORRECTION 45):** the **protective stop** is adopted — bracket legs signed with the entry (Full-Production §6.1a). The **reversal** is not a safeguard but a **second bet**, so it is specified here as a hypothesis that must earn its way through the crucible like any other plugin. A rejected verdict is a legitimate, publishable outcome — it goes to the overfitting ledger.
+
+```yaml
+sar_on_stop:
+  type: overlay plugin              # wraps a registered parent; the parent's own logic is untouched
+  parents: [swa_v3, swb]            # each parent tested independently; never pooled
+  hypothesis: >
+    On a parent stop-out, opening the opposite position produces higher out-of-sample
+    expectancy, after costs, than the parent's exit-to-flat on the identical entry set.
+  baseline: "parent strategy, exit-to-flat, identical signals"   # the only comparison that matters
+  trigger: "parent stop-loss fill only (not target, not time exit)"
+  reversal_leg:
+    entry: "next bar open after the stop fill"   # daily bars: no intrabar fills; gap-through modeled
+    size: "<= parent position size"              # no doubling
+    exits: "own stop + target/time exit, fixed in config BEFORE the run"
+    chain: "one reversal per parent trade; a stopped reversal exits to flat and never re-reverses"
+  exclusions:                       # pre-registered
+    - "Rule 201 active: daily low <= 0.90 x prior close -> that day + next trading day"
+    - "not shortable / not easy-to-borrow at decision time (unmodeled in backtest; see notes)"
+  costs:
+    - "standard slippage/spread model"
+    - "borrow cost modeled on the short leg; ETB vs HTB recorded"
+  pass_criteria:                    # same bar as §7 "validated", plus the marginal test
+    - ">= 30 reversal trades per scenario; bootstrap 95% CI"
+    - "parent+SAR beats parent exit-to-flat on OOS expectancy after costs; CI of the difference excludes 0"
+    - "max drawdown not worse than baseline beyond a tolerance fixed before the run"
+  falsifier: "fails any criterion OOS -> logged dead at the backtest gate in the overfitting ledger; never re-tuned"
+```
+
+**Integrity notes.**
+- **Regime is reported, never retro-fitted.** The evidence says reversal logic pays only in trending regimes and bleeds in chop. Results are *reported* by regime tag; adding a regime gate after seeing results is a **new hypothesis** and spends overfitting budget.
+- **Historical borrow status is not in the free data stack**, so the backtest cannot honestly know whether a past short was locatable. The verdict must state this limitation, and the paper gate cannot close it (Alpaca paper does not simulate locates or borrow fees). **A live borrow-status check is a precondition of any short leg reaching the paper gate.**
+- **Squeeze context is not a default exclusion here.** Crucible's liquid universe (ADV ≥ 1M) imports nothing from `signalcore.shortinterest` (Boundary Spec §4). *Falsifier:* if `SAR-on-stop` is ever run on a lower-liquidity universe, add a short-interest exclusion — a new `signalcore` consumer, recorded by ADR.
+- **Engine prerequisite.** SW-A v3 and SW-B are long-side; a reversal needs short-position support in the harness (side on `Signal`, short fills, a borrow-cost field). If the Phase-1 harness lacks it, adding it is an **engine change decided by ADR when SAR is scheduled** — not a plugin-level change, and not a Phase-1 task.
+- **Execution path.** Every reversal entry is a **new risk-increasing proposal** → pre-checks → verifier → 👤 sign-off. It never auto-fires and never inherits the stopped trade's signature (Full-Production §6.1a / §6.5).
+- **Ledger hygiene.** Reversal trades log under `sar_on_stop:<parent>`, preserving the one-ticker-one-playbook bright line — the parent's losing trade is never re-labeled.
+- **Upstream evidence (optional).** AFC §5.6 reports what happens after failed small-cap catalysts. It is **directional only** — a different universe — and never substitutes for this test.
 
 ---
 
@@ -470,7 +513,7 @@ Machine learning is an **overlay you earn, never a foundation you need.** The de
 ### Two-Speed Architecture — swing cadence
 For swing, the deterministic core runs **once per day on the close**, not sub-second:
 
-- **Decision loop (deterministic, EOD):** the cross-sectional stage re-ranks sectors/RS; the strategy plugin generates signals; a rules-based risk gate sizes and brackets orders. **No LLM here.** Positions are held multi-day (`multiday_hold`) — **no EOD flatten**; overnight/weekend gap risk is part of the risk gate.
+- **Decision loop (deterministic, EOD):** the cross-sectional stage re-ranks sectors/RS; the strategy plugin generates signals; a rules-based risk gate sizes and brackets orders (🆕 bracket legs are signed *with* the entry and are risk-reducing by definition — Full-Production §6.1a, CORRECTION 45). **No LLM here.** Positions are held multi-day (`multiday_hold`) — **no EOD flatten**; overnight/weekend gap risk is part of the risk gate.
 - **Slow loop (agentic, daily/weekly):** the LLM crew operates around it:
 
 | Agent | Cadence | Job (never overrides risk limits) |
@@ -503,6 +546,7 @@ The live behavior of "monitor A+/A setups by factor, drop the decayed ones, exec
 - Agent crew (LangGraph) with structured outputs, guardrails, observability, DeepEval gates in CI.
 - Minimum 50 paper trades per strategy before any promotion decision.
 - **Kill switch** + daily-max-loss + max-trades enforced in code, not prompts.
+- 🆕 **Order-intent classifier** (risk-reducing vs risk-increasing; deterministic flip test) enforced in code from the first paper trade, so the live gate inherits a tested control (Full-Production §6.1a — CORRECTION 45).
 
 ---
 
@@ -520,6 +564,7 @@ Live status is earned per strategy, independently, after Phase 2 parity holds. G
 - Real-time monitoring dashboard + alerting (fills, slippage vs. modeled, drift, agent-cost).
 - Reconciliation: live fills vs. modeled fills, logged daily.
 - Idempotent order management; crash-safe state; no duplicate orders on restart.
+- 🆕 Order-intent classification enforced in the Python core: exits can never open or flip a position; any reversal is a new signed proposal (Full-Production §6.1a — CORRECTION 45).
 
 ### ⚠️ Regulatory & Risk Notes (verify before Phase 3 — not legal/financial advice)
 - **PDT is largely moot for swing.** Swing trades are not day trades, so the Pattern Day Trader framework rarely binds the Phase 1 swing strategies. (Separately, the SEC approved eliminating the $25k PDT minimum effective June 4, 2026, replaced by a risk-based intraday margin standard, with broker compliance phasing through Oct 20, 2027 — relevant later for the intraday plugins. Verify your broker's status before any intraday live trading.)
@@ -528,6 +573,7 @@ Live status is earned per strategy, independently, after Phase 2 parity holds. G
 - **Broker API terms.** Confirm automated trading is permitted under Alpaca's and Schwab's API ToS.
 - **Social-data ToS.** Forward-capture must respect each platform's API terms; do not build live execution on ToS-violating scraped data.
 - **Leakage caveat carries through.** A clean backtest that wasn't reproducible live is the #1 sign of hidden look-ahead — the parity gates exist to catch this.
+- 🆕 **Short-side frictions (CORRECTION 45).** Any short leg — including a `SAR-on-stop` reversal (§4.1) — is subject to the **SEC Rule 201** circuit breaker (after a ≥10% decline from the prior close, short sales are restricted to prices above the national best bid for the rest of that day and the next trading day), to borrow availability (locates for hard-to-borrow names) and to borrow fees. Alpaca's paper environment does not simulate locates or borrow fees, so paper results for short legs overstate live executability. Verify the broker's current shorting rules before Phase 3.
 
 ---
 
@@ -720,6 +766,7 @@ Standard: **`structlog` over stdlib `logging`** via `ProcessorFormatter` (not "o
 | AI cost overruns | Local-first (Qwen3) default; slow-loop cadence; caching; observability |
 | Silent failure / no provenance | Per-workflow structured logs + run manifests (git SHA, config + data-version hash, seeds); reconciliation record; secrets never logged (§12.1) |
 | Forecasting-wing false discovery | Quarantined / air-gapped from live; separate OOS vault + overfitting ledger; purged-CV + embargo; economic (not just statistical) metrics; deflated Sharpe; trades only by clearing the full crucible as a plugin (§19) |
+| **Stop-and-reverse whipsaw** 🆕 | Not a safeguard — backlog hypothesis only (§4.1); baseline = exit-to-flat on identical entries; one reversal per trade; size ≤ parent; regime reported, not retro-fitted; HITL on every reversal entry (CORRECTION 45) |
 
 ---
 
@@ -729,7 +776,7 @@ Standard: **`structlog` over stdlib `logging`** via `ProcessorFormatter` (not "o
 
 **Phase 1:** look-ahead + cross-sectional-PIT audits pass; ≥80% test coverage; CI green; every leaderboard entry ≥30 trades + bootstrap CI; overfitting budget present; **both SW-A v3 and SW-B carried to a documented OOS verdict**; sector gate and sentiment tag judged by parallel-tag attribution.
 **Phase 2:** engine-parity gate passed; paper-vs-backtest parity within tolerance over ≥50 trades; sentiment forward-capture running; agent crew passes DeepEval gates; kill switch + limits enforced.
-**Phase 3:** live-vs-paper parity over 30–50 micro trades; reconciliation clean; zero limit breaches; full observability; works against both Alpaca and TOS live adapters.
+**Phase 3:** live-vs-paper parity over 30–50 micro trades; reconciliation clean; zero limit breaches; full observability; works against both Alpaca and TOS live adapters; 🆕 zero order-intent misclassifications (Full-Production §6.1a).
 
 ---
 
@@ -837,6 +884,7 @@ The base rate for retail next-day **direction** prediction beating costs is **lo
 | 12 | **Prediction engine** | Deterministic conditional base-rate / calibrated ML as a **research metric**; LLM **analyzes, does not predict**; promotion-gated; sizing/confirmation only, **never the sole trigger** |
 | 13 | **Live factor monitoring** | Deterministic engine **scores, drops, and executes**; LLM **analyzes and proposes** — LLM is never in the trade loop (Principle #2) |
 | 14 | **Forecasting wing** | Stage-3, **quarantined** return/volatility-prediction research; air-gapped from live; trades only by clearing the full crucible as a plugin; a rigorous negative result is an acceptable outcome |
+| 15 | **Stop-and-reverse** 🆕 | Protective stop = **bracket leg signed with the entry** (risk-reducing); **reversal = backlog strategy hypothesis `SAR-on-stop` (§4.1), never a safeguard**; every reversal entry requires **HITL** (CORRECTION 45) |
 
 Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. Nothing in your roadmap or AFC scope is modified by this document.
 
