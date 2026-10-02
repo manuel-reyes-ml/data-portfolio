@@ -3,7 +3,7 @@
 ## SEC-Grounded Faithfulness Benchmark for Small-Cap Filing Analysis
 
 **Document Version:** 1.3 (🎯 **v10.0 ALIGNMENT** — parent AFC scope repointed to **v9.0** (now Supporting, 3-stage, Applied AI Engineer → FDE). This vertical slice = AFC's Stage-1 eval-first core; still additive, build scope unchanged. Prior v1.2 note archived below.)
-**Last Updated:** August 10, 2026
+**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (CORRECTION 45 propagation — deferred-set row only; build scope unchanged)
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
 **Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` (v9.0, Supporting) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.4.
@@ -59,6 +59,7 @@
 | **v1.0 (OFFICIAL)** | Draft approved. **Added §4.3 — Perturbation Error Catalog** (10 error types × 3 difficulty tiers, worked examples, per-detector expectations, labeling schema, composition target). Cross-referenced from §4.2 and §5 deliverable #8. |
 | **v1.1 (OFFICIAL)** | **Added §14** — Future Extension: News & the "Faithful-but-Wrong" Problem (additive, future work). **Added §15** — Courses & Certifications (roadmap-aligned + researched 2026 additions, learn-while-building map). |
 | **v1.2 (OFFICIAL)** | **Extended §14** — added the **verifiable-quantitative source category** (FINRA short interest): a non-authoritative carrying medium whose underlying quantity *is* checkable against an authoritative structured KB. Corrects the implicit "non-SEC = unverifiable" assumption; strengthens the extension taxonomy. Future-work only — **v1.x build scope unchanged.** |
+| **v1.3 addendum (October 2026 — same version)** | Parent AFC v9.0 gained §2 Q8 + §5.6 (**Failed-Signal Follow-Through**, roadmap v10.0 CORRECTION 45). It is backtest analysis over price outcomes, so it joins the **deferred** set (§6). **This slice's build scope is unchanged.** |
 
 ---
 
@@ -232,6 +233,7 @@ These are **not cancelled** — they remain the rest of AFC and are built after 
 | T2 (Wiki), T3 (news), T4 (volume) triggers | rest of Phase 1A #7 | Not SEC-verifiable; would weaken FActScore's authoritative-source property |
 | DuckDB backtest schema, backtest engine, walk-forward, de-clustering | Phase 1A #8, #9 | Pure finance-research engine; zero eval value |
 | Bootstrap CI, leaderboard, signal generator | Phase 1A #10, #11, #12 | Backtest outputs, not filing claims |
+| Failed-signal follow-through 🆕 (§2 Q8 / §5.6) | AFC v9.0 §5.6 (CORRECTION 45) | Backtest analysis over price outcomes; zero eval value |
 | Streamlit dashboard (all pages), PandasAI, Streamlit Cloud deploy, 60s demo video | Phase 1B #1–6, #9, #12, #13 | UI/serving layer; the benchmark report is the artifact instead |
 
 ---
