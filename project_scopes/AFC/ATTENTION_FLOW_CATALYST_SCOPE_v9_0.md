@@ -4,7 +4,7 @@
 ## A Defensible Research System with Statistical Rigor
 
 **Document Version:** 9.0 (🎯 **v10.0 REALIGNMENT** — **downgraded from flagship to Supporting** (production-grade; size ≠ tier); 3-stage arc (S1 eval-first core → S2 financial-data lakehouse + signalcore → S3 GraphRAG research loop); destination Applied AI Engineer → FDE. "All 5 stages / Senior LLM Engineer" framing retired. Prior v8.6/8.7 note archived below.)
-**Last Updated:** August 10, 2026  
+**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §2 Q8 + §5.6 failed-signal follow-through; additive, same version)  
 **Status:** ✅ APPROVED  
 **Author:** Manuel Reyes  
 
@@ -125,6 +125,7 @@
 5. Does post-dilution-close create higher probability setups?
 6. Are results stable across train vs test periods (walk-forward)?
 7. **Does a loaded short-squeeze context (high short-%-of-float + low float + high days-to-cover) lift the hit rate of catalysts T1–T5?** ⭐ NEW
+8. **When a top-ranked catalyst *fails*, does price keep going the wrong way (follow-through) or snap back (reversion)?** 🆕 *(CORRECTION 45 — descriptive and read-only; see §5.6)*
 
 **Hypothesis:** Combining multiple alternative data signals (insider buying + attention spike + volume accumulation + dilution-clear state) will produce higher hit rates than any single signal alone, and these results will be stable out-of-sample.
 
@@ -403,6 +404,33 @@ multiple_testing_controls:
     threshold: "> 0.5 correlation = stable"
 ```
 
+### 5.6 Failed-Signal Follow-Through (descriptive, read-only) 🆕 *(roadmap v10.0 CORRECTION 45, October 2026)*
+
+> **Why this exists.** CORRECTION 45 evaluated a stop-and-reverse "safeguard" and placed it in **Crucible** as a backlog strategy hypothesis (`SAR-on-stop`, Crucible Stage-1 §4.1) — AFC never executes (see the read-only note under *Skills Required*). AFC's contribution is the cheapest honest evidence: *what happens after a catalyst fails?* If failed small-cap catalysts mostly **revert**, a reversal is a losing idea before any execution work is spent on it.
+
+```yaml
+failed_signal_follow_through:
+  status: "descriptive analysis — NOT a trigger, NOT a scenario, NOT in the leaderboard"
+  scope: "the top-10 combinations selected on the TRAINING period (§5.4) — no new scenarios"
+  failure_definition:
+    rule: "close-to-close return from entry <= -F% inside the 3-day window, before +10% is reached"
+    F: "fixed in config BEFORE the run; logged; never tuned after results"
+  measurement:
+    anchor: "next trading day open after the failure close (same convention as §5.1)"
+    horizon: "3 trading days, close-to-close"
+    reported: "mean / median forward return, % continuing beyond -F%, bootstrap 95% CI"
+    period: "TEST period only (§5.4 rules apply)"
+  split_reported:
+    - "T6 loaded vs not loaded (squeeze fuel — where a short reversal is most dangerous)"
+  executability_flags:
+    - "Rule 201 active: daily low <= 0.90 x prior close -> that day + next trading day"
+    - "borrow availability: UNKNOWN historically for sub-$5 names — stated, never assumed"
+  output_label: "gross, descriptive — not an executable short return"
+  multiple_testing: "no new scenarios; the ~155-scenario surface (§4.8) is unchanged"
+```
+
+**How the result is used.** It is **directional input only** to Crucible's `SAR-on-stop` hypothesis. AFC's universe (sub-$5, illiquid) is not Crucible's (liquid, ADV ≥ 1M), so a finding here never transfers as a verdict — Crucible tests on its own universe. **The LLM analyst may summarize this table; it never turns it into a trade recommendation** (§11 guardrails). *Falsifier: if the failure threshold `F` cannot be fixed before the run without looking at test-period data, drop §5.6 rather than weaken §5.4.*
+
 ---
 
 ## 6. Data Integrity & Bias Controls
@@ -572,6 +600,7 @@ phase_1a_decision:
 | 13 | Data Quality | Automated checks |
 | 14 | Documentation | README, .cursor/rules/ |
 | 15 | Test Suite | >80% coverage |
+| 16 | Failed-Signal Follow-Through 🆕 | §5.6 table for the top-10 combos, test period, CI + Rule 201 flag; **stretch — cut first if Week 6 overruns** (CORRECTION 45) |
 
 ### 9.2 Week-by-Week
 
@@ -582,7 +611,7 @@ phase_1a_decision:
 | 3 | T1-T6 triggers, state machine |
 | 4 | DuckDB schema, backtest core, de-clustering |
 | 5 | Walk-forward, bootstrap CI, combinations |
-| 6 | Signal generator, quality checks, docs |
+| 6 | Signal generator, quality checks, docs (+ §5.6 follow-through report — stretch) |
 
 ---
 
@@ -1179,6 +1208,7 @@ attention-flow-catalyst/
 | Bootstrap CI | 95% on all |
 | Test coverage | >80% |
 | CI | All green |
+| Failed-signal follow-through 🆕 | Reported with CI; `F` fixed pre-run; never in the leaderboard |
 
 ### Phase 1B
 
@@ -1206,6 +1236,7 @@ attention-flow-catalyst/
 | AI hallucinations | SQL transparency, Pydantic structured outputs, governance as code |
 | Provider lock-in | Provider-agnostic abstraction layer (swap via config) |
 | AI cost overruns | Token/cost observability, rate limits, caching |
+| Follow-through table read as a short signal 🆕 | Labeled descriptive/gross; Rule 201 + borrow flags; universe-mismatch note; execution lives only in Crucible (§5.6 — CORRECTION 45) |
 
 ---
 
