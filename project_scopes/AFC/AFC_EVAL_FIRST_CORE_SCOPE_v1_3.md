@@ -4,9 +4,9 @@
 
 **Document Version:** 1.3 (🎯 **v10.0 ALIGNMENT** — parent AFC scope repointed to **v9.0** (now Supporting, 3-stage, Applied AI Engineer → FDE). This vertical slice = AFC's Stage-1 eval-first core; still additive, build scope unchanged. Prior v1.2 note archived below.)
 **Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (CORRECTION 45 propagation — deferred-set row only; build scope unchanged)
-**Status:** ✅ APPROVED
+**Status:** ⛔ **SUPERSEDED** (October 2, 2026 — decision D-6) by `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`, which absorbs this slice as Stage 1 Phase 1 and corrects it (dataset size, calibration/test split, judge independence, FActScore protocol re-implementation on Python 3.14, CI tiering, single-repo layout). **Kept unchanged below for history; do not build from it.** · *Previously:* ✅ APPROVED
 **Author:** Manuel Reyes
-**Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` (v9.0, Supporting) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.4.
+**Parent document:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` *(🆕 renamed October 2, 2026 to `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md` — AFC's Full-Production scope; section numbers preserved)* (v9.0, Supporting) — **unchanged.** This slice is *additive*: it re-sequences a subset of AFC to build the AI/eval core first. It does not modify, replace, or contradict AFC v8.4.
 
 ---
 
@@ -59,6 +59,7 @@
 | **v1.0 (OFFICIAL)** | Draft approved. **Added §4.3 — Perturbation Error Catalog** (10 error types × 3 difficulty tiers, worked examples, per-detector expectations, labeling schema, composition target). Cross-referenced from §4.2 and §5 deliverable #8. |
 | **v1.1 (OFFICIAL)** | **Added §14** — Future Extension: News & the "Faithful-but-Wrong" Problem (additive, future work). **Added §15** — Courses & Certifications (roadmap-aligned + researched 2026 additions, learn-while-building map). |
 | **v1.2 (OFFICIAL)** | **Extended §14** — added the **verifiable-quantitative source category** (FINRA short interest): a non-authoritative carrying medium whose underlying quantity *is* checkable against an authoritative structured KB. Corrects the implicit "non-SEC = unverifiable" assumption; strengthens the extension taxonomy. Future-work only — **v1.x build scope unchanged.** |
+| **⛔ Superseded (October 2, 2026 — D-6)** | Replaced for build purposes by the AFC Stage-1 build sheet v9.1; only the harness tree was corrected in place (S-08 / X-01). |
 | **v1.3 addendum (October 2026 — same version)** | Parent AFC v9.0 gained §2 Q8 + §5.6 (**Failed-Signal Follow-Through**, roadmap v10.0 CORRECTION 45). It is backtest analysis over price outcomes, so it joins the **deferred** set (§6). **This slice's build scope is unchanged.** |
 
 ---
@@ -277,8 +278,6 @@ afc-eval-core/
 ├── README.md                      # benchmark writeup + findings + demo GIF
 ├── .cursor/rules/
 ├── .opencode/                     # OpenCode side of the dual harness (mirrors .cursor/; portable across editors)
-├── .claude/                      # Claude Code side — generated from the same shared prompt layer
-├── hooks/guard.py                # PreToolUse — blocks git commit/push; commits stay human
 │   ├── agents/                    # subagent defs — filename = agent name (per OpenCode spec)
 │   │   ├── docs-fix.md            # repairs drift in README / scope docs
 │   │   ├── docs-sync.md           # keeps the 3 public docs aligned to the roadmap
@@ -299,6 +298,9 @@ afc-eval-core/
 │   ├── .gitignore                 # ignores node_modules/ (harness deps installed, not committed)
 │   ├── package.json               # pinned OpenCode plugin dependencies
 │   └── package-lock.json          # committed — reproducible harness
+├── .claude/                      # Claude Code side — generated from the same shared prompt layer
+├── hooks/
+│   └── guard.py                  # PreToolUse — blocks git commit/push; commits stay human  🆕 (tree nesting corrected — review X-01 / S-08)
 ├── AGENTS.md                      # standing instructions; combined with opencode.jsonc instructions[]
 ├── opencode.jsonc                 # harness config — model routing, permissions, instructions[]
 ├── .github/workflows/ci.yml       # lint, type, test, eval gate
