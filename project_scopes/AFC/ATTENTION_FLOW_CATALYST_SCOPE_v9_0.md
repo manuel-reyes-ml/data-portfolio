@@ -1,12 +1,27 @@
-# 🚀 ATTENTION-FLOW CATALYST — Complete Project Scope v9.0
+# 🚀 ATTENTION-FLOW CATALYST (AFC) — Full Production Scope v9.2  (🧩 SUPPORTING · READ-ONLY RESEARCH + EVAL SPINE)
 
-## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
-## A Defensible Research System with Statistical Rigor
+## SEC-Grounded Faithfulness Benchmark + Read-Only Trigger Event Study for Small-Cap Filings
+## "Finance is the substrate; faithfulness measurement is the method — and every trigger decision is tested against history."
 
-**Document Version:** 9.0 (🎯 **v10.0 REALIGNMENT** — **downgraded from flagship to Supporting** (production-grade; size ≠ tier); 3-stage arc (S1 eval-first core → S2 financial-data lakehouse + signalcore → S3 GraphRAG research loop); destination Applied AI Engineer → FDE. "All 5 stages / Senior LLM Engineer" framing retired. Prior v8.6/8.7 note archived below.)
-**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §2 Q8 + §5.6 failed-signal follow-through; additive, same version · 🆕 follow-up: Rule 201 flag sourced from `signalcore.shortsale`)  
-**Status:** ✅ APPROVED  
-**Author:** Manuel Reyes  
+> **Companion:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md` — the **Stage-1 build sheet** (Phase 1: eval-first faithfulness benchmark; Phase 2: event-study backtest v1), with code-level detail, week-by-week tasks and the engineering reference (Appendix A). **This document is the end-state scope** for the full S1 → S3 arc: canonical **methodology** (§2–§8), the **dashboard and guardrail design** (§10–§11), and the **S2 lakehouse** (§7.4) and **S3 research-agent** (§16A) architectures. It is design-level; it does not duplicate the build sheet. Shared-primitives contract: `Shared_SignalCore_Boundary_Spec_v1_5.md`.
+
+**Document Version:** 9.2 (🎯 **FULL-PRODUCTION PROMOTION** — the complete AFC scope v9.0 becomes AFC's Full-Production document, mirroring Crucible's split (`CRUCIBLE_SCOPE_v3_1_STAGE1.md` + `CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md`). Renamed with `git mv` from `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` so history is preserved. **Section numbers §1–§19 are preserved** so every existing cross-reference ("v9.0 §5.4", "§10–§11", …) still resolves.)
+**Last Updated:** October 2, 2026
+**Status:** ✅ APPROVED — Full-Production role confirmed by owner (decision D-6, completed).
+**Last aligned:** Roadmap v10.0 through **CORRECTION 46** (+ addendum).
+**Author:** Manuel Reyes
+
+---
+
+## Changelog
+
+| Version | Change |
+|---|---|
+| v8.0 | Complete methodology scope (Feb 14, 2026). |
+| v9.0 | v10.0 realignment (Aug 10, 2026): Supporting role, 3-stage arc. |
+| v9.0 + C45 | §2 Q8 + §5.6 failed-signal follow-through; Rule 201 via `signalcore.shortsale` (Oct 1, 2026). |
+| v9.0 + C46 (+ addendum) | Backtest retained by decision; positioning amended; S1/S2 trigger split; knowledge time, survivorship, rolling walk-forward + sealed holdout, base-rate lift + BH-FDR; FActScore → protocol re-implementation; PandasAI → validated text-to-SQL; review batch (tree, Dockerfile, CI tiering, thresholds, naming) (Oct 2, 2026). |
+| **v9.2 (this file)** | **Promoted to Full-Production.** Added §1A Vision, §1B Integrity Spine, §1C Platform Architecture, §7.4 S2 knowledge-time lakehouse, §16A S3 read-only research agent, §16B Development Phases, stage-by-stage Tech Stack (§12) and Success Metrics (§17), Approval Checklist. **Build-level content moved, not deleted:** §9 deliverables/weeks → build sheet §7B.8 / §15; §13 pre-commit config → build sheet **Appendix A.1**; §14 logging module → **Appendix A.2**; §15 S1 tree → build sheet §12; §18B dashboard Dockerfile → **Appendix A.3**; §19 weekly timeline → build sheet §15. Each moved section keeps its number here as a design-level summary + pointer. |
 
 ---
 
@@ -21,16 +36,20 @@
 
 **Portfolio role:** 🧩 **Supporting** (production-grade; size ≠ tier) — read-only **GraphRAG financial-research** + **faithfulness ≥ 0.9** eval showcase. **Corrects the prior "flagship" self-label.** In v10.0, **flagship vs supporting = size & emphasis, not a quality tier — every project is production-grade.** Lead projects get new tooling first and are updated continuously as skills grow.
 
+> 🆕 **Document role (v9.2):** this is AFC's **Full-Production** scope — end-state architecture and canonical methodology. **Stage 1 is built from** `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`.
+
 **Stage-evolution arc:**
 
 | Stage | Theme | This project's layer |
 |---|---|---|
-| **S1** | Foundation (GenAI-first core) | Eval-first core (the **AFC Eval-First slice**) — SEC-grounded faithfulness benchmark: filing retrieval + LLM analyst + three-method eval + controlled-perturbation catalog, as a portable benchmark repo. |
-| **S2** | DE/AE hardening | Financial-data lakehouse — EDGAR ingestion + PIT data + **signalcore** primitives + **dbt models** over filings/short-interest + contracts + orchestration (the DE/AE layer beneath the research system). |
+| **S1** | Foundation (GenAI-first core) | Eval-first core (the **AFC Eval-First slice** — 🆕 *(C46 addendum)* superseded by the Stage-1 build sheet `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`, D-6) — SEC-grounded faithfulness benchmark: filing retrieval + LLM analyst + three-method eval + controlled-perturbation catalog, as a portable benchmark repo. 🆕 *(CORRECTION 46)* **Phase 2 — event-study backtest v1** on the triggers that are point-in-time clean with free data: **T1** (insider `P` purchases), **T5** (dilution state) from EDGAR acceptance times, **T4** (volume) from prices — with base-rate lift, false-discovery control and walk-forward from day one. Build sheet: `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`. |
+| **S2** | DE/AE hardening | Financial-data lakehouse — EDGAR ingestion + PIT data + **signalcore** primitives + **dbt models** over filings/short-interest + contracts + orchestration (the DE/AE layer beneath the research system). 🆕 *(CORRECTION 46)* Adds **T2** (Wikipedia), **T3** (news) and **T6** (short interest) once the lakehouse stores each source with its **knowledge time**; the **full combination matrix** runs by the end of S2. |
 | **S3** | Applied AI (RAG/agentic + eval) | **GraphRAG financial-KG hybrid** (Neo4j + ChromaDB) + read-only agentic research loop + eval-suite verifier + faithfulness ≥ 0.9 + Phoenix observability. |
 
 - **Every project's S2 adds:** ingestion → **dbt-tested models (CI-gated)** → **data contracts** (Great Expectations) → warehouse/lakehouse → **Airflow** (idempotent runs) → Docker/**ECS** → monitoring + written **postmortem** → **semantic/metrics layer**.
 - **Every project's S3 adds:** RAG/GraphRAG/agentic layer + **three-layer eval** (per-query metrics · trajectory tracing · drift vs frozen golden set) + **observability (Arize Phoenix, OTel-native, free)** + MCP + **HITL** on irreversible actions.
+
+> 🆕 **Positioning & backtest ruling (roadmap v10.0 CORRECTION 46, October 2026).** AFC **keeps a read-only historical event-study backtest** so any combination of triggers can be tested and trigger decisions are data-driven. The roadmap's positioning line was amended to match: AFC is financial NLP/RAG with an eval spine **plus** a read-only event study that reports **hit-rate lift over a base rate under statistical controls**. It makes **no alpha, Sharpe or return claim** and is still **not a quant project** — résumé bullets and the README describe the methodology (point-in-time data, walk-forward, false-discovery control), never a return figure. **Mandatory controls that come with keeping it:** per-source knowledge time (§6.3); survivorship-aware universe and as-traded screening (§6.1–6.2); a true rolling walk-forward (§5.4); base-rate lift + Benjamini–Hochberg FDR across the combination matrix (§5.5) — with ~155 combinations tested at 5% significance and no real effect anywhere, about 8 would still look like winners by chance. **Stage split:** S1 Phase 2 = T1/T4/T5; S2 adds T2/T3/T6. **S1 primitives** (volume, validation, calendar, Rule 201) are written as a local, **`signalcore`-shaped** module (same signatures as Boundary Spec §2) so the S2 extraction is a move, not a rewrite.
 
 **Production standard (non-negotiable, ALL projects):** business-outcome headline · Mermaid diagram · **C4 Context diagram (+ Container view on lead flagships)** 🆕 · **`docs/adr/` — numbered, immutable Architecture Decision Records (context → decision → consequences)** 🆕 · Dockerfile · eval-metrics table · 15–30s demo GIF · "What I Learned" · **synthetic data only in public repos** · `pyproject.toml` + `uv.lock` + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **🆕 `.pre-commit-config.yaml` — pinned hook set, enforced locally (v10.0 CORRECTION 21)**. *(🆕 C4 + ADR added per roadmap v10.0 CORRECTION 8, July 2026 — additive documentation discipline: the decision-and-defense artifacts Applied-AI/FDE interviews probe; same doc version, no structural change.)* **🆕 Toolchain (v10.0 CORRECTION 14, July 2026):** the C4 diagram and the Mermaid diagram come from **one source** — the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`, version-controlled) and the C4 Context/Container views are exported to **Mermaid** via `structurizr-cli` for the README, so the two never drift. Structurizr Lite is free and self-hosts in Docker (already required); model in Structurizr, render out to Mermaid. Additive; same doc version.* **🆕 Dual agentic harness (July 2026; CORRECTION 42):** every repo carries **both** harnesses — **`.opencode/`** and **`.claude/`** — generated from one shared prompt layer and governed by a single portable **`AGENTS.md`** contract, plus a **`hooks/guard.py`** `PreToolUse` guard that blocks `git commit`/`push` so every commit is human by construction. Concretely, `.opencode/` carries (`agents/` — subagent definitions where the filename becomes the agent name; `commands/` — `/`-invoked slash commands), plus **`AGENTS.md`** and **`opencode.jsonc`** at the root. This mirrors the existing `.cursor/rules/` setup rather than replacing it — OpenCode's `instructions[]` field can load `.cursor/rules/*.md` directly and combines them with `AGENTS.md`, so **one set of standards drives both harnesses** and neither drifts. Tooling discipline, not a portfolio artifact.*
 
@@ -51,29 +70,31 @@
 
 ---
 
+
 ## 📋 Table of Contents
 
-1. [Executive Summary](#1-executive-summary)
+1. [Executive Summary](#1-executive-summary) · **1A** Vision · **1B** Integrity Spine · **1C** Platform Architecture *(new in v9.2)*
 2. [Research Question](#2-research-question)
 3. [Stock Screening Criteria](#3-stock-screening-criteria)
 4. [Trigger Framework](#4-trigger-framework)
-5. [Backtest Methodology](#5-backtest-methodology) ⭐ NEW
-6. [Data Integrity & Bias Controls](#6-data-integrity--bias-controls) ⭐ NEW
-7. [Data Architecture: Lakehouse Design](#7-data-architecture-lakehouse-design) ⭐ ENHANCED
-8. [Market Data Modes](#8-market-data-modes) ⭐ NEW
-9. [Phase 1A Scope — Backtest Engine](#9-phase-1a-scope--backtest-engine-weeks-1-6)
-10. [Phase 1B Scope — AI-Powered Dashboard](#10-phase-1b-scope--ai-powered-dashboard-weeks-7-10)
-11. [AI Guardrails](#11-ai-guardrails) ⭐ NEW
-12. [Tech Stack](#12-tech-stack)
-13. [CI/CD Pipeline](#13-cicd-pipeline)
-14. [Logging & Debugging](#14-logging--debugging) ⭐ NEW
-15. [Project Structure](#15-project-structure)
-16. [Project Evolution (3 Stages)](#16-project-evolution-3-stages)
-17. [Success Metrics](#17-success-metrics)
-18. [Risk Mitigation](#18-risk-mitigation)
-19. [Timeline Summary](#19-timeline-summary)
+5. [Backtest Methodology](#5-backtest-methodology)
+6. [Data Integrity & Bias Controls](#6-data-integrity--bias-controls)
+7. [Data Architecture: Lakehouse Design](#7-data-architecture-lakehouse-design) · **7.4** S2 knowledge-time lakehouse *(new)*
+8. [Market Data Modes](#8-market-data-modes)
+9. [Phase 1A Scope — Backtest Engine](#9-phase-1a-scope--backtest-engine) *(→ build sheet §7B)*
+10. [Research Dashboard — design](#10-research-dashboard--design)
+11. [AI Guardrails](#11-ai-guardrails)
+12. [Tech Stack: Production (by stage)](#12-tech-stack-production-by-stage)
+13. [CI/CD & Pre-commit — standard](#13-cicd--pre-commit--standard) *(code → build sheet Appendix A.1)*
+14. [Logging & Debugging — standard](#14-logging--debugging--standard) *(code → Appendix A.2)*
+15. [Project Structure — end state](#15-project-structure--end-state)
+16. [Project Evolution (3 Stages)](#16-project-evolution-3-stages) · **16A** S3 Research Agent · **16B** Development Phases *(new)*
+17. [Success Metrics (process, not P&L)](#17-success-metrics-process-not-pl)
+18. [Risk Mitigation](#18-risk-mitigation) · 18A. AI Evaluation Layer · 18B. Containers
+19. [Timeline (stage-level)](#19-timeline-stage-level)
 
 ---
+
 
 ## 1. Executive Summary
 
@@ -86,10 +107,10 @@
 | **Data Selection** | Manual stock list | Dynamic screener with survivorship bias controls |
 | **Backtest Method** | Naive "if signal, check return" | Walk-forward validation, de-clustering, confidence intervals |
 | **Storage** | SQLite or CSV | Lakehouse (partitioned Parquet + DuckDB) |
-| **API Calls** | Sequential requests | Async httpx (10-50x faster) |
+| **API Calls** | Sequential requests | Rate-limited, cached collectors — EDGAR via `edgartools` behind an adapter (SEC fair access caps clients at 10 req/s, so concurrency buys nothing there); async `httpx` only for sources that allow it 🆕 *(C46 addendum)* |
 | **AI Architecture** | Single provider, raw text | Provider-agnostic SDK (**Anthropic Claude primary**, Gemini/OpenAI fallback) |
 | **AI Outputs** | Unstructured text responses | Pydantic-validated structured outputs |
-| **AI Features** | Gimmicky chatbot | LLM SDK + PandasAI, SQL-first, guardrails & observability |
+| **AI Features** | Gimmicky chatbot | LLM SDK + **validated text-to-SQL** (sqlglot whitelist, read-only DuckDB), SQL-first, guardrails & observability 🆕 *(CORRECTION 46)* |
 | **Triggers** | News + Volume only | SEC Form 4, Wiki, News, Volume, **Dilution state**, **Squeeze context (short interest + float)** |
 | **Reproducibility** | None | Audit tables, pipeline run logs, version control |
 | **CI/CD** | None | GitHub Actions on every PR |
@@ -99,23 +120,91 @@
 - **Statistical Rigor:** Walk-forward backtesting, bootstrap confidence intervals, multiple testing controls
 - **Alternative Data:** SEC Form 4 insider filings, dilution/offering state (S-1, 424B5, 8-K), Wikipedia attention, news mentions, volume patterns
 - **Bias Controls:** Survivorship bias handling via historical universe snapshots, corporate actions adjustment
-- **Modern Data Stack:** DuckDB for analytics, Parquet lakehouse, httpx for async API calls
-- **AI Integration:** Natural language queries via LLM SDK (**Anthropic Claude primary** — financial reasoning quality matters most for AFC's 0.9 faithfulness threshold) + PandasAI with guardrails and SQL transparency
+- **Modern Data Stack:** DuckDB for analytics, Parquet lakehouse, rate-limited cached collectors (`edgartools` adapter for EDGAR; `httpx` elsewhere) 🆕 *(C46 addendum)*
+- **AI Integration:** Natural language queries via LLM SDK (**Anthropic Claude primary** — financial reasoning quality matters most for AFC's 0.9 faithfulness threshold) + **validated text-to-SQL** (the model writes SQL; `sqlglot` parses it and rejects anything outside the §11.3 whitelist; executed on a read-only DuckDB connection) with guardrails and SQL transparency 🆕 *(CORRECTION 46)*
 - **Structured Outputs:** Pydantic-validated AI responses with type-safe schemas
 - **AI Observability:** Token usage, cost tracking, latency monitoring, guardrail activation logs
 - **Production Practices:** GitHub Actions CI, type hints, comprehensive testing, audit logging
-- **Domain Expertise:** 6 years of trading knowledge codified into algorithms
+- **Domain Expertise:** 5+ years of independent trading knowledge codified into algorithms 🆕 *(C46 addendum)*
 
 ---
 
 > 🔁 **Agentic Loop Spec (roadmap v8.8):**
-> - **Loop type:** *read-only research / goal-loop* — screen → trigger-detect (T1–T6) → label (+10%-in-3-days) → score → leaderboard; S3 wraps this as the **Agentic Trading Assistant**.
+> - **Loop type:** *read-only research / goal-loop* — screen → trigger-detect (T1–T6) → label (+10%-in-3-days) → score → leaderboard; S3 wraps this as a **read-only research agent** 🆕 *(C46 addendum)* *(renamed from "Agentic Trading Assistant" — AFC never trades; the S1 detectors become its verifier)*.
 > - **Verifier:** the eval suite — **DeepEval ≥0.9 faithfulness**, SelfCheckGPT / FActScore on SEC-grounded claims; PIT / leakage tests gate the backtest.
 > - **Autonomy:** safe to run **unattended** because the system is **read-only** (no orders, no execution). The **"behind the Wall"** rule (LLM sees only aggregated in-sample stats) is the governance that keeps the loop honest. Layered exits: verifier pass + max-iteration cap + token budget.
+
+
+## 1A. Vision: From Benchmark + Event Study to a Governed Read-Only Research Platform 🆕 *(v9.2)*
+
+| Dimension | S1 (build sheet) | S2 | S3 (end state) |
+|---|---|---|---|
+| **Corpus** | Sampled SEC filings (≥ 60 human-verified bases) + EDGAR-derived triggers | EDGAR at scale (500+ tickers), FINRA short interest, Wikipedia pageviews, news history | Knowledge graph (issuers · filings · insiders · transactions · offerings) + vector index |
+| **Research engine** | Faithfulness benchmark + backtest v1 (T1/T4/T5, 28 scenarios) | Full trigger matrix (~155 scenarios) incl. T2/T3/T6 | Research agent answering questions over the KG and the backtest marts |
+| **Storage** | Parquet + DuckDB | Bitemporal medallion lakehouse, dbt-modelled | + Neo4j + vector store |
+| **Orchestration** | CLI + Makefile | Airflow, idempotent partitions | + LangGraph read-only loop |
+| **AI** | Analyst + three detectors; text-to-SQL dashboard | Golden-set drift gate on every model/parser change | Agent; **S1 detectors become the verifier**; MCP tools |
+| **Observability** | structlog + run manifests | + freshness/volume monitors, written postmortem | + Arize Phoenix trajectories |
+| **Safety** | Read-only by construction; budget caps | + data contracts | + verifier gate (faithfulness ≥ 0.9 blocking), no write tools anywhere |
+
+> **Positioning (roadmap, as amended by CORRECTION 46):** financial NLP/RAG with an eval spine **plus** a read-only historical event study reporting **lift over a base rate** under statistical controls. **No alpha, Sharpe or return claim; not a quant project.**
+
+---
+
+## 1B. The Integrity Spine (S1 — carried through every stage) 🆕 *(v9.2)*
+
+| Control | What it does | Where |
+|---|---|---|
+| **Knowledge time** | Every record carries `available_at`; an event can drive an entry at session *S* only if known before 09:30 ET on *S* | §6.3 · build sheet §7B.2 |
+| **Survivorship-aware universe** | Historical as-of universes, delisted issuers included (Form 25/15-seeded), as-traded screening, survivorship gap reported | §6.1–6.2 · §7B.3 |
+| **Rolling walk-forward + embargo + sealed holdout** | Selection on train windows only; the final 12 months scored **once** | §5.4 · §7B.5 |
+| **Base-rate lift** | No hit rate without its unconditional base rate | §5.5 |
+| **False-discovery control** | Benjamini–Hochberg over **every** scenario × configuration tested | §5.5 |
+| **Pre-registration** | Criteria committed before the holdout (backtest) or test split (benchmark) is scored | build sheet §6.5, §7B.5 |
+| **Sealed benchmark test split** | Detector thresholds frozen on a calibration split | build sheet §6.5 |
+| **Judge independence** | Judge provider ≠ analyst provider; cross-judge κ | §18A · build sheet §6.7 |
+| **Reproducibility** | Content-addressed LLM response cache + run manifests (git SHA, lock/config/data hashes, model IDs, seeds) | build sheet §6.7, §7 #13 |
+| **Frozen golden set** | Drift baseline that gates every later parser, model or prompt change | build sheet §7 #17 · §18A |
+| **Read-only by construction** | No orders, no write tools, no execution — ever | §11 · §16A |
+
+---
+
+## 1C. Platform Architecture (end state) 🆕 *(v9.2)*
+
+```mermaid
+flowchart TB
+    subgraph SRC[Sources - retrieval-stamped]
+      E[SEC EDGAR<br/>acceptance datetime]
+      P[Daily OHLCV<br/>as-traded + adjusted]
+      F[FINRA short interest<br/>publication date]
+      W[Wikipedia pageviews<br/>UTC day + lag]
+      N[GDELT news history]
+    end
+    subgraph LH[S2 Knowledge-time lakehouse]
+      B[(Bronze: raw + available_at)] --> S[(Silver: parsed, typed, bitemporal)] --> G[(Gold: dbt marts)]
+    end
+    SC[[signalcore primitives]]
+    SRC --> B
+    SC -.used by.-> G
+    G --> BT[Event-study engine<br/>walk-forward · base rate · BH-FDR]
+    G --> KG[(Neo4j KG + vector index)]
+    E --> AN[LLM analyst]
+    AN --> DET[Detectors: DeepEval · FActScore protocol · SelfCheck]
+    BT --> DB[Research dashboard<br/>validated text-to-SQL]
+    KG --> AG[S3 read-only research agent<br/>LangGraph · MCP read-only tools]
+    AG --> DET
+    DET -->|faithfulness ≥ 0.9 or block| OUT[Cited answer / report]
+    PH[Arize Phoenix] -.traces.- AG
+```
+
+---
+
 
 ## 2. Research Question
 
 > **Primary Question:** Which trigger or combination of triggers best predicts +10% price moves within 3 trading days for small-cap stocks?
+>
+> 🆕 *(CORRECTION 46)* **Operational form:** which triggers or combinations **raise the probability of a ≥ +10% move (net of costs) within 3 trading days above the base rate** for the same universe and period — reported as lift with a 95% CI, after false-discovery control, and stable across walk-forward windows. A hit rate without its base rate is not reported.
 
 **Secondary Questions:**
 1. Does sector strength context improve trigger hit rates?
@@ -144,7 +233,7 @@ The system dynamically screens for stocks meeting ALL criteria:
 | **Volume** | Minimum avg daily volume > 100K | Ensures liquidity for entry/exit |
 | **Market Cap** | < $500M (micro/small cap) | Focus on overlooked opportunities |
 
-**Output:** ~50 stocks refreshed weekly that meet all criteria
+**Output:** ~50 stocks refreshed weekly that meet all criteria *(dashboard view)*. 🆕 *(D-9, locked)* For **research runs** the ~50 cap is dropped whenever the power estimate shows most scenarios below the 30-signal floor; every other screen is kept, and screens use **as-traded** prices (§6.2).
 
 ---
 
@@ -168,9 +257,12 @@ The system dynamically screens for stocks meeting ALL criteria:
 ```yaml
 t1_insider_buy:
   transaction_types:
-    - P: "Open market purchase"
-    - A: "Grant/Award (if acquisition)"
+    - P: "Open market or private purchase"   # 🆕 CORRECTION 46: P ONLY
+    # Removed (CORRECTION 46, review A-11): A "Grant/Award" — compensation, not a purchase.
+    # A, M (option exercise) and F (tax withholding) are stored as their own event types, never as T1.
   minimum_value: $10,000
+  knowledge_time: "EDGAR acceptance datetime (not filing date) — see §6.3"   # 🆕 CORRECTION 46
+  stage: "S1 Phase 2"
   insider_types:
     - CEO, CFO, COO, President
     - Director
@@ -271,8 +363,10 @@ t5_state_machine:
 t6_squeeze_context:
   role: "CONTEXT (loaded state). Fuel, not spark. Primary use = 5th context filter (§4.8)."
   data_source:
-    short_interest: "FINRA bi-monthly (via yfinance sharesShort) — LAGGED ~2 weeks"
-    float: "yfinance floatShares (re-derive on dilution events; see T5)"
+    short_interest: "FINRA consolidated short-interest files (exchange-listed coverage from June 2021); knowledge time = FINRA PUBLICATION date, never settlement date"   # 🆕 CORRECTION 46 (review A-04, SC-01)
+    float: "shares outstanding from XBRL cover-page facts (dei:EntityCommonStockSharesOutstanding), knowledge time = filing acceptance; re-derived on dilution events (T5)"   # 🆕 CORRECTION 46
+    # Replaced (CORRECTION 46): yfinance sharesShort / floatShares are CURRENT snapshots, not history — using them on past dates is look-ahead.
+    stage: "S2 (needs the knowledge-time lakehouse)"
     volume / avg_daily_volume: "yfinance daily / 20-day"
   loaded_state_when:                 # the CONTEXT (potential) — a-priori, to be tuned in-sample only
     pct_float_short: ">= 0.20"       # test 0.15–0.30
@@ -328,6 +422,9 @@ signal_anchor:
   rule: "Signal confirmed at market close"
   measurement_start: "Next trading day open"
   measurement_period: "3 trading days (close-to-close)"
+  # 🆕 CORRECTION 46 — label fixed precisely (review A-21):
+  label: "HIT if max(high over days 1..3) >= entry_open x 1.115 (net +10% after the §5.3 round-trip cost); also report close-at-day-3 return as a secondary label"
+  entry: "next session OPEN after the signal (the example below measures open-to-close, not close-to-close)"
   
   example:
     signal_date: "2025-01-15 (Wednesday close)"
@@ -385,6 +482,18 @@ walk_forward:
     4: "Report test period metrics as final"
 ```
 
+> 🆕 **CORRECTION 46 (review A-08) — this is a single holdout, not a walk-forward.** Crucible's standard forbids publishing single-split results, and so does this one now:
+
+```yaml
+walk_forward_v2:            # 🆕 CORRECTION 46 — supersedes the single split above for anything published
+  scheme: "anchored, expanding train window; rolling 6-month test windows"
+  example: "train 2021-07..2022-12 -> test 2023H1; train ..2023-06 -> test 2023H2; ... (each test window used once)"
+  embargo: "5 trading days between train end and test start (3-day label horizon + de-clustering)"
+  selection: "combinations and thresholds chosen on each train window only"
+  reported: "per-window lift + pooled out-of-sample lift; a combination is STABLE only if lift > 0 in a pre-registered share of windows"
+  final_holdout: "the most recent 12 months sealed and scored ONCE at the end (same discipline as Crucible's OOS vault)"
+```
+
 ### 5.5 Multiple Testing Controls
 
 ```yaml
@@ -402,6 +511,17 @@ multiple_testing_controls:
     method: "Compare train vs test rankings"
     metric: "Spearman rank correlation"
     threshold: "> 0.5 correlation = stable"
+
+  # 🆕 CORRECTION 46 (review A-09) — mandatory for "test any combination"
+  base_rate:
+    definition: "unconditional P(HIT) for the same universe, same dates, same label"
+    reported: "lift = P(HIT | combo) - base_rate, with 95% CI; ratio also shown"
+  false_discovery_control:
+    method: "Benjamini-Hochberg across ALL combinations tested in a run (not just the top 10)"
+    target_fdr: 0.10          # pre-registered; changing it is a new run
+    why: "~155 combinations at alpha 0.05 with no real effect -> ~8 false winners by chance"
+  power_note: "state expected n per scenario BEFORE running (review A-22); scenarios below the 30-signal floor are listed, not hidden"
+  overlap_rule: "de-clustering applies per TICKER across trigger types inside a combination scenario, so overlapping windows cannot inflate n"
 ```
 
 ### 5.6 Failed-Signal Follow-Through (descriptive, read-only) 🆕 *(roadmap v10.0 CORRECTION 45, October 2026)*
@@ -422,6 +542,7 @@ failed_signal_follow_through:
     period: "TEST period only (§5.4 rules apply)"
   split_reported:
     - "T6 loaded vs not loaded (squeeze fuel — where a short reversal is most dangerous)"
+    # 🆕 CORRECTION 46: the T6 split arrives in S2 with T6 itself; in S1 the Rule 201 flag comes from the local signalcore-shaped module, replaced by signalcore.shortsale at S2 extraction
   executability_flags:
     - "Rule 201 restricted: signalcore.shortsale.rule201_state(...).restricted (low <= 0.90 x prior close -> that day + next session); unknown reported as its own bucket"
     - "borrow availability: UNKNOWN historically for sub-$5 names — stated, never assumed"
@@ -444,7 +565,9 @@ survivorship_bias:
   solution: "Historical universe snapshots"
   
   implementation:
-    frequency: "Weekly (every Monday)"
+    frequency: "Weekly (every Monday)"   # forward-looking only — cannot reconstruct the past (review A-06)
+    historical_reconstruction: "🆕 CORRECTION 46 — rebuild past universes from as-traded prices + XBRL shares outstanding, seeded with delisted issuers from EDGAR (Form 25 / Form 15); where a delisted name has no free price history, keep it in a flagged exclusion list and report the survivorship gap"
+    data_source_spike: "OPEN — a free source of delisted small-cap price history is not yet verified; spike before Phase 2 starts; fallback = scoped-and-flagged universe (Crucible §5.1 pattern)"
     storage: "data/processed/universes/universe_{YYYY}_{WW}.parquet"
     
     backtest_rule: |
@@ -459,6 +582,7 @@ survivorship_bias:
 corporate_actions:
   splits:
     handling: "Use adjusted close for all return calculations"
+    screening: "🆕 CORRECTION 46 — apply the < $5, market-cap and volume screens to AS-TRADED (unadjusted) prices; adjusted prices are for returns only (reverse splits otherwise misclassify sub-$5 names)"
     
   reverse_splits:
     handling: "Flag, use adjusted prices, exclude 5 days post-split"
@@ -480,6 +604,17 @@ calendar:
   
   data_availability_rule: |
     Signal on date D can only use data available by market close on D.
+  # 🆕 CORRECTION 46 (review A-10) — replaced by a per-source knowledge-time rule:
+  knowledge_time_rule: |
+    Every record carries available_at (when the market could know it).
+    An event may drive an entry at the OPEN of session S only if available_at < 09:30 ET on S.
+  available_at_by_source:
+    edgar: "acceptance datetime (Form 4s accepted 17:30-22:00 ET keep that day's filing date - after the close)"
+    prices_volume: "session close"
+    wikipedia_pageviews: "end of the UTC day + measured publication lag (S2)"
+    news: "article timestamp; history via GDELT timeline modes or GKG files - RSS has no history (S2)"
+    finra_short_interest: "FINRA publication date, never settlement date (S2)"
+    xbrl_shares_outstanding: "filing acceptance datetime"
 ```
 
 ---
@@ -534,6 +669,27 @@ ORDER BY hit_rate_net DESC;
 
 ---
 
+
+### 7.4 S2 End State — the Knowledge-Time Lakehouse 🆕 *(v9.2)*
+
+> §7.1–7.3 describe the S1 storage layout (Parquet + DuckDB). In S2 the same data moves into a **bitemporal medallion lakehouse** — the DE/AE evidence beneath the research system.
+
+| Layer | Contents | Rules |
+|---|---|---|
+| **Bronze** | Raw EDGAR documents, price files, FINRA files, pageview dumps, GDELT extracts — each stamped with `retrieved_at` and the source's **knowledge time** (`available_at`) | Append-only; byte-hashed; re-fetchable from manifest |
+| **Silver** | Parsed, typed records with **valid time** (when it was true) and **transaction time** (when it became knowable) | **Restatements append, never overwrite**; Polars-first transforms (CORRECTION 35) |
+| **Gold (dbt)** | `dim_issuer`, `dim_universe_asof`, `fct_insider_transactions`, `fct_dilution_state`, `fct_trigger_events`, `fct_labels`, `mart_scenario_results`, `mart_base_rates` | Every model has blocking tests |
+
+**dbt blocking tests (CI-gated):** unique / not-null / relationships; accepted values for Form 4 transaction codes; custom tests `no_future_knowledge` (`available_at ≤ as_of` on every join), `universe_asof_no_future_listing`, and a **restatement-replay** test (inject a restatement, re-run a historical as-of query, assert bit-identical results).
+**Contracts:** Great Expectations on parsed fields (positive share counts, valid dates, code sets) — a contract failure stops the DAG, not the report.
+**Orchestration (Airflow, idempotent by partition):** `edgar_daily`, `prices_eod`, `finra_on_publication` (scheduled from FINRA's publication calendar, not the settlement date), `pageviews_daily`, `gdelt_daily`, `backtest_weekly`. Airflow on Python 3.14 uses the `constraints-3.13.txt` workaround noted in the alignment block.
+**Semantic/metrics layer:** `base_rate`, `hit_rate`, `lift`, `signal_count` defined once in the dbt semantic layer so the dashboard, the agent and the reports cannot compute them differently.
+**`signalcore` extraction:** `src/afc/primitives/` is replaced by a pinned `signalcore` release (volume, shortinterest, shortsale, dilution, validation, calendar); golden-value tests must pass unchanged; ADR records the move.
+**Operations:** freshness SLA per source, row-count anomaly checks, one written **postmortem** on a real incident; Docker locally, ECS + Terraform for the deploy target (per the S2 standard).
+
+
+---
+
 ## 8. Market Data Modes
 
 ### 8.1 Mode A: Intraday (Future)
@@ -546,7 +702,7 @@ mode_a_intraday:
   when: "Stage 2+ when budget allows"
 ```
 
-### 8.2 Mode B: Daily Only (Phase 1A)
+### 8.2 Mode B: Daily Only (former Phase 1A = Stage-1 Phase 2)
 
 ```yaml
 mode_b_daily:
@@ -560,6 +716,7 @@ mode_b_daily:
     - T4a-e (all volume signals) ✅
     - All T5 (dilution) ✅
     - T6 (squeeze context) ✅  # short interest is bi-monthly anyway → daily mode sufficient (lag noted)
+    # 🆕 CORRECTION 46: T6 data comes from FINRA files (publication-date knowledge time), not yfinance — and moves to S2
     
   features_disabled:
     - True VWAP (no intraday)
@@ -579,43 +736,26 @@ phase_1a_decision:
 
 ---
 
-## 9. Phase 1A Scope — Backtest Engine (Weeks 1-6)
+## 9. Phase 1A Scope — Backtest Engine
 
-### 9.1 Deliverables
+> **Moved to the Stage-1 build sheet (v9.2).** The backtest's build plan now lives in `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md` **§7B (Phase 2 — Event-Study Backtest v1)**, which supersedes the former Phase 1A deliverables and week plan. The methodology it implements remains canonical **here** (§4–§6).
 
-| # | Deliverable | Acceptance Criteria |
-|---|-------------|---------------------|
-| 1 | Project Setup | CI green, pre-commit working |
-| 2 | Stock Screener | ~50 stocks, proper filters |
-| 3 | Universe Snapshots | Weekly Parquet files |
-| 4 | Sector Strength | 11 ETFs tracked |
-| 5 | Async Collectors | httpx parallel calls |
-| 6 | Price Pipeline | 3+ years, adjusted prices |
-| 7 | T1-T6 Detectors | All triggers working |
-| 8 | DuckDB Schema | All tables created |
-| 9 | Backtest Engine | Walk-forward, de-clustering |
-| 10 | Bootstrap CI | 95% CI on all hit rates |
-| 11 | Leaderboard | Test period metrics |
-| 12 | Signal Generator | Daily active signals |
-| 13 | Data Quality | Automated checks |
-| 14 | Documentation | README, .cursor/rules/ |
-| 15 | Test Suite | >80% coverage |
-| 16 | Failed-Signal Follow-Through 🆕 | §5.6 table for the top-10 combos, test period, CI + Rule 201 flag; **stretch — cut first if Week 6 overruns** (CORRECTION 45) |
-
-### 9.2 Week-by-Week
-
-| Week | Focus |
-|------|-------|
-| 1 | Setup, CI, screener, universe builder |
-| 2 | Collectors (httpx), Parquet, corporate actions |
-| 3 | T1-T6 triggers, state machine |
-| 4 | DuckDB schema, backtest core, de-clustering |
-| 5 | Walk-forward, bootstrap CI, combinations |
-| 6 | Signal generator, quality checks, docs (+ §5.6 follow-through report — stretch) |
+| Former Phase 1A item | Now |
+|---|---|
+| #1 Project setup · #13 Data quality · #14 Docs · #15 Tests | Build sheet §7 (Phase 1) #1–#3, #18 and §7B.8 B2 |
+| #2 Screener · #3 Universe snapshots · #4 Sector strength | §7B.8 B4–B5 (historical as-of reconstruction, D-9) |
+| #5 Collectors · #6 Price pipeline | Phase 1 EDGAR adapter (D-2) + §7B.8 B2–B3 |
+| #7 T1–T6 detectors | §7B.8 B7 — **S1: T1, T4, T5**; **S2: T2, T3, T6** (§7.4) |
+| #8 DuckDB schema · #9 Backtest engine · #10 Bootstrap CI · #11 Leaderboard | §7B.8 B9–B14 (walk-forward + embargo, base rate, BH-FDR, verdicts) |
+| #12 Signal generator | Read-only **active-signal monitor** in the dashboard (§10) — never an order path |
+| #16 Failed-signal follow-through | §7B.6 |
 
 ---
 
-## 10. Phase 1B Scope — AI-Powered Dashboard (Weeks 7-10)
+
+## 10. Research Dashboard — design
+
+> 🆕 *(v9.2)* Formerly "Phase 1B Scope — AI-Powered Dashboard (Weeks 7-10)". Built in S1 **after** the backtest (build sheet Phase 2b); reads backtest outputs only. The 13 deliverables below remain the dashboard's acceptance list; its container is in build sheet Appendix A.3.
 
 ### 10.1 Deliverables
 
@@ -629,7 +769,7 @@ phase_1a_decision:
 | 6 | Backtest Explorer | Historical signals |
 | 7 | LLM SDK Integration | Provider-agnostic AI layer (**Anthropic Claude primary**, Gemini fallback) |
 | 8 | Pydantic Response Models | Structured outputs for all AI responses |
-| 9 | PandasAI | Supplementary chat + SQL transparency |
+| 9 | ~~PandasAI~~ → **Validated text-to-SQL** 🆕 *(CORRECTION 46)* | LLM writes SQL → `sqlglot` parse + whitelist check (§11.3) → read-only DuckDB → SQL shown with every answer. PandasAI removed: requires Python < 3.12 (portfolio floor is 3.14) and carries CVE-2024-12366 (prompt-injection RCE, CVSS 9.8) |
 | 10 | AI Guardrails | Read-only, governance as code, disclaimers |
 | 11 | AI Observability | Token/cost/latency tracking per query |
 | 12 | Deployment | Streamlit Cloud live |
@@ -670,7 +810,7 @@ ai_access:
 ### 11.2 Governance as Code
 
 ```python
-# src/ai/guardrails.py — Testable guardrail logic
+# src/afc/ai/guardrails.py — Testable guardrail logic
 class AIGuardrail:
     """Validates AI queries before execution.
     
@@ -743,605 +883,233 @@ disclaimers:
 
 ---
 
-## 12. Tech Stack
+## 12. Tech Stack: Production (by stage)
 
-### Phase 1A: Backtest Engine
+| Concern | S1 (build sheet) | S2 | S3 |
+|---|---|---|---|
+| Language | Python 3.14 (GIL build), SQL | same | same (TypeScript not scoped) |
+| Packaging | uv + committed `uv.lock` | same | same |
+| EDGAR | `edgartools` behind `afc.edgar` adapter (D-2) | scheduled ingestion | MCP read-only EDGAR tools |
+| Market data | Free daily OHLCV (yfinance, Mode B), XBRL shares outstanding, SPDR sector ETFs | + FINRA files, Wikipedia pageviews, GDELT history | — |
+| Storage / query | Parquet + DuckDB | Bitemporal medallion lakehouse; **Polars**-first transforms | + **Neo4j** KG + vector index (ChromaDB) |
+| Modelling / quality | pytest data-quality checks | **dbt** + blocking tests · **Great Expectations** contracts · semantic layer | same |
+| Orchestration | CLI + Makefile | **Airflow** (idempotent) | + **LangGraph** read-only loop |
+| Statistics | scipy · numpy · statsmodels (Wilson, McNemar, AUROC, κ, BH-FDR) | same | ML overlay (XGBoost / LSTM / MLflow) — earned only |
+| LLM | Anthropic Claude primary · Gemini fallback & independent judge (provider-agnostic) | same | same + **MCP** |
+| Eval | DeepEval · FActScore protocol (in-house) · SelfCheck-Prompt (D-4) | golden-set drift gate | three-layer eval + **Arize Phoenix** |
+| UI | Streamlit dashboard + **validated text-to-SQL** (`sqlglot`, read-only DuckDB) | reads gold marts | + agent chat with citations |
+| Logging / config / retries | structlog · pydantic-settings · stamina | same | + OpenTelemetry traces (Phoenix) |
+| CI | GitHub Actions, tiered (D-7) | + dbt build/test in CI | + agent eval gates |
+| Containers / infra | Docker (CLI image; dashboard image) | Docker Compose; **ECS + Terraform** | + Neo4j service |
+| **Removed** | PandasAI (Python < 3.12; CVE-2024-12366) · `factscore` package (uninstallable on 3.14; original models retired) · python-json-logger | — | — |
 
-| Category | Technology |
-|----------|------------|
-| Language | Python 3.14+ |
-| Storage | Parquet (partitioned) |
-| Query | DuckDB |
-| HTTP | httpx (async) |
-| SEC Data | edgartools |
-| Market Data | yfinance |
-| Wiki | Wikipedia API |
-| News | feedparser, GDELT |
-| Statistics | scipy, numpy |
-| **Logging** | **logging (stdlib) + python-json-logger** |
-| Testing | pytest, pytest-asyncio |
-| Linting | Ruff, mypy |
-| CI/CD | GitHub Actions |
-
-### Phase 1B: Dashboard
-
-| Category | Technology |
-|----------|------------|
-| Web | Streamlit |
-| Charts | Plotly |
-| **AI (Primary)** | **LLM SDK (Anthropic Claude primary, Gemini/OpenAI fallback) — prompt caching reduces costs ~90% on repeated SEC filing context** |
-| **AI (Supplementary)** | **PandasAI (natural language data querying)** |
-| **Structured Outputs** | **Pydantic v2 (response validation)** |
-| **AI Observability** | **Python logging + token/cost tracking** |
-| Hosting | Streamlit Cloud (FREE) |
-| **AI Evaluation** | **DeepEval (answer relevancy, faithfulness > 0.9 for financial data accuracy)** |
-| **Containerization** | **Docker (Dockerfile for app + DuckDB deployment)** |
+> Exact versions are pinned in `uv.lock` at build time; the build sheet §11 records what PyPI served on 2026-10-02.
 
 ---
 
-## 13. CI/CD Pipeline
+## 13. CI/CD & Pre-commit — standard
 
-### GitHub Actions
-
-```yaml
-# .github/workflows/ci.yml
-on: [push, pull_request]
-jobs:
-  test:
-    steps:
-      - Checkout
-      - Setup Python 3.14
-      - Install dependencies
-      - Ruff lint
-      - mypy type check
-      - pytest with coverage
-      - Upload to Codecov
-```
-
-### Pre-commit
-
-> **🆕 Rewritten under roadmap v10.0 CORRECTION 21 (August 2026).** The previous sketch was unpinned and used the
-> retired bare `ruff` hook id, and it listed `mypy` in the form that silently passes `--ignore-missing-imports`.
-> Hooks are now pinned by `rev:`, `mypy` is CI-only, and the set is a **strict subset of the CI gate above**.
-
-```yaml
-# .pre-commit-config.yaml
-default_install_hook_types: [pre-commit, commit-msg]
-
-repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
-    hooks: [{id: trailing-whitespace}, {id: end-of-file-fixer}, {id: check-yaml},
-            {id: check-toml}, {id: check-added-large-files}, {id: check-merge-conflict},
-            {id: detect-private-key}]
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.1            # pin; keep in step with pyproject/uv.lock
-    hooks:
-      - id: ruff-check      # linter FIRST — --fix can emit changes needing reformat
-        args: [--fix]
-      - id: ruff-format     # formatter SECOND
-
-  - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.12.0
-    hooks: [{id: uv-lock}]  # makes the CORRECTION 13 reproducible-build claim enforceable
-
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.0
-    hooks: [{id: gitleaks}]
-
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.9.1
-    hooks: [{id: nbstripout}]   # research notebooks — output never reaches git
-
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.4.0
-    hooks:
-      - id: conventional-pre-commit
-        stages: [commit-msg]
-
-# mypy is intentionally ABSENT — it runs in CI only (see the ADR).
-```
+- **Tiered CI (D-7):** **Tier 0** on every push/PR — ruff, ruff-format check, mypy, pytest with recorded HTTP/LLM fixtures (**zero network calls**), coverage ≥ 80%, Python-pin consistency, `uv lock --check`. **Tier 1** nightly on `main` + PR label `run-eval` — live golden-set run, budget-capped, fails on verdict drift. **Tier 2** manual — published benchmark or backtest runs, gated on their pre-registration commit. **S2 adds** `dbt build` + tests and contract checks; **S3 adds** agent eval gates (faithfulness ≥ 0.9, Tool Correctness = 1.0).
+- **Pre-commit (CORRECTION 21):** pinned `rev:`s; the hook set is a **strict subset** of CI; `ruff-check --fix` before `ruff-format`; `uv-lock`; `gitleaks`; `nbstripout`; `conventional-pre-commit` on `commit-msg`; **mypy CI-only** (ADR). Pins move with `uv.lock` (`sync-with-uv` + scheduled `pre-commit autoupdate --freeze`).
+- **Code:** the full `.pre-commit-config.yaml` and the CI workflow sketch live in the build sheet — **Appendix A.1** and **§12.2**.
 
 ---
 
-## 14. Logging & Debugging
+## 14. Logging & Debugging — standard
 
-> **🆕 CORRECTION 16 (v10.0):** this section is rewritten to the structured-logging standard.
-> The previous design — a `config/logging.yaml` dictConfig, a `logs/` tree of
-> `TimedRotatingFileHandler` outputs, and f-string log calls — is superseded on three counts:
-> f-strings destroy queryability, per-domain file handlers duplicate and interleave lines, and
-> Python-side rotation duplicates what the container runtime already does. All headings are
-> preserved; only the mechanism changed.
-
-### 14.1 Logging Directory Structure
-
-**Primary destination is stdout.** Rotation, shipping and retention belong to Docker /
-systemd / the log aggregator, not to Python (12-Factor). "Per-domain logs" become *derived
-views* — filter on the `logger` field or the event name downstream.
-
-```
-logs/                             # gitignored; NOT the primary destination
-├── evaluation/                   # DeepEval/RAGAS result artifacts (not app logs)
-└── runs/                         # ⏸️ OPT-IN ONLY — long unattended local collector /
-    └── run_<id>.jsonl            #    backtest runs, via an explicit log_file= argument.
-                                  #    Never the default. Never inside a container.
-```
-
-Everything the old tree separated by file (`collectors`, `backtest`, `ai`, `guardrails`) is
-now one stdout stream, separable by field:
-
-| Old file | Now retrieved by |
-|----------|------------------|
-| `collectors/collectors.log` | `logger` starts with `afc.collectors` |
-| `collectors/errors/sec_errors.log` | `logger == "afc.collectors.sec"` and `level == "error"` |
-| `backtest/runs/backtest_{id}.log` | `run_id == "<id>"` (bound via contextvars) |
-| `ai/queries.log` | `event == "ai_query_completed"` |
-| `ai/guardrails.log` | `event == "guardrail_blocked"` |
-
-### 14.2 Logging Configuration
-
-No YAML. Configuration is typed Python in `src/observability/logging.py`, per the
-`python-production-standards.mdc` rule — `structlog` renders both its own records and every
-foreign stdlib record (edgartools, httpx, Neo4j, DuckDB) through one `ProcessorFormatter`
-chain, so third-party output cannot drift into a second format.
-
-```python
-# src/observability/logging.py  (see python-production-standards.mdc for the full module)
-SHARED_PROCESSORS = [
-    structlog.contextvars.merge_contextvars,   # run_id, ticker, trigger_id
-    structlog.stdlib.add_logger_name,
-    structlog.stdlib.add_log_level,
-    structlog.processors.TimeStamper(fmt="iso", utc=True),
-    structlog.processors.StackInfoRenderer(),
-    structlog.processors.UnicodeDecoder(),
-    redact_pii,                                # choke point — runs on foreign records too
-]
-
-THIRD_PARTY_LEVELS = {
-    "httpx": logging.WARNING,
-    "httpcore": logging.WARNING,
-    "urllib3": logging.WARNING,
-    "neo4j": logging.WARNING,
-    "anthropic": logging.INFO,
-}
-
-# Renderer is selected at runtime, replacing the old YAML's three named
-# formatters (standard / detailed / json) with one TTY check.
-json_mode = force_json or not sys.stderr.isatty()
-renderer = (
-    structlog.processors.JSONRenderer()          # containers, CI, prod
-    if json_mode
-    else structlog.dev.ConsoleRenderer(colors=True)   # local dev
-)
-```
-
-| Old YAML formatter | Replacement |
-|---|---|
-| `standard` (console, `%`-format) | `structlog.dev.ConsoleRenderer(colors=True)` — auto-selected on a TTY |
-| `detailed` (adds `funcName:lineno`) | not needed — `add_logger_name` + `StackInfoRenderer` carry it structurally |
-| `json` (`pythonjsonlogger`) | `structlog.processors.JSONRenderer` + `dict_tracebacks` — auto-selected off-TTY |
-
-Dropping `python-json-logger` is deliberate: with `ProcessorFormatter` the event dict is
-rendered by structlog itself, so the stdlib formatter no longer owns (and can no longer
-silently drop) the context fields.
-
-`configure_logging()` is called **once**, at the entrypoint (`app.py`, the CLI, the DAG task).
-Never inside a collector, a trigger module, or anything importable — and never in `signalcore`
-(see the boundary spec §7).
-
-### 14.3 Logging Utility Module
-
-The hand-rolled `setup_logging()` / `get_logger()` / `LogContext` / `get_run_logger()` helpers
-are retired — `structlog` supplies all four capabilities natively:
-
-| Retired helper | Replacement |
-|----------------|-------------|
-| `setup_logging(config_path=...)` | `configure_logging(level=..., force_json=...)` |
-| `get_logger("collectors.sec")` | `structlog.stdlib.get_logger(__name__)` |
-| `LogContext(logger, "...")` | `structlog.contextvars.bind_contextvars(...)` |
-| `get_run_logger("backtest", run_id=...)` | `bind_contextvars(run_id=...)` — one stream, filterable |
-
-Retiring `get_run_logger` is the substantive win: a per-run *file* cannot be joined against
-anything, whereas a per-run *field* lets one query span collectors, triggers and backtest in a
-single timeline.
-
-### 14.4 Usage Examples
-
-```python
-import structlog
-from src.observability.logging import configure_logging
-
-configure_logging()                       # once, at the entrypoint
-log = structlog.stdlib.get_logger(__name__)
-
-# Bind run context — every downstream line, including edgartools' and httpx's,
-# inherits run_id without being passed a logger.
-structlog.contextvars.clear_contextvars()  # ALWAYS first — prevents cross-run bleed
-structlog.contextvars.bind_contextvars(run_id=run_id, pipeline="sec_collection")
-
-log.info("collection_started", ticker_count=len(tickers), source="sec_form4")
-log.debug("ticker_processing", ticker=ticker)
-log.warning("rate_limit_approaching", remaining=remaining, source="sec")
-log.error("filing_fetch_failed", ticker=ticker, exc_info=True)
-
-# Per-ticker context inside the loop
-for ticker in tickers:
-    with structlog.contextvars.bound_contextvars(ticker=ticker):
-        collect_insider_filings(ticker)
-
-log.info("collection_completed", ticker_count=len(tickers), elapsed_ms=elapsed)
-```
-
-### 14.5 Log Levels Guide
-
-| Level | When to Use | Example |
-|-------|-------------|---------|
-| **DEBUG** | Detailed diagnostic info | `log.debug("query_returned", row_count=len(rows))` |
-| **INFO** | General operational events | `log.info("backtest_completed", scenario=scenario_id)` |
-| **WARNING** | Unexpected but handled | `log.warning("data_missing", ticker="AAPL", strategy="interpolation")` |
-| **ERROR** | Operation failed | `log.error("api_request_failed", source="sec", exc_info=True)` |
-| **CRITICAL** | Severe; may not continue | `log.critical("database_unavailable", db="afc.duckdb")` |
-
-Event names are stable `snake_case` **identifiers**, not sentences. Renaming one breaks
-downstream filters exactly as renaming a column breaks SQL.
-
-### 14.6 Error Tracking Pattern
-
-```python
-import httpx
-import stamina
-import structlog
-
-log = structlog.stdlib.get_logger(__name__)
-
-
-# stamina detects structlog and logs each scheduled retry automatically —
-# retry storms become visible without any extra code.
-@stamina.retry(on=(httpx.HTTPError, httpx.TimeoutException), attempts=3, timeout=60.0)
-async def collect_wiki_pageviews(ticker: str) -> pd.DataFrame | None:
-    """Collect pageviews. Transport errors retry; anything else fails loudly."""
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-        response.raise_for_status()
-
-    log.info("collection_succeeded", ticker=ticker, day_count=len(data), source="wiki")
-    return pd.DataFrame(data)
-
-
-# At the call site — retries are exhausted by the time we get here.
-try:
-    df = await collect_wiki_pageviews(ticker)
-except httpx.HTTPStatusError as exc:
-    log.error("http_error", ticker=exc.request.url.host, status=exc.response.status_code)
-    df = None
-except Exception:
-    log.exception("collection_failed_unexpectedly", ticker=ticker)   # includes traceback
-    df = None
-```
-
-Two rules carried over from the standard: never retry a 4xx that is not 429 (it will fail
-identically), and never retry a write without an idempotency key.
-
-### 14.7 Gitignore for Logs
-
-```gitignore
-# Logs — stdout is primary; these are opt-in local artifacts only
-logs/
-*.log
-*.jsonl
-
-# Keep directory structure
-!logs/.gitkeep
-!logs/*/
-!logs/*/.gitkeep
-
-# Evaluation artifacts ARE tracked (they back the README metrics table)
-!logs/evaluation/
-!logs/evaluation/**
-```
+- `structlog` over stdlib via `ProcessorFormatter`; JSON when not a TTY; `run_id` bound once per run and inherited by library logs (edgartools, httpx, DuckDB, Neo4j).
+- PII-redaction processor on every handler; secrets are `SecretStr` and never logged.
+- **stdout is primary**; `logs/` files are opt-in and gitignored. Durable evidence lives in `runs/` (manifests) and `reports/`, never in logs.
+- `stamina` retries are logged automatically; never retry a non-429 4xx; never retry a write without an idempotency key.
+- Library code never configures logging (same rule as `signalcore` §7).
+- **Code:** the logging module, usage examples, log-level guide, error-tracking pattern and logs `.gitignore` live in the build sheet **Appendix A.2**.
 
 ---
 
+## 15. Project Structure — end state
 
-## 15. Project Structure
+The **Stage-1 tree** (corrected: `src/afc/` package, single logging module, harness under `.opencode/`) is in the build sheet **§12**. Stages 2–3 add top-level areas without moving S1 code:
 
 ```
 attention-flow-catalyst/
-├── .cursor/
-│   ├── rules/                    # Production standards (version-controlled)
-│   │   ├── git-workflow.mdc      # alwaysApply: true — branch, commit, PR conventions
-│   │   ├── learning-mode.mdc     # alwaysApply: true — learning patterns, skill progression
-│   │   ├── python-production-standards.mdc  # alwaysApply: true — code style, types, testing
-│   │   ├── streamlit-patterns.mdc    # Auto-attached: app/**/*.py
-│   │   ├── ai-sdk-patterns.mdc       # Auto-attached: src/ai/**/*.py
-│   │   └── evaluation.mdc           # Auto-attached: tests/test_eval.py
-│   ├── commands/                 # Repeatable agent workflows (/command-name)
-│   │   ├── draft-issue.md        # /draft-issue <goal>
-│   │   ├── task-brief.md         # /task-brief <issue#>
-│   │   ├── pr-prep.md            # /pr-prep
-│   │   ├── review.md             # /review
-│   │   ├── test.md               # /test
-│   │   ├── eval.md               # /eval
-│   │   └── commit-msg.md         # /commit-msg
-│   ├── hooks/                    # Auto-run scripts
-│   │   └── format.sh             # Auto-format (`ruff format` + `ruff check --fix`) after agent edits — black retired per CORRECTION 21
-│   ├── hooks.json                # Hook configuration
-│   └── # (no plans/ — 🆕 ADR-0002, Sept 2026: Gate 1 task briefs relocated to
-│     #  .github/plans/ so both harnesses read and write one harness-neutral path.
-│     #  OpenCode's plan-cloud agent is edit-denied everywhere EXCEPT that glob.)
-├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
-├── .opencode/                    # OpenCode side of the dual harness (mirrors .cursor/; portable across editors)
-├── .claude/                      # Claude Code side — generated from the same shared prompt layer
-├── hooks/guard.py                # PreToolUse — blocks git commit/push; commits stay human
-│   ├── agents/                   # subagent defs — filename = agent name (per OpenCode spec)
-│   │   ├── docs-fix.md           # repairs drift in README / scope docs
-│   │   ├── docs-sync.md          # keeps the 3 public docs aligned to the roadmap
-│   │   ├── eval-guardian.md      # guards the eval-first blocking gates
-│   │   ├── learn.md              # explain-before-merge; enforces "no vibe coding"
-│   │   ├── pattern-scout.md      # finds prior art in-repo before new code
-│   │   └── security-auditor.md   # secrets / dependency / config audit
-│   ├── commands/                 # slash commands — /review, /test, /commit-msg, ...
-│   │   ├── commit-msg.md
-│   │   ├── draft-issue.md
-│   │   ├── eval.md
-│   │   ├── labels.md
-│   │   ├── pr-prep.md
-│   │   ├── readme.md
-│   │   ├── review.md
-│   │   ├── task-brief.md
-│   │   └── test.md
-│   ├── .gitignore                # ignores node_modules/ (harness deps are installed, not committed)
-│   ├── package.json              # pinned OpenCode plugin dependencies
-│   └── package-lock.json         # committed — reproducible harness
-├── AGENTS.md                     # standing instructions; combined with opencode.jsonc instructions[]
-├── opencode.jsonc                # harness config — model routing, permissions, instructions[]
-├── .github/
-│   ├── plans/                    # 🆕 ADR-0002 — Gate 1 task briefs, one per Issue,
-│   │   │                         #  committed as evidence of plan-then-execute
-│   │   └── issue-XX-task-brief.md  # frontmatter status: PROPOSAL until I approve by hand
-│   ├── templates/                # Production workflow templates
-│   │   ├── issue_template.md     # GitHub Issue format
-│   │   ├── project_labels.md     # Approved labels + definitions
-│   │   ├── pull_request_template.md  # PR body format
-│   │   └── cursor_task_brief.md  # Agent execution contract
-│   └── workflows/ci.yml
-├── config/
-│   ├── thresholds.yaml
-│   └── # (no logging.yaml — 🆕 CORRECTION 16: logging is configured in
-│                                 #  src/observability/logging.py, not YAML dictConfig)
-├── data/
-│   ├── raw/prices/, events/
-│   ├── processed/triggers/, universes/
-│   ├── db/afc.duckdb
-│   └── outputs/
-├── logs/                         # ⭐ Logging directory
-│   ├── app/                      # Dashboard logs
-│   ├── pipeline/                 # Pipeline logs
-│   │   └── runs/                 # Per-run logs
-│   ├── collectors/               # API collector logs
-│   │   └── errors/               # Error-specific logs
-│   ├── backtest/                 # Backtest logs
-│   │   └── runs/                 # Per-scenario logs
-│   ├── ai/                       # ⭐ AI observability logs
-│   │   ├── queries.log           # LLM queries, tokens, cost, latency
-│   │   └── guardrails.log        # Guardrail activations
-│   ├── evaluation/               # ⭐ DeepEval evaluation results
-│   ├── debug/                    # Verbose debug logs
-│   └── errors.log                # Aggregated errors
-├── src/
-│   ├── __init__.py
-│   ├── py.typed                  # PEP 561 — type hint support marker
-│   ├── observability/           # 🆕 CORRECTION 16
-│   │   ├── __init__.py
-│   │   └── logging.py          # configure_logging() + redact_pii processor
-│   ├── screener/
-│   ├── collectors/
-│   ├── triggers/
-│   ├── backtest/
-│   ├── signals/
-│   ├── database/
-│   ├── ai/                       # ⭐ AI integration layer (2026 patterns)
-│   │   ├── __init__.py
-│   │   ├── provider.py           # Provider-agnostic LLM abstraction
-│   │   ├── schemas.py            # Pydantic response models (structured outputs)
-│   │   ├── guardrails.py         # Governance as code (testable)
-│   │   └── observability.py      # Token/cost/latency tracking
-│   └── utils/
-│       ├── __init__.py
-│       ├── config.py
-│       ├── logging.py            # ⭐ Logging utilities
-│       ├── calendar.py
-│       └── async_utils.py
-├── app/
-│   ├── pages/
-│   ├── components/
-│   └── utils/
-├── tests/
-│   ├── conftest.py               # Shared fixtures, mock APIs, test DuckDB, sample data
-│   ├── ...
-│   ├── test_ai_guardrails.py     # ⭐ AI guardrails unit tests
-│   ├── test_eval.py              # ⭐ DeepEval AI quality evaluation tests
-│   └── eval_dataset.json         # ⭐ 30+ analytics query-response pairs for evaluation
-├── notebooks/
-├── scripts/
-├── Dockerfile                    # Container definition
-├── .dockerignore                 # Excludes .git, logs, data/raw, tests, notebooks from image
-├── .env.example                  # Required environment variables template
-├── .gitignore
-├── CONTRIBUTING.md               # Branch naming, commit style, PR process
-├── LICENSE                       # MIT License
-├── Makefile                      # make test, make lint, make eval, make docker-build
-├── .pre-commit-config.yaml       # pinned hook set; strict subset of CI (CORRECTION 21)
-├── pyproject.toml                # Project metadata, dependencies, tool config (PEP 621)
-├── uv.lock                        # committed lockfile — deterministic installs; `uv sync --frozen` in CI/Docker
-├── docs/                          # architecture + decision records (v10.0 CORRECTION 8/14)
-│   ├── architecture.dsl           # Structurizr DSL — single C4 model source; exported to Mermaid via structurizr-cli
-│   └── adr/                       # numbered, immutable ADRs (context → decision → consequences)
-│       ├── 0001-record-architecture-decisions.md
-│       └── 0002-....md            # one file per architecturally-significant decision
-└── README.md
+├── src/afc/               # S1: edgar · analyst · eval · primitives · market · triggers · backtest · ai · observability
+│                          # S3 adds: graph/ (KG ingest, parameterized read-only Cypher) · agents/ (LangGraph loop) · mcp/ (read-only tools)
+├── app/                   # S1 dashboard (after Phase 2); S3 adds agent chat with citations
+├── dbt/                   # S2: models (bronze→silver→gold), tests incl. no_future_knowledge, semantic layer
+├── contracts/             # S2: Great Expectations suites
+├── airflow/dags/          # S2: edgar_daily · prices_eod · finra_on_publication · pageviews_daily · gdelt_daily · backtest_weekly
+├── infra/terraform/       # S2: ECS deploy target
+├── eval/golden/           # S1 frozen golden set — extended, never rewritten, in S2/S3
+├── reports/ · runs/       # pre-registrations, published reports, run manifests
+├── docs/                  # architecture.dsl (C4 → Mermaid), adr/
+└── .opencode/ · .claude/ · hooks/guard.py · AGENTS.md · opencode.jsonc   # dual harness (CORRECTION 42)
 ```
 
 ---
+
 
 ## 16. Project Evolution (3 Stages)
 
 | Stage | Role | Enhancements |
 |-------|------|--------------|
-| S1 | Foundation (GenAI-first core) | Backtest engine + AI dashboard + **eval-first faithfulness core** |
-| S2 | DE/AE hardening | EDGAR ingestion, Airflow, 500+ tickers, **signalcore** primitives, **dbt models + contracts**. 🆕 **Financial Knowledge Graph + Vector DB (GraphRAG capstone):** SEC filings → **Neo4j KG** (companies, filings, insiders, holdings, dates) + vector index, served via a **hybrid retriever** for multi-hop explainable reasoning. Vector stays the backbone (~80%); the graph adds relationship reasoning. |
+| S1 | Foundation (GenAI-first core) | Backtest engine + AI dashboard + **eval-first faithfulness core** — 🆕 *(CORRECTION 46)* order: **Phase 1 eval-first core → Phase 2 event-study backtest v1 (T1/T4/T5)**; dashboard follows the backtest |
+| S2 | DE/AE hardening | 🆕 *(CORRECTION 46)* **T2/T3/T6 added on knowledge-time data; full combination matrix.** EDGAR ingestion, Airflow, 500+ tickers, **signalcore** primitives, **dbt models + contracts**. 🆕 **Financial Knowledge Graph + Vector DB (GraphRAG capstone):** SEC filings → **Neo4j KG** (companies, filings, insiders, holdings, dates) + vector index, served via a **hybrid retriever** for multi-hop explainable reasoning. Vector stays the backbone (~80%); the graph adds relationship reasoning. |
 | S3 | Applied AI (GraphRAG + agentic + eval) | ML triggers (XGBoost/LSTM/MLflow — **earned-overlay**). GraphRAG financial-KG hybrid + **read-only agentic research loop** (orchestrator-workers → Analyst workers; Risk-Manager gate; evaluator-optimizer self-correction) calling SEC/market APIs via **MCP**; **faithfulness ≥ 0.9** + **Phoenix**. *Optional beyond-portfolio: multi-tenant SaaS, A2A.* |
 
 ---
 
-## 17. Success Metrics
 
-### Phase 1A
+### 16A. S3 — The Read-Only Research Agent (end state) 🆕 *(v9.2)*
 
-| Metric | Target |
-|--------|--------|
-| Price history | 3+ years, 50+ stocks |
-| Universe snapshots | Weekly |
-| Walk-forward | Y1-2 train, Y3 test |
-| De-clustering | 5-day rule |
-| Bootstrap CI | 95% on all |
-| Test coverage | >80% |
-| CI | All green |
-| Failed-signal follow-through 🆕 | Reported with CI; `F` fixed pre-run; never in the leaderboard |
+**Knowledge graph (Neo4j):** `(:Issuer)-[:FILED]->(:Filing {accession, form, acceptance_dt})` · `(:Insider)-[:REPORTED]->(:Transaction {code, shares, price, rule_10b5_1})` · `(:Filing)-[:DISCLOSES]->(:Offering {type, shares, price, best_efforts})` · `(:Issuer)-[:IN_SECTOR]->(:Sector)` · `(:TriggerEvent {type, available_at})-[:ON]->(:Issuer)`. Every node and edge carries its knowledge time; the graph is built from gold marts, never from un-timestamped sources. Vector index over bounded filing sections; a **hybrid retriever** combines multi-hop graph paths with vector recall (vector ~80% backbone, graph for relationships — per §16 S2 row).
 
-### Phase 1B
+**Agent loop (LangGraph, Anthropic "Building Effective Agents" vocabulary):**
 
-| Metric | Target |
-|--------|--------|
-| Pages working | All 6 |
-| AI transparency | 100% SQL shown |
-| Structured outputs | 100% Pydantic-validated |
-| Provider switching | Gemini ↔ OpenAI works via config |
-| AI observability | Token/cost/latency logged per query |
-| Guardrail test coverage | >90% |
-| Deployment | Streamlit Cloud |
-| Load time | <5 seconds |
+```
+Question → Orchestrator ─┬─> Filing analyst      (KG + vector retrieval; EDGAR via MCP read-only)
+                         ├─> Insider analyst      (KG paths; Form 4 facts)
+                         └─> Event-study analyst  (gold marts via whitelisted SQL; AGGREGATES ONLY —
+                                                   never the sealed holdout, never raw ticker-date outcomes)
+           → Compliance gate (no advice language; disclaimer; citations required)
+           → VERIFIER = S1 detectors (DeepEval faithfulness · FActScore protocol vs EDGAR)
+                 faithfulness ≥ 0.9 → answer with accession-number citations
+                 < 0.9 → evaluator-optimizer retry (max 2) → else refuse with reason
+```
+
+**Tool policy:** allowlist only — EDGAR search/fetch (read-only), lakehouse query (sqlglot-validated, read-only role), graph query (parameterized Cypher, read-only Neo4j user). **No tool can write, send, trade or execute code.** Filing text is untrusted input; injected instructions are tested against.
+**HITL:** the roadmap's HITL rule applies to irreversible actions — **AFC has none by construction**; the verifier gate is the control. Published reports still pass a human review.
+**Three-layer eval:** per-query (faithfulness, answer relevancy, citation precision) · trajectory (Phoenix: Tool Correctness = 1.0, step budget) · drift (frozen S1 golden set + an agent golden set; regression blocks merge).
+**ML overlay (earned only):** XGBoost / LSTM / MLflow trigger models must beat **base-rate lift** in the same walk-forward with FDR control; otherwise they do not ship. *Optional beyond-portfolio:* multi-tenant SaaS, A2A.
+
+### 16B. Development Phases 🆕 *(v9.2)*
+
+| Phase | Stage | Deliverable | Exit criteria |
+|---|---|---|---|
+| **1** | S1 | Eval-first faithfulness benchmark | Pre-registration commit precedes test scoring; report with CIs; golden set v1; release `v1.0.0` |
+| **2** | S1 | Event-study backtest v1 (T1/T4/T5) | `test_knowledge_time` green; survivorship gap reported; BH-FDR over full family; holdout scored once; release `v1.1.0` |
+| **2b** | S1 | Research dashboard (validated text-to-SQL) | 100% SQL shown; guardrail coverage ≥ 90%; injection fixtures pass |
+| **3** | S2 | Knowledge-time lakehouse + T2/T3/T6 + full matrix + `signalcore` extraction | dbt tests blocking incl. `no_future_knowledge`; contracts; idempotent DAGs; restatement-replay green; postmortem written |
+| **4** | S3 | GraphRAG read-only research agent | Faithfulness ≥ 0.9 blocking; Tool Correctness = 1.0; 100% trajectories traced; golden-set drift gate green |
+
+> Durations are gates, not deadlines. Build order follows the roadmap: AFC Phase 1 can publish early; S2/S3 follow PolicyPulse's GraphRAG work.
 
 ---
+
+
+## 17. Success Metrics (process, not P&L)
+
+| Stage / phase | Metric | Target |
+|---|---|---|
+| S1 · Phase 1 | Detector recall by error type & tier, FPR, AUROC | Reported with Wilson CIs; McNemar + κ; H1–H4 verdicts |
+| S1 · Phase 1 | Reproducibility | Every README number regenerates from cache + manifest |
+| S1 · Phase 2 | Knowledge-time leakage | `test_knowledge_time` green, always |
+| S1 · Phase 2 | Survivorship | Gap reported as a number |
+| S1 · Phase 2 | Verdict hygiene | Every scenario listed with n, base rate, lift CI, verdict; BH-FDR over the full family |
+| S1 · Phase 2 | Holdout | Scored **once**, after the pre-registration commit |
+| S1 · Phase 2 | Failed-signal follow-through | Reported with CI; `F` fixed pre-run; never in the leaderboard |
+| S1 · 2b | Dashboard | 100% SQL shown · 100% Pydantic-validated · guardrail coverage ≥ 90% · Anthropic ↔ Gemini switch via config · load < 5 s |
+| S1 · all | Engineering | Coverage ≥ 80% · CI green · Tier 0 makes zero network calls |
+| S2 | Data | dbt tests blocking · contracts enforced · restatement-replay green · freshness SLAs met · postmortem written |
+| S3 | Agent | Faithfulness ≥ 0.9 (blocking) · Tool Correctness = 1.0 · 100% trajectories traced · golden-set drift gate green |
+
+> **Explicitly NOT a success metric:** returns, Sharpe, or any P&L figure. AFC claims **process integrity** and **measured faithfulness**.
+
+---
+
 
 ## 18. Risk Mitigation
 
 | Risk | Mitigation |
 |------|------------|
-| Survivorship bias | Historical universe snapshots |
-| Overfitting | Walk-forward validation |
-| Multiple testing | Bootstrap CI, min 30 signals |
+| Survivorship bias | Historical universe snapshots — 🆕 *(CORRECTION 46)* plus reconstruction from as-traded prices + EDGAR-seeded delisted issuers; gap reported (§6.1) |
+| Overfitting | Walk-forward validation — 🆕 *(CORRECTION 46)* rolling windows + embargo + sealed final holdout (§5.4) |
+| Multiple testing | Bootstrap CI, min 30 signals — 🆕 *(CORRECTION 46)* + base-rate lift + Benjamini–Hochberg FDR across every combination tested (§5.5) |
 | API limits | Caching, async batching |
 | AI hallucinations | SQL transparency, Pydantic structured outputs, governance as code |
 | Provider lock-in | Provider-agnostic abstraction layer (swap via config) |
 | AI cost overruns | Token/cost observability, rate limits, caching |
+| Look-ahead from data timing 🆕 | Per-source knowledge time; entry only if `available_at` < open of the entry session (§6.3 — CORRECTION 46) |
+| Data leakage via knowledge-time joins (S2) 🆕 *(v9.2)* | dbt `no_future_knowledge` test on every join; restatement-replay test (§7.4) |
+| Agent hallucination or uncited claims (S3) 🆕 *(v9.2)* | Verifier gate (faithfulness ≥ 0.9 or refuse); citations by accession number; three-layer eval (§16A) |
+| Agent tool misuse / prompt injection (S3) 🆕 *(v9.2)* | Read-only allowlist; parameterized Cypher; sqlglot-validated SQL; filing text untrusted; injection fixtures |
+| Public dashboard cost / data-terms exposure 🆕 *(v9.2)* | Per-visitor rate limit, hard LLM budget cap, provider redistribution terms checked before deploy (§18B) |
 | Follow-through table read as a short signal 🆕 | Labeled descriptive/gross; Rule 201 + borrow flags; universe-mismatch note; execution lives only in Crucible (§5.6 — CORRECTION 45) |
 
 ---
 
 
-### AI Evaluation Layer (Financial Data — Higher Threshold)
+## 18A. AI Evaluation Layer (Financial Data — Higher Threshold) 🆕 *(C46 addendum)*
 
 AFC uses DeepEval with **elevated thresholds** because incorrect financial analysis
 can mislead trading decisions. Faithfulness is set to 0.9 (vs 0.85 standard).
 
 **v8.3 Enhancement:** Beyond DeepEval, AFC adds **SelfCheckGPT** (consistency-based) 
 and **FActScore** (atomic-fact decomposition with SEC retrieval verification) — 
+🆕 *(CORRECTION 46)* implemented as a **protocol re-implementation** (atomic fact generation → atomic fact validation against the filing, following Min et al. 2023): the `factscore` package pins `torch<2.0` and `openai<0.28`, cannot install on Python 3.14, and its original InstructGPT-era models were shut down by OpenAI on 4 January 2024. Absolute scores are AFC's own and are never compared with published FActScore numbers — 
 financial-grade rigor justified by trading decision risk.
 
-**Frameworks:** DeepEval + SelfCheckGPT + FActScore (all pytest-compatible, open-source)
+**Frameworks:** DeepEval + SelfCheckGPT + FActScore (all pytest-compatible, open-source) — 🆕 *(CORRECTION 46)* FActScore = in-house protocol implementation; see Stage-1 build sheet §6.2
 
 | Metric | Target | Why Higher |
 |--------|--------|-----------|
 | Answer Relevancy | > 0.8 | Standard threshold |
-| Faithfulness | > 0.9 | Financial data must be accurate — higher than standard 0.85 |
-| Hallucination | < 0.10 | Lower tolerance — fabricated financial data is dangerous |
-| **SelfCheckGPT Score** | > 0.85 | Consistency-based — sample N=5 responses, score divergence as hallucination signal. Catches subtle fabrications DeepEval misses. No external KB needed. |
-| **FActScore (atomic)** | > 0.80 | Decomposes claims into atomic facts → verifies each against SEC EDGAR + financial sources. Gold standard for SEC-grounded analysis. |
+| Faithfulness | ≥ 0.9 🆕 *(C46 addendum)* | Financial data must be accurate — higher than standard 0.85 |
+| Hallucination | ≤ 0.10 🆕 *(C46 addendum)* (lower is better) | Lower tolerance — fabricated financial data is dangerous |
+| **SelfCheckGPT inconsistency** | ≤ 0.15 🆕 *(C46 addendum)* (lower is better; i.e. consistency ≥ 0.85) | Consistency-based — sample N=5 responses, score divergence as hallucination signal. Catches subtle fabrications DeepEval misses. No external KB needed. |
+| **FActScore (atomic, protocol)** | ≥ 0.80 🆕 *(C46 addendum)* | Decomposes claims into atomic facts → verifies each against SEC EDGAR (sole knowledge source). Gold standard for SEC-grounded analysis. |
 
 **Implementation:**
 - Evaluation test cases in `tests/test_eval.py` (DeepEval)
 - **NEW v8.3:** `tests/test_selfcheckgpt.py` (consistency sampling, ~3-5 LOC per test using `selfcheckgpt` library)
-- **NEW v8.3:** `tests/test_factscore.py` (atomic-fact decomposition; uses SEC EDGAR + cached Wikipedia as KB)
+- **NEW v8.3:** `tests/test_factscore.py` (atomic-fact decomposition; ~~uses SEC EDGAR + cached Wikipedia as KB~~ 🆕 *(CORRECTION 46)* **SEC EDGAR only** as the knowledge source — Wikipedia is not authoritative for filing claims)
 - Financial accuracy test cases in `tests/eval_dataset.json` (30+ cases covering filings, earnings, technicals)
-- CI pipeline includes evaluation gate (all three frameworks must pass)
+- ~~CI pipeline includes evaluation gate (all three frameworks must pass)~~ 🆕 *(C46 addendum)* **Tiered CI (D-7):** Tier 0 on every PR — deterministic tests with recorded LLM/HTTP fixtures, $0; Tier 1 nightly on `main` + PR label `run-eval` — live run on the frozen golden set, budget-capped, fails on drift; Tier 2 manual — the full published benchmark. Every detector is normalized to `p_unfaithful` so direction is never ambiguous.
+- 🆕 *(v9.2)* **Three-layer eval (S3):** per-query metrics (faithfulness, relevancy, citation precision) · trajectory tracing in Arize Phoenix (Tool Correctness = 1.0) · drift against the frozen S1 golden set plus an agent golden set — a regression blocks merge.
+- 🆕 *(C46 addendum)* **Judge independence (D-8):** the judge model's provider differs from the analyst's; a 20% subset is re-judged by the other provider and cross-judge κ is reported.
 
 
-### Docker Support (Containerization)
 
-**Dockerfile** provided for reproducible local development and deployment.
+## 18B. Containers (by stage)
 
-```dockerfile
-# Dockerfile
-FROM python:3.14-slim
-WORKDIR /app
-# uv (Astral) — pinned binary from the official image; lockfile-strict install
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
-COPY . .
-EXPOSE 8501
-CMD ["uv", "run", "streamlit", "run", "app/Home.py", "--server.port=8501"]
-```
+| Stage | Image / service | Notes |
+|---|---|---|
+| S1 · Phases 1–2 | `afc` CLI image | Hardened Dockerfile in build sheet **§12.3** (pinned uv, dependency/project layers, non-root) |
+| S1 · 2b | Dashboard image (Streamlit) | Dockerfile + `.dockerignore` in build sheet **Appendix A.3** (same hardening, README kept) |
+| S2 | Docker Compose: Airflow + Postgres metadata + workers; ECS + Terraform for deploy | Airflow pinned to the `constraints-3.13.txt` workaround |
+| S3 | + Neo4j service; Phoenix collector | Neo4j read-only user for the agent |
 
-**`.dockerignore`** (keeps image small and secure):
-```
-.git
-.gitignore
-.github/
-.cursor/
-.env
-.env.example
-*.md
-LICENSE
-CONTRIBUTING.md
-Makefile
-tests/
-notebooks/
-logs/
-data/raw/
-__pycache__/
-*.pyc
-.pytest_cache/
-.venv/
-```
-
-**Run locally:**
-```bash
-docker build -t attention-flow-catalyst .
-docker run -p 8501:8501 --env-file .env attention-flow-catalyst
-```
-
-**Why This Matters for Portfolio:**
-Docker appears in 60%+ of AI/ML job postings. Including a Dockerfile
-shows deployment readiness — critical for Junior AI Engineer applications.
-
+> Public dashboard deployment (Streamlit Cloud) requires a per-visitor rate limit, a hard LLM budget cap, and a check of each market-data provider's redistribution terms **before** going public.
 
 ---
 
-## 19. Timeline Summary
+## 19. Timeline (stage-level)
 
-| Week | Phase | Focus |
-|------|-------|-------|
-| 1 | 1A | Setup, CI, screener |
-| 2 | 1A | Collectors, Parquet |
-| 3 | 1A | T1-T6 triggers |
-| 4 | 1A | DuckDB, backtest core |
-| 5 | 1A | Walk-forward, CI |
-| 6 | 1A | Signals, quality, docs |
-| 7 | 1B | Streamlit shell |
-| 8 | 1B | Charts, leaderboard |
-| 9 | 1B | LLM SDK + PandasAI, structured outputs, guardrails |
-| 10 | 1B | AI observability, deploy, demo video |
+| Stage | Indicative duration @ 25 h/week | Detailed plan |
+|---|---|---|
+| S1 · Phase 1 (benchmark) | ~6 weeks | Build sheet §15, weeks 1–6 |
+| S1 · Phase 2 (backtest v1) | ~8 weeks | Build sheet §15, weeks 7–14 |
+| S1 · 2b (dashboard) | when hours allow, after Phase 2 | §10–§11 design |
+| S2 | Per roadmap Build Progression (DataVault-led DE/AE hardening) | §7.4 |
+| S3 | After PolicyPulse establishes GraphRAG | §16A |
+
+> Treat durations as gates, not deadlines.
 
 ---
 
-## ✅ Approval Status
+## ✅ Approval Checklist
 
-**APPROVED** — February 14, 2026
+- [x] Full-Production role confirmed (D-6); Stage-1 build sheet is the build authority for S1
+- [x] Positioning matches the amended roadmap line — lift over base rate, no return claims
+- [x] Integrity spine (§1B) is structural, not procedural
+- [x] Knowledge-time rule applied to every source (§6.3, §7.4)
+- [x] Walk-forward + embargo + sealed holdout; base-rate lift + BH-FDR (§5.4–5.5)
+- [x] Read-only by construction at every stage; no write tools in S3 (§16A)
+- [x] Verifier gate (faithfulness ≥ 0.9) on every S3 answer
+- [x] `signalcore` boundary consistent with `Shared_SignalCore_Boundary_Spec_v1_5.md` (incl. short-interest publication-date knowledge time)
+- [x] No dependency that cannot install on the Python 3.14 floor
+- [ ] Falsification List entry in `MARKET_ANALYSIS_v9_3.md` aligned (open — file not yet provided)
 
-This document represents the complete, methodology-complete scope for Attention-Flow Catalyst v8.0 with SDK-first AI architecture and 2026 production patterns.
+**APPROVED** — February 14, 2026 (v8.0) · realigned v9.0 August 10, 2026 · CORRECTIONS 45–46 October 2026 · **promoted to Full-Production v9.2 October 2, 2026.**
 
 ---
 
@@ -1349,39 +1117,34 @@ This document represents the complete, methodology-complete scope for Attention-
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│           ATTENTION-FLOW CATALYST v8.0 (FINAL)             │
-│           Defensible Research System + SDK-First AI          │
+│     ATTENTION-FLOW CATALYST — Full Production v9.2          │
+│     Faithfulness benchmark + read-only event study          │
 ├─────────────────────────────────────────────────────────────┤
 │  ✅ METHODOLOGY                                             │
-│     • Walk-forward validation (train Y1-2, test Y3)        │
-│     • De-clustering (5-day rule per ticker)                │
-│     • Transaction costs (1.5% round-trip)                  │
-│     • Bootstrap 95% confidence intervals                   │
-│     • Minimum 30 signals per scenario                      │
+│     • Rolling walk-forward + embargo + sealed holdout       │
+│     • Base-rate lift + Benjamini–Hochberg FDR               │
+│     • De-clustering (5-day rule per ticker)                 │
+│     • Transaction costs (1.5% round-trip + spread check)    │
+│     • Minimum 30 signals per scenario; power stated first   │
 ├─────────────────────────────────────────────────────────────┤
 │  ✅ BIAS CONTROLS                                           │
-│     • Historical universe snapshots (survivorship)         │
-│     • Corporate actions handling (splits, delistings)      │
-│     • Point-in-time data only (no look-ahead)             │
+│     • Knowledge time on every record (available_at)         │
+│     • Historical as-of universe incl. delisted issuers      │
+│     • As-traded screening; adjusted returns                 │
 ├─────────────────────────────────────────────────────────────┤
-│  ✅ MODERN STACK                                            │
-│     • DuckDB + Parquet lakehouse                           │
-│     • httpx async collectors                               │
-│     • GitHub Actions CI                                    │
+│  ✅ EVAL SPINE                                              │
+│     • E1–E10 perturbation benchmark, labels by construction │
+│     • Calibration/test split; independent judge; cache      │
+│     • Frozen golden set gates every later change            │
 ├─────────────────────────────────────────────────────────────┤
-│  ✅ UNIQUE TRIGGERS                                         │
-│     • T5 Dilution state machine (differentiator)           │
-│     • T6 Squeeze context (short int. + float, as overlay)  │
-│     • SEC Form 4 + offering tracking (S-1, 424B5, 8-K)    │
+│  ✅ STACK BY STAGE                                          │
+│     • S1 DuckDB + Parquet · S2 dbt + Airflow + contracts    │
+│     • S3 Neo4j + vector · LangGraph · MCP · Phoenix         │
 ├─────────────────────────────────────────────────────────────┤
-│  ✅ AI WITH GUARDRAILS (2026 Production Patterns)           │
-│     • LLM SDK (Anthropic Claude primary, Gemini fallback)  │
-│     • Provider-agnostic abstraction layer                   │
-│     • Pydantic-validated structured outputs                 │
-│     • SQL transparency (show every query)                  │
-│     • Governance as code (testable guardrails)             │
-│     • AI observability (tokens, cost, latency per query)   │
-│     • Read-only access + disclaimers                       │
+│  ✅ AI WITH GUARDRAILS                                      │
+│     • Claude primary, provider-agnostic                     │
+│     • Validated text-to-SQL; read-only everywhere           │
+│     • Verifier gate: faithfulness ≥ 0.9 or refuse           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1424,27 +1187,27 @@ This document represents the complete, methodology-complete scope for Attention-
 
 ```mermaid
 flowchart LR
-    A[🔍 Dynamic Stock Screener] --> B[Data Collection - httpx async]
+    A[🔍 Dynamic Stock Screener] --> B[Data Collection - rate-limited, cached]
     B --> B1[SEC Form 4 - edgartools]
     B --> B2[Wikipedia API]
     B --> B3[RSS/GDELT News]
     B --> B4[yfinance Prices + Volume]
     B --> B5[SEC Filings - Dilution State]
-    B --> B6[Short Interest + Float - yfinance/FINRA]
+    B --> B6[Short Interest - FINRA, publication date / Float - XBRL]
     B1 & B2 & B3 & B4 & B5 & B6 --> C[(DuckDB + Parquet Lakehouse)]
-    C --> D[Trigger Engine - 6 Triggers]
+    C --> D[Trigger Engine - S1: T1 T4 T5 / S2: + T2 T3 T6]
     D --> E[Walk-Forward Backtest]
-    E --> F[Bootstrap 95% CI]
+    E --> F[Base-rate lift + BH-FDR + sealed holdout]
     F --> G[📊 Trigger Leaderboard]
-    G --> H[🤖 AI Dashboard - LLM SDK + PandasAI]
-    H --> I[Forward Signal Generator]
+    G --> H[🤖 AI Dashboard - LLM SDK + validated text-to-SQL]
+    H --> I[Read-only active-signal monitor]
 ```
 
 > **Why Mermaid?** Renders directly in GitHub README — no PNG files to maintain, stays in sync with code, signals architectural thinking to recruiters. Recruiters see the diagram without clicking external links.
 
 ---
 
-**Date:** May 07, 2026
+**Last aligned:** October 2, 2026 (Full-Production v9.2)
 
 *"Defensible methodology + Modern stack + SDK-first AI with structured outputs & guardrails = Research system, not just a dashboard"* 🚀
 ---
@@ -1456,12 +1219,12 @@ flowchart LR
 | Skill | Stage | How this project uses it |
 |-------|-------|--------------------------|
 | Python 3.14+, pandas, numpy | S1 ✅ | Trigger framework, backtest engine |
-| **Polars** | ⬆️ S2 | Default engine for EDGAR/filings ingestion and bulk scans *(pandas retained **only** at the named boundaries: `openpyxl` template writes, the matplotlib/plotting hand-off, and any PandasAI surface, which requires a pandas frame)* — CORRECTION 35 |
+| **Polars** | ⬆️ S2 | Default engine for EDGAR/filings ingestion and bulk scans *(pandas retained **only** at the named boundaries: `openpyxl` template writes, the matplotlib/plotting hand-off; the former PandasAI surface was removed at CORRECTION 46)* — CORRECTION 35 |
 | SEC EDGAR retrieval | S1 ✅ | Filing ingestion — the grounding corpus |
 | DuckDB + partitioned Parquet lakehouse | S1 ✅ | Data spine (shared with Crucible) |
 | **PIT data + bias controls** | **S1 ✅** | **Survivorship/look-ahead defenses — the statistical-rigor story** |
 | LLM SDK (provider-agnostic) | S1 ✅ | The LLM analyst under evaluation |
-| **RAGAS + SelfCheckGPT + DeepEval (three-method eval)** | **S1 ✅** | **Faithfulness ≥ 0.9 on financial claims — the signature showcase** |
+| **DeepEval + FActScore protocol + SelfCheckGPT (three-method eval)** 🆕 *(C46 addendum)* | **S1 ✅** | **Faithfulness ≥ 0.9 on financial claims — the signature showcase** |
 | **Controlled-perturbation catalog** | **S1 ✅** | **Proves the eval detects injected errors — rare, high-signal evidence** |
 | Pydantic v2 | S1 ✅ | Structured analyst outputs |
 | Streamlit | S1 ✅ | Research dashboard |
