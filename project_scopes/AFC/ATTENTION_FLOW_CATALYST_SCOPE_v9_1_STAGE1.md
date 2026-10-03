@@ -1,12 +1,13 @@
-# 🧪 ATTENTION-FLOW CATALYST (AFC) — Stage 1 Project Scope v9.1 (PROPOSED)
+# 🧪 ATTENTION-FLOW CATALYST (AFC) — Stage 1 Project Scope v9.1 (APPROVED)
 
 > **Companions:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md` — AFC's **Full-Production** scope (promoted from v9.0, section numbers preserved), **authoritative for methodology (§2–§8), dashboard/guardrail design (§10–§11) and S2–S3 architecture** (D-6, completed). `AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md` — the eval-first slice this build sheet **absorbs and supersedes on approval** (D-6). `Shared_SignalCore_Boundary_Spec_v1_5.md` — the shared-primitives contract (not a Stage-1 dependency; §16). **This document is the Stage-1 build sheet: Phase 1 — the SEC-grounded faithfulness benchmark (the eval-first core), and Phase 2 — the event-study backtest v1 (T1/T4/T5).** Stages 2–3 are retained as forward context only.
 
-## SEC-Grounded Faithfulness Benchmark for Small-Cap Filing Analysis
+## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks — Stage 1 Build Sheet
+## Faithfulness benchmark · event-study backtest · ML meta-labeling baseline
 ## "Finance is the substrate; faithfulness measurement is the method — and every trigger decision is tested against history."
 
 **Document Version:** 9.1 (🎯 **STAGE-1 BUILD SHEET** — mirrors the Crucible split (`v3_1_STAGE1` + `v1_0_FULL_PRODUCTION`). Promotes the eval-first slice to AFC's Stage-1 build sheet, aligns it to the roadmap's governing AFC positioning, and folds in the October 2026 production review — dependency reality on Python 3.14, point-in-time provenance, statistical design, CI eval tiering, and a corrected repo layout.)
-**Last Updated:** October 2, 2026 (rev. 4 — Full-Production companion v9.2; Appendix A added)
+**Last Updated:** October 3, 2026 (rev. 5 — CORRECTION 47: AI-powered predictive layer, §7B.9)
 **Status:** ✅ **APPROVED** — October 2, 2026. All decisions D-0 … D-9 locked (§20). Supersedes `AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md` for Stage 1 (D-6). Companion Full-Production scope: `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md`.
 **Author:** Manuel Reyes
 **Review record:** `AFC_PROJECT_REVIEW_2026-10-02.md` — every change in this sheet traces to a numbered finding there.
@@ -17,13 +18,13 @@
 
 > **This block governs.** Where anything below conflicts, this block wins. Where this sheet conflicts with the Full-Production scope (v9.2) on **Stage 1 build detail**, this sheet wins.
 
-**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**, through CORRECTION 46 (CORRECTION 45 reserved, text pending approval).
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**, through CORRECTION 47.
 
 **Governing model:** **3 stages, not 5.** Destination title **Applied AI Engineer → Forward Deployed Engineer (FDE)**. **One system that evolves across stages — never rebuilt per stage.**
 
 **Portfolio role:** 🧩 **Supporting** (production-grade; size ≠ tier). Read-only financial NLP/RAG with an eval spine; **faithfulness ≥ 0.9** showcase.
 
-**🧭 Positioning (roadmap, as amended by CORRECTION 46 — binding):** *AFC is financial NLP/RAG with an eval spine, plus a **read-only historical event study** used to make data-driven trigger decisions. It reports hit-rate **lift over a base rate** under statistical controls (walk-forward, false-discovery control, point-in-time data). There is no factor construction and no alpha, Sharpe or return claim — and it should not be described as though there were.* Crucible and AFC remain **not quant projects**. *(The original sentence — "no returns, no factor construction, no backtest" — is preserved struck-through in the roadmap; the backtest was retained by Manuel's decision, D-0.)*
+**🧭 Positioning (roadmap, as amended by CORRECTION 46 — binding):** *AFC is financial NLP/RAG with an eval spine, plus a **read-only historical event study** used to make data-driven trigger decisions. It reports hit-rate **lift over a base rate** under statistical controls (walk-forward, false-discovery control, point-in-time data). There is no factor construction and no alpha, Sharpe or return claim — and it should not be described as though there were.* Crucible and AFC remain **not quant projects**. *(The original sentence — "no returns, no factor construction, no backtest" — is preserved struck-through in the roadmap; the backtest was retained by Manuel's decision, D-0.)* 🆕 **(CORRECTION 47)** AFC is **AI-powered predictive**: an ML meta-labeling layer predicts the probability that each trigger event reaches +10%, held to the same controls and to a beat-the-best-rule test; reported as calibrated probability and lift, never as returns.
 
 **Build order (roadmap Build Progression):** DataVault → PolicyPulse → Crucible lead; **AFC slots in after PolicyPulse establishes GraphRAG**, but its eval-first core is publishable **early** as the smallest high-signal artifact. Stage 1 is that artifact.
 
@@ -31,7 +32,7 @@
 
 | Stage | Theme | This project's layer |
 |---|---|---|
-| **S1** ⭐ *this sheet* | Foundation (GenAI-first core) | **Phase 1 — Eval-first core:** EDGAR retrieval with provenance → provider-agnostic LLM analyst → three-method faithfulness evaluation → controlled-perturbation benchmark → published report + frozen golden set. **Phase 2 — Event-study backtest v1:** T1 (insider `P` purchases) + T5 (dilution state) + T4 (volume) on knowledge-time data, base-rate lift, false-discovery control, rolling walk-forward, sealed final holdout. |
+| **S1** ⭐ *this sheet* | Foundation (GenAI-first core) | **Phase 1 — Eval-first core:** EDGAR retrieval with provenance → provider-agnostic LLM analyst → three-method faithfulness evaluation → controlled-perturbation benchmark → published report + frozen golden set. **Phase 2 — Event-study backtest v1:** T1 (insider `P` purchases) + T5 (dilution state) + T4 (volume) on knowledge-time data, base-rate lift, false-discovery control, rolling walk-forward, sealed final holdout; **ML meta-labeling baseline** predicting P(hit) per event (CORRECTION 47). |
 | **S2** | DE/AE hardening | Financial-data lakehouse over **filings and market data** — EDGAR ingestion at scale, PIT (bitemporal) storage, **dbt models + contracts**, Airflow, monitoring + postmortem; **T2 / T3 / T6 added on knowledge-time data → full combination matrix**; S1's local primitives extracted into `signalcore`. *(Authority: Full-Production v9.2 §7.4.)* |
 | **S3** | Applied AI (RAG/agentic + eval) | **GraphRAG financial-KG hybrid** (Neo4j + vector index) + **read-only** agentic research loop; the S1 eval harness becomes the **verifier**; three-layer eval + Phoenix tracing + MCP. |
 
@@ -71,6 +72,7 @@
 | **v9.1 rev. 2 (October 2, 2026 — roadmap CORRECTION 46)** | **Backtest retained by decision (D-0 locked).** Adds **§7B Phase 2 — Event-Study Backtest v1** (T1/T4/T5), with knowledge-time data, survivorship-aware universe, rolling walk-forward + embargo + sealed final holdout, base-rate lift and Benjamini–Hochberg FDR, and the §5.6 follow-through analysis. D-3 locked (FActScore protocol re-implementation). PandasAI replaced by validated text-to-SQL for the dashboard that follows the backtest. Positioning, phase table, principles, stack, structure, risks, metrics, timeline and §16 updated. |
 | **v9.1 rev. 3 (October 2, 2026 — C46 addendum)** | **Approved.** D-1, D-2, D-4, D-5, D-6, D-7, D-8, D-9 locked; status → APPROVED; the eval-first slice v1.3 is marked superseded (kept for history). |
 | **v9.1 rev. 4 (October 2, 2026 — Full-Production promotion)** | Parent v9.0 promoted to `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md`; pointers repointed; build-level content moved here as **Appendix A** (A.1 pre-commit config, A.2 logging & debugging, A.3 dashboard container); tree gains `app/`, `config/`, `CONTRIBUTING.md`, `.cursorignore`. |
+| **v9.1 rev. 5 (October 3, 2026 — CORRECTION 47)** | **AI-powered predictive.** Title restored; new **§7B.9 ML meta-labeling baseline** (B16–B19); one pre-registration covers rules + ML before the single holdout; stack, structure, risks, metrics, skills and locked decision #17 updated; Stage-1 timeline 14 → 16 weeks. |
 
 ---
 
@@ -81,7 +83,7 @@ This scope describes **one supporting project with two Stage-1 build phases** an
 | Build Phase | Stage | What it produces | Touches prices or returns? |
 |---|---|---|---|
 | **Phase 1 — Eval-First Core** ⭐ | **S1** | EDGAR retrieval with provenance; LLM analyst producing structured claims; three detectors; labeled perturbation benchmark; published report; frozen golden set | No |
-| **Phase 2 — Event-Study Backtest v1** ⭐ | **S1** | T1/T4/T5 trigger combinations tested on history: base-rate lift with CIs, FDR-controlled, walk-forward-stable verdicts; §5.6 follow-through table | **Prices yes — returns never claimed.** Output is *lift over a base rate*, not P&L |
+| **Phase 2 — Event-Study Backtest v1** ⭐ | **S1** | T1/T4/T5 trigger combinations tested on history **+ ML meta-labeling baseline (§7B.9)**: base-rate lift with CIs, FDR-controlled, walk-forward-stable verdicts; §5.6 follow-through table | **Prices yes — returns never claimed.** Output is *lift over a base rate*, not P&L |
 | Lakehouse + full trigger matrix | S2 | dbt-modelled, contract-tested, PIT data; T2/T3/T6 added; `signalcore` extraction (forward context, §8) | Same rule |
 | GraphRAG Research Loop | S3 | Read-only KG-hybrid research agent; S1 harness as verifier (forward context, §9) | No |
 
@@ -122,6 +124,7 @@ The finance domain supplies what most hallucination benchmarks lack: an **author
 - **Controlled-perturbation benchmark** — 10 error types × 3 difficulty tiers, paired design, powered sample.
 - **Published findings** — report, metrics table, failure taxonomy, frozen golden set reused by S2/S3 drift checks.
 - **Event-study backtest v1 (Phase 2)** — T1/T4/T5 and their combinations tested on knowledge-time data; verdicts are base-rate lift with CIs after Benjamini–Hochberg FDR, stable across rolling walk-forward windows, confirmed once on a sealed holdout.
+- **AI predictive layer (Phase 2)** 🆕 *(CORRECTION 47)* — an ML meta-labeling model predicts a calibrated probability for each trigger event and must beat the best rule-based combination on the sealed holdout (§7B.9).
 
 > 🔁 **Agentic Loop Spec (roadmap v8.8 — restated for S1):**
 > - **Loop type:** *read-only pipelines* — Phase 1: retrieve → parse → analyze → perturb → detect → score → report. Phase 2: build PIT universe → detect triggers on knowledge-time data → label → base rate → walk-forward → FDR → verdicts. **No trading, no orders, no return claims.**
@@ -457,7 +460,7 @@ backtest_v1_validation:
   test_per_scenario: "one-sided: lift > 0, on pooled out-of-sample windows"
   false_discovery: { method: Benjamini-Hochberg, q: 0.10, family: "every scenario x configuration evaluated in the run" }
   stability: "lift > 0 in >= 2/3 of test windows"
-  final_holdout: "most recent 12 months, sealed; scored ONCE after reports/backtest_preregistration.md is committed"
+  final_holdout: "most recent 12 months, sealed; scored ONCE after reports/backtest_preregistration.md is committed — 🆕 C47: the same file pre-registers the ML layer (§7B.9), so rules and ML are scored together"
   verdicts:
     VALIDATED: "survives FDR + stable + holdout lift CI excludes 0"
     PROMISING: "survives FDR + stable; holdout inconclusive"
@@ -491,6 +494,27 @@ Phase 2 needs volume, validation, calendar and Rule 201 math before `signalcore`
 | B13 | Follow-through table | §7B.6 |
 | B14 | Report + leaderboard | Test-only metrics; base-rate column mandatory; every scenario listed with n |
 | B15 | Primitives module | Spec-conformance test green |
+
+
+### 7B.9 AI Predictive Layer v1 — ML Meta-Labeling Baseline 🆕 *(CORRECTION 47)*
+
+**Goal:** make "AI-powered predictive" true in Stage 1. The trigger rules decide *when* to look; an ML classifier predicts the **probability** that each trigger event reaches +10% within 3 trading days. Methodology authority: Full-Production §5.7.
+
+| Item | Stage-1 specification |
+|---|---|
+| Events | Every T1/T4/T5 trigger event in the backtest (after declustering) |
+| Meta-label | 1 if the event's §7B.4 label is HIT, else 0 — same entry, label and costs as the rules |
+| Features | Trigger flags; T4 sub-signal values; T5 state; T1 insider role/value/count; sector strength; index trend; as-traded price & volume context — **each with `available_at`** |
+| Models | Logistic regression (interpretable floor) + LightGBM (gradient boosting); small, pre-registered hyperparameter grid |
+| Validation | §7B.5 walk-forward windows; **purge** training events whose 3-day label window overlaps the test window; 5-day embargo; calibration (isotonic or Platt) on an inner split of each **train** window only |
+| Metrics | AUC-PR · Brier score · calibration curve · precision at top-k · lift vs base rate · **lift vs the best rule-based combination** |
+| False discovery | Every model × feature set × hyperparameter config joins the BH-FDR family |
+| Pre-registration | Same file as the rules (`reports/backtest_preregistration.md`), committed **before** the holdout is opened — rules and ML are scored on the holdout together, once |
+| Ships only if | Holdout lift over the best rule has a 95% CI excluding 0; otherwise the rules stand and the ML result is published as REJECTED |
+| Output | Calibrated probability per trigger event, shown in the dashboard — never a position size, never a return |
+
+**Deliverables:** **B16** feature table with knowledge-time tests · **B17** purged walk-forward splitter (`test_ml_purging`) · **B18** models + train-window calibration (`test_calibration_train_only`) · **B19** holdout verdict vs best rule + calibration plots in the report.
+**Stage 2 adds** the full trigger matrix, 500+ tickers and MLflow; **Stage 3 adds** LLM-extracted filing features with anonymization, a post-training-cutoff slice and faithfulness verification (Full-Production §5.7).
 
 ### What "validated" means here
 A combination is **VALIDATED** only if it survives false-discovery control, is stable across walk-forward windows, **and** shows a positive lift CI on the sealed holdout. **"No combination validates"** is a legitimate, publishable result — it is exactly the data-driven answer the backtest exists to give.
@@ -543,6 +567,7 @@ A combination is **VALIDATED** only if it survives false-discovery control, is s
 | Stats | `scipy`, `numpy`, **`statsmodels`** (Wilson CI, McNemar, AUROC, κ; Benjamini–Hochberg) | statsmodels 0.15.0 (cp314 wheels) |
 | Market data (Phase 2) | Free daily OHLCV (yfinance per Full-Production §8.2 Mode B) + XBRL company facts + SPDR sector ETFs | yfinance 1.7.0 — **3.14 verified in spike B1** |
 | Calendar (Phase 2) | `exchange-calendars` (XNYS) | 4.13.2 |
+| **AI prediction (Phase 2)** 🆕 *(CORRECTION 47)* | **scikit-learn** (logistic regression, calibration) · **LightGBM** (gradient boosting) | scikit-learn 1.9.1 (cp314 wheels) · lightgbm 4.7.0 |
 | Storage | JSON/Parquet artifacts + DuckDB for report queries | duckdb 1.5.6 |
 | Logging / retries | **structlog**, **stamina** | 26.1.0 / 26.1.0 |
 | Testing | pytest (+ recorded fixtures for HTTP and LLM calls), coverage | — |
@@ -605,6 +630,7 @@ attention-flow-catalyst/
 │   ├── market/                       # Phase 2 — prices (as-traded + adjusted) · xbrl_shares · universe (as-of) · sectors · knowledge_time
 │   ├── triggers/                     # Phase 2 — t1_insider · t4_volume · t5_dilution (state machine)
 │   ├── backtest/                     # Phase 2 — labels · scenarios · walkforward · stats (bootstrap, BH-FDR) · verdicts · report
+│   ├── ml/                           # 🆕 *(CORRECTION 47)* Phase 2 — features · meta_labels · purged_cv · models (logreg, lightgbm) · calibrate · evaluate
 │   └── eval/
 │       ├── perturbations.py          # E1..E10 pure functions
 │       ├── dataset.py                # EvalCase, paired builder, group split
@@ -617,6 +643,7 @@ attention-flow-catalyst/
 │                                     # test_guardrails, test_injection, test_metrics, test_logging_no_secrets,
 │                                     # test_split_no_leakage, test_manifest; Phase 2: test_knowledge_time, test_universe_asof,
 │                                     # test_label_no_lookahead, test_walkforward_embargo, test_fdr, test_primitives_spec_conformance
+│                                     # 🆕 *(CORRECTION 47)* test_ml_purging, test_ml_feature_knowledge_time, test_calibration_train_only
 ├── data/                             # GITIGNORED except data/fixtures/ (small, recorded, public filings)
 ├── eval/
 │   ├── cases.jsonl                   # committed: labeled cases (public filings + summaries + labels)
@@ -721,6 +748,8 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | Survivorship bias (Phase 2) | 🔴 High | Historical as-of universe; Form 25/15-seeded delistings; survivorship gap reported (§7B.3) |
 | False winners from testing many combinations | 🔴 High | Base-rate lift + BH-FDR over the full family + stability + sealed holdout (§7B.5) |
 | Too few signals per scenario | 🟠 Med | Power estimate before running; widen universe (D-9); scenarios below floor listed, not hidden |
+| ML overfitting / leakage 🆕 *(CORRECTION 47)* | 🔴 High | Purged walk-forward + embargo; calibration on train windows; every config in the FDR family; beat-the-best-rule test; one pre-registration for rules + ML before the holdout |
+| ML read as a trading signal 🆕 *(CORRECTION 47)* | 🟠 Med | Output is a probability for research only; sizing and execution belong to Crucible |
 | Backtest read as a return claim | 🟠 Med | Lift-only reporting; positioning guard; no P&L anywhere |
 | Over-claiming from a focused study | 🟡 Low | Report frames it as a focused benchmark with stated limits |
 
@@ -731,7 +760,7 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 **Engineering:** CI green · coverage ≥ 80% · guardrail coverage ≥ 90% · Tier-0 runs with **zero network calls** · Docker image builds and runs `afc --help` as non-root · Python pin consistent in 4 places.
 **Research integrity:** pre-registration commit precedes test scoring · test split scored once · every reported metric has a CI · manifest regenerates every number from cache.
 **Outputs:** per-detector recall by error type and tier · FPR on faithful cases · AUROC · McNemar + κ · failure taxonomy with examples (incl. E10) · H1–H4 verdicts · frozen golden set v1.
-**Phase 2:** `test_knowledge_time` green · survivorship gap reported as a number · every scenario listed with n, base rate, lift CI and verdict · BH-FDR applied to the full family · pre-registration commit precedes holdout scoring · primitives spec-conformance green.
+**Phase 2:** `test_knowledge_time` green · survivorship gap reported as a number · every scenario listed with n, base rate, lift CI and verdict · BH-FDR applied to the full family · pre-registration commit precedes holdout scoring · primitives spec-conformance green. · 🆕 *(CORRECTION 47)* ML: purged walk-forward, calibration on train windows only, all configurations in the FDR family, ML verdict vs the best rule published either way.
 **Analyst (reported, not gated):** faithfulness ≥ 0.9, hallucination < 0.10 on the organic run — reported with CIs; the benchmark's headline is the **detector comparison**, not the analyst's score.
 
 ---
@@ -751,9 +780,11 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | 9 | Universe reconstruction + exclusion list; sector map; **power estimate (D-9)** | Expected n per scenario recorded |
 | 10 | Triggers T1 / T4 a–e / T5 state machine with fixtures | Trigger tests green |
 | 11 | Labeler, costs + spread sensitivity; scenario engine; declustering | Labels reproducible |
-| 12 | Walk-forward, base rate, bootstrap, BH-FDR, verdicts; **commit backtest pre-registration** | Pre-registration committed |
-| 13 | Single holdout scoring; §5.6 follow-through table; primitives conformance | Verdicts final |
-| 14 | Backtest report + leaderboard; README update; release `v1.1.0` | Release published |
+| 12 | Walk-forward, base rate, bootstrap, BH-FDR, verdicts **on train windows** | Rule verdicts ready for holdout |
+| 13 | 🆕 *(CORRECTION 47)* **ML meta-labeling baseline:** features with knowledge time, purged walk-forward, calibration on train windows; **commit one pre-registration covering rules + ML** | Pre-registration committed |
+| 14 | **Single holdout scoring — rules and ML together, once**; §5.6 follow-through table; primitives conformance | Verdicts final |
+| 15 | Backtest + ML report: leaderboard with base rate, ML vs best-rule verdict, calibration plots | Report generated from manifest |
+| 16 | README update; release `v1.1.0` | Release published |
 
 **Slip rules:** if Week 3 overruns, cut bases to the 40 minimum **before** cutting the verification protocol or the split. If Phase 2 overruns, cut the dashboard and the T4 sub-signals to RVOL + OBV **before** cutting knowledge-time, walk-forward or FDR.
 
@@ -784,6 +815,7 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | 10 | Docker for Beginners with Hands-on Labs | Reproducible environment |
 | 11 | 🎖️ AI-901 Azure AI Fundamentals ($99) | Once S1 build work is underway |
 | 12 | ⏸️ AB-620 (conditional) | Not by default |
+| ⚠️ | **Open (CORRECTION 47):** a learning resource for gradient boosting + probability calibration | The roadmap retired the classical-ML books; no course is added — owner decides whether to pull lessons forward (e.g. scikit-learn docs) |
 
 *Statistics refresh alongside Week 5 (Wilson intervals, McNemar, AUROC): reuse the statistics course already in Crucible's take-order (Statistics with Python, U. Michigan) — no new course added.*
 
@@ -826,6 +858,7 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | 14 | **D-7 CI eval tiering** 🆕 | Tier 0 deterministic on every PR; Tier 1 live golden set nightly / on label; Tier 2 manual full run |
 | 15 | **D-8 Judge independence** 🆕 | Judge provider ≠ analyst provider; 20% cross-judge κ reported |
 | 16 | **D-9 Backtest universe** 🆕 | Drop the "~50 stocks" cap for research runs if the power estimate shows most scenarios below the 30-signal floor; all other screens kept |
+| 17 | **C47 — AI-powered predictive** 🆕 | ML meta-labeling baseline in Phase 2 (§7B.9); must beat the best rule-based combination on the sealed holdout; LLM filing features arrive in S3 |
 
 ### Pending
 
@@ -847,6 +880,7 @@ None. *(All pending items were approved on October 2, 2026 and moved to the lock
 | Docker, pytest, ruff, mypy, GitHub Actions, uv, pre-commit | S1 ✅ | Production standard |
 | **Event-study backtesting** (knowledge time, survivorship, walk-forward + embargo) 🆕 | **S1 (Phase 2)** | T1/T4/T5 combinations on history |
 | **Multiple-testing control** (base-rate lift, Benjamini–Hochberg, date-clustered bootstrap) 🆕 | **S1 (Phase 2)** | Defensible "which combination works" decisions |
+| **ML meta-labeling** (scikit-learn, LightGBM, calibration, purged walk-forward) 🆕 *(CORRECTION 47)* | **S1 (Phase 2)** | The AI-powered predictive layer — calibrated P(hit) per trigger event, held to the beat-the-best-rule test |
 | Polars, dbt, Great Expectations, Airflow | S2 | Lakehouse; T2/T3/T6 on knowledge-time data |
 | Neo4j + vector index, LangGraph, MCP, Phoenix | S3 | GraphRAG research loop |
 
