@@ -1,6 +1,9 @@
 # 🚀 ATTENTION-FLOW CATALYST (AFC) — Full Production Scope v9.2  (🧩 SUPPORTING · READ-ONLY RESEARCH + EVAL SPINE)
 
-## SEC-Grounded Faithfulness Benchmark + Read-Only Trigger Event Study for Small-Cap Filings
+## AI-Powered Predictive Trigger Analysis for Small-Cap Stocks
+## A Defensible Research System with Statistical Rigor
+
+> 🆕 *(CORRECTION 47)* Title restored. **Under the hood:** rule-based triggers (T1–T6) decide *when* to look → an **ML meta-labeling model** predicts the *probability* each trigger event reaches +10% in 3 days → an LLM analyzes filings and is **measured for faithfulness** → everything is held to a base rate, walk-forward and false-discovery control.
 ## "Finance is the substrate; faithfulness measurement is the method — and every trigger decision is tested against history."
 
 > **Companion:** `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md` — the **Stage-1 build sheet** (Phase 1: eval-first faithfulness benchmark; Phase 2: event-study backtest v1), with code-level detail, week-by-week tasks and the engineering reference (Appendix A). **This document is the end-state scope** for the full S1 → S3 arc: canonical **methodology** (§2–§8), the **dashboard and guardrail design** (§10–§11), and the **S2 lakehouse** (§7.4) and **S3 research-agent** (§16A) architectures. It is design-level; it does not duplicate the build sheet. Shared-primitives contract: `Shared_SignalCore_Boundary_Spec_v1_5.md`.
@@ -8,7 +11,7 @@
 **Document Version:** 9.2 (🎯 **FULL-PRODUCTION PROMOTION** — the complete AFC scope v9.0 becomes AFC's Full-Production document, mirroring Crucible's split (`CRUCIBLE_SCOPE_v3_1_STAGE1.md` + `CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md`). Renamed with `git mv` from `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` so history is preserved. **Section numbers §1–§19 are preserved** so every existing cross-reference ("v9.0 §5.4", "§10–§11", …) still resolves.)
 **Last Updated:** October 2, 2026
 **Status:** ✅ APPROVED — Full-Production role confirmed by owner (decision D-6, completed).
-**Last aligned:** Roadmap v10.0 through **CORRECTION 46** (+ addendum).
+**Last aligned:** Roadmap v10.0 through **CORRECTION 47**.
 **Author:** Manuel Reyes
 
 ---
@@ -22,6 +25,7 @@
 | v9.0 + C45 | §2 Q8 + §5.6 failed-signal follow-through; Rule 201 via `signalcore.shortsale` (Oct 1, 2026). |
 | v9.0 + C46 (+ addendum) | Backtest retained by decision; positioning amended; S1/S2 trigger split; knowledge time, survivorship, rolling walk-forward + sealed holdout, base-rate lift + BH-FDR; FActScore → protocol re-implementation; PandasAI → validated text-to-SQL; review batch (tree, Dockerfile, CI tiering, thresholds, naming) (Oct 2, 2026). |
 | **v9.2 (this file)** | **Promoted to Full-Production.** Added §1A Vision, §1B Integrity Spine, §1C Platform Architecture, §7.4 S2 knowledge-time lakehouse, §16A S3 read-only research agent, §16B Development Phases, stage-by-stage Tech Stack (§12) and Success Metrics (§17), Approval Checklist. **Build-level content moved, not deleted:** §9 deliverables/weeks → build sheet §7B.8 / §15; §13 pre-commit config → build sheet **Appendix A.1**; §14 logging module → **Appendix A.2**; §15 S1 tree → build sheet §12; §18B dashboard Dockerfile → **Appendix A.3**; §19 weekly timeline → build sheet §15. Each moved section keeps its number here as a design-level summary + pointer. |
+| **v9.2 + C47** (October 3, 2026) | **AI-powered predictive.** Title restored. New **§5.7 AI Predictive Layer — ML meta-labeling** (baseline in S1 Phase 2, scaled in S2, LLM filing features in S3), with purged walk-forward, calibration, beat-the-best-rule test and LLM look-ahead controls. Propagated to §1, §1A–§1C, §2, §12, §16, §16A–§16B, §17, §18, quick reference and skills. |
 
 ---
 
@@ -98,7 +102,7 @@
 
 ## 1. Executive Summary
 
-**Attention-Flow Catalyst** is a **Supporting** project (production-grade — size, not quality, distinguishes it from the lead flagships) that evolves through the **3 stages** toward **Applied AI Engineer → FDE**. It is designed as a **defensible research system**—not just a dashboard—with proper statistical methodology, bias controls, and reproducibility.
+**Attention-Flow Catalyst** is a **Supporting** project (production-grade — size, not quality, distinguishes it from the lead flagships) that evolves through the **3 stages** toward **Applied AI Engineer → FDE**. 🆕 *(CORRECTION 47)* It is **AI-powered predictive**: an ML meta-labeling layer on top of the trigger rules outputs a calibrated probability for each trigger event (§5.7). It is designed as a **defensible research system**—not just a dashboard—with proper statistical methodology, bias controls, and reproducibility.
 
 ### What Makes This Project Different
 
@@ -141,6 +145,7 @@
 |---|---|---|---|
 | **Corpus** | Sampled SEC filings (≥ 60 human-verified bases) + EDGAR-derived triggers | EDGAR at scale (500+ tickers), FINRA short interest, Wikipedia pageviews, news history | Knowledge graph (issuers · filings · insiders · transactions · offerings) + vector index |
 | **Research engine** | Faithfulness benchmark + backtest v1 (T1/T4/T5, 28 scenarios) | Full trigger matrix (~155 scenarios) incl. T2/T3/T6 | Research agent answering questions over the KG and the backtest marts |
+| **AI prediction** 🆕 *(CORRECTION 47)* | ML meta-labeling **baseline** (logistic regression + gradient boosting) on T1/T4/T5 features | Scaled on the full matrix and 500+ tickers; MLflow tracking | + LLM-extracted filing features; agent explains each prediction |
 | **Storage** | Parquet + DuckDB | Bitemporal medallion lakehouse, dbt-modelled | + Neo4j + vector store |
 | **Orchestration** | CLI + Makefile | Airflow, idempotent partitions | + LangGraph read-only loop |
 | **AI** | Analyst + three detectors; text-to-SQL dashboard | Golden-set drift gate on every model/parser change | Agent; **S1 detectors become the verifier**; MCP tools |
@@ -166,6 +171,9 @@
 | **Reproducibility** | Content-addressed LLM response cache + run manifests (git SHA, lock/config/data hashes, model IDs, seeds) | build sheet §6.7, §7 #13 |
 | **Frozen golden set** | Drift baseline that gates every later parser, model or prompt change | build sheet §7 #17 · §18A |
 | **Read-only by construction** | No orders, no write tools, no execution — ever | §11 · §16A |
+| **Purging + embargo for ML** 🆕 *(CORRECTION 47)* | Training events whose 3-day label window overlaps a test window are purged; same embargo as §5.4 | §5.7 |
+| **Beat-the-best-rule test** 🆕 *(CORRECTION 47)* | The ML model ships only if it beats the best rule-based combination, not just the base rate | §5.7 |
+| **LLM look-ahead control** 🆕 *(CORRECTION 47)* | Names/tickers stripped before LLM feature extraction; post-training-cutoff results reported separately; extracted features verified by the S1 detectors | §5.7 |
 
 ---
 
@@ -187,6 +195,9 @@ flowchart TB
     SRC --> B
     SC -.used by.-> G
     G --> BT[Event-study engine<br/>walk-forward · base rate · BH-FDR]
+    G --> ML[ML meta-labeling model<br/>calibrated P(hit) per trigger event]
+    AN -.S3 LLM filing features.-> ML
+    ML --> DB
     G --> KG[(Neo4j KG + vector index)]
     E --> AN[LLM analyst]
     AN --> DET[Detectors: DeepEval · FActScore protocol · SelfCheck]
@@ -215,6 +226,7 @@ flowchart TB
 6. Are results stable across train vs test periods (walk-forward)?
 7. **Does a loaded short-squeeze context (high short-%-of-float + low float + high days-to-cover) lift the hit rate of catalysts T1–T5?** ⭐ NEW
 8. **When a top-ranked catalyst *fails*, does price keep going the wrong way (follow-through) or snap back (reversion)?** 🆕 *(CORRECTION 45 — descriptive and read-only; see §5.6)*
+9. **Can an ML model predict *which* trigger events reach +10% better than the best rule-based combination?** 🆕 *(CORRECTION 47)* *(see §5.7)*
 
 **Hypothesis:** Combining multiple alternative data signals (insider buying + attention spike + volume accumulation + dilution-clear state) will produce higher hit rates than any single signal alone, and these results will be stable out-of-sample.
 
@@ -551,6 +563,46 @@ failed_signal_follow_through:
 ```
 
 **How the result is used.** It is **directional input only** to Crucible's `SAR-on-stop` hypothesis. AFC's universe (sub-$5, illiquid) is not Crucible's (liquid, ADV ≥ 1M), so a finding here never transfers as a verdict — Crucible tests on its own universe. **The LLM analyst may summarize this table; it never turns it into a trade recommendation** (§11 guardrails). *Falsifier: if the failure threshold `F` cannot be fixed before the run without looking at test-period data, drop §5.6 rather than weaken §5.4.*
+
+---
+
+### 5.7 AI Predictive Layer — ML Meta-Labeling 🆕 *(roadmap v10.0 CORRECTION 47, October 2026)*
+
+> **Why this section exists.** The project's name promises **AI-powered prediction**. The trigger rules (§4) and statistics (§5.1–5.5) find *which combinations* beat the base rate; this layer adds an AI model that predicts the **probability that each individual trigger event** reaches +10% within 3 trading days. The design is **meta-labeling** (López de Prado, *Advances in Financial Machine Learning*, 2018): a primary rule decides *when* to look; a secondary classifier learns *which* of those signals are likely to work.
+
+```yaml
+ai_predictive_layer:
+  primary_model: "trigger rules T1-T6 and their combinations (§4) — unchanged"
+  meta_label: "1 if the trigger event's §5.1 label is HIT, else 0 (same label, same entry, same costs)"
+  secondary_model:
+    s1_baseline: ["logistic regression (interpretable floor)", "gradient boosting (LightGBM)"]
+    s2: "same models on the full trigger matrix and 500+ tickers; MLflow experiment tracking + model registry"
+    s3: "+ LLM-extracted filing features (below); the research agent explains each prediction"
+  features:
+    s1: ["trigger flags + T4 sub-signal values", "T5 dilution state", "T1 insider role / value / count", "sector strength", "index trend", "price & volume context (as-traded)"]
+    s2: ["+ T2 attention", "+ T3 news intensity", "+ T6 short-interest context (publication-date knowledge time)"]
+    s3_llm: ["offering terms (best-efforts, warrants, discount)", "going-concern language", "Rule 10b5-1 status", "use-of-proceeds category"]
+    knowledge_time: "every feature carries available_at; a feature is usable only if available_at < entry open (§6.3)"
+  validation:
+    splits: "the §5.4 rolling walk-forward windows — NOT random k-fold"
+    purging: "drop training events whose 3-day label window overlaps the test window"
+    embargo_days: 5
+    calibration: "isotonic or Platt, fit on an inner split of each TRAIN window only"
+    holdout: "the §5.4 sealed final 12 months, scored ONCE"
+  metrics: ["AUC-PR", "Brier score", "calibration curve", "precision at top-k events", "lift over base rate", "lift over the BEST rule-based combination"]
+  false_discovery: "every model x feature-set x hyperparameter configuration evaluated joins the §5.5 BH-FDR family"
+  ships_only_if: "holdout lift over the best rule-based combination has a 95% CI excluding 0; otherwise rule verdicts stand and the ML result is published as REJECTED"
+  output: "calibrated probability per trigger event + lift — never position sizes, never returns"
+  llm_lookahead_controls:
+    anonymize: "strip company names, tickers and identifying details before LLM feature extraction"
+    post_cutoff_slice: "report results separately for events after the LLM's training cutoff"
+    verify: "extracted features checked against the filing by the S1 detectors (faithfulness gate)"
+    cache: "LLM extractions cached by content hash; deterministic re-runs"
+```
+
+**Why the extra controls matter.** Meta-labeling is not a free lunch — practitioners note that a good meta-model is as hard to build as a good primary signal — so the model must earn its place against the best rule, not just the base rate. LLM features add a second risk: a model trained on years of text can carry knowledge of what happened after a filing (look-ahead) or be swayed by general knowledge of the company (distraction; Glasserman & Lin, 2023). Anonymization, a post-cutoff slice and faithfulness verification address both.
+
+**Read-only boundary.** The model outputs a probability for research and display. It never sizes or places a position — execution, and any use of probabilities for sizing, belongs to Crucible (Boundary Spec §4).
 
 ---
 
@@ -894,7 +946,8 @@ disclaimers:
 | Storage / query | Parquet + DuckDB | Bitemporal medallion lakehouse; **Polars**-first transforms | + **Neo4j** KG + vector index (ChromaDB) |
 | Modelling / quality | pytest data-quality checks | **dbt** + blocking tests · **Great Expectations** contracts · semantic layer | same |
 | Orchestration | CLI + Makefile | **Airflow** (idempotent) | + **LangGraph** read-only loop |
-| Statistics | scipy · numpy · statsmodels (Wilson, McNemar, AUROC, κ, BH-FDR) | same | ML overlay (XGBoost / LSTM / MLflow) — earned only |
+| Statistics | scipy · numpy · statsmodels (Wilson, McNemar, AUROC, κ, BH-FDR) | same | same |
+| **AI prediction** 🆕 *(CORRECTION 47)* | scikit-learn · LightGBM (meta-labeling baseline, calibration) | + **MLflow** tracking & registry | + LLM-extracted filing features |
 | LLM | Anthropic Claude primary · Gemini fallback & independent judge (provider-agnostic) | same | same + **MCP** |
 | Eval | DeepEval · FActScore protocol (in-house) · SelfCheck-Prompt (D-4) | golden-set drift gate | three-layer eval + **Arize Phoenix** |
 | UI | Streamlit dashboard + **validated text-to-SQL** (`sqlglot`, read-only DuckDB) | reads gold marts | + agent chat with citations |
@@ -954,7 +1007,7 @@ attention-flow-catalyst/
 |-------|------|--------------|
 | S1 | Foundation (GenAI-first core) | Backtest engine + AI dashboard + **eval-first faithfulness core** — 🆕 *(CORRECTION 46)* order: **Phase 1 eval-first core → Phase 2 event-study backtest v1 (T1/T4/T5)**; dashboard follows the backtest |
 | S2 | DE/AE hardening | 🆕 *(CORRECTION 46)* **T2/T3/T6 added on knowledge-time data; full combination matrix.** EDGAR ingestion, Airflow, 500+ tickers, **signalcore** primitives, **dbt models + contracts**. 🆕 **Financial Knowledge Graph + Vector DB (GraphRAG capstone):** SEC filings → **Neo4j KG** (companies, filings, insiders, holdings, dates) + vector index, served via a **hybrid retriever** for multi-hop explainable reasoning. Vector stays the backbone (~80%); the graph adds relationship reasoning. |
-| S3 | Applied AI (GraphRAG + agentic + eval) | ML triggers (XGBoost/LSTM/MLflow — **earned-overlay**). GraphRAG financial-KG hybrid + **read-only agentic research loop** (orchestrator-workers → Analyst workers; Risk-Manager gate; evaluator-optimizer self-correction) calling SEC/market APIs via **MCP**; **faithfulness ≥ 0.9** + **Phoenix**. *Optional beyond-portfolio: multi-tenant SaaS, A2A.* |
+| S3 | Applied AI (GraphRAG + agentic + eval) | ML triggers (XGBoost/LSTM/MLflow — **earned-overlay**) — 🆕 *(CORRECTION 47)* **moved earlier: meta-labeling baseline in S1, scaled in S2, LLM filing features in S3 (§5.7)**. GraphRAG financial-KG hybrid + **read-only agentic research loop** (orchestrator-workers → Analyst workers; Risk-Manager gate; evaluator-optimizer self-correction) calling SEC/market APIs via **MCP**; **faithfulness ≥ 0.9** + **Phoenix**. *Optional beyond-portfolio: multi-tenant SaaS, A2A.* |
 
 ---
 
@@ -979,7 +1032,7 @@ Question → Orchestrator ─┬─> Filing analyst      (KG + vector retrieval;
 **Tool policy:** allowlist only — EDGAR search/fetch (read-only), lakehouse query (sqlglot-validated, read-only role), graph query (parameterized Cypher, read-only Neo4j user). **No tool can write, send, trade or execute code.** Filing text is untrusted input; injected instructions are tested against.
 **HITL:** the roadmap's HITL rule applies to irreversible actions — **AFC has none by construction**; the verifier gate is the control. Published reports still pass a human review.
 **Three-layer eval:** per-query (faithfulness, answer relevancy, citation precision) · trajectory (Phoenix: Tool Correctness = 1.0, step budget) · drift (frozen S1 golden set + an agent golden set; regression blocks merge).
-**ML overlay (earned only):** XGBoost / LSTM / MLflow trigger models must beat **base-rate lift** in the same walk-forward with FDR control; otherwise they do not ship. *Optional beyond-portfolio:* multi-tenant SaaS, A2A.
+**AI prediction in S3** 🆕 *(CORRECTION 47)*: the §5.7 meta-labeling model gains **LLM-extracted filing features**, and the agent explains each prediction (top features, the filing passages behind them, verified by the detectors). Deeper models (e.g. LSTM) are allowed only if they beat the gradient-boosting model under §5.7's rules. *Optional beyond-portfolio:* multi-tenant SaaS, A2A.
 
 ### 16B. Development Phases 🆕 *(v9.2)*
 
@@ -987,6 +1040,7 @@ Question → Orchestrator ─┬─> Filing analyst      (KG + vector retrieval;
 |---|---|---|---|
 | **1** | S1 | Eval-first faithfulness benchmark | Pre-registration commit precedes test scoring; report with CIs; golden set v1; release `v1.0.0` |
 | **2** | S1 | Event-study backtest v1 (T1/T4/T5) | `test_knowledge_time` green; survivorship gap reported; BH-FDR over full family; holdout scored once; release `v1.1.0` |
+| **2a** 🆕 *(CORRECTION 47)* | S1 | ML meta-labeling baseline (T1/T4/T5 features) | Purged walk-forward; calibration on train windows; holdout once; verdict vs best rule published either way |
 | **2b** | S1 | Research dashboard (validated text-to-SQL) | 100% SQL shown; guardrail coverage ≥ 90%; injection fixtures pass |
 | **3** | S2 | Knowledge-time lakehouse + T2/T3/T6 + full matrix + `signalcore` extraction | dbt tests blocking incl. `no_future_knowledge`; contracts; idempotent DAGs; restatement-replay green; postmortem written |
 | **4** | S3 | GraphRAG read-only research agent | Faithfulness ≥ 0.9 blocking; Tool Correctness = 1.0; 100% trajectories traced; golden-set drift gate green |
@@ -1007,6 +1061,7 @@ Question → Orchestrator ─┬─> Filing analyst      (KG + vector retrieval;
 | S1 · Phase 2 | Verdict hygiene | Every scenario listed with n, base rate, lift CI, verdict; BH-FDR over the full family |
 | S1 · Phase 2 | Holdout | Scored **once**, after the pre-registration commit |
 | S1 · Phase 2 | Failed-signal follow-through | Reported with CI; `F` fixed pre-run; never in the leaderboard |
+| S1 · 2a 🆕 *(CORRECTION 47)* | ML meta-labeling | AUC-PR, Brier, calibration curve, precision@k, lift vs base rate **and** vs best rule — all on the sealed holdout; verdict published either way |
 | S1 · 2b | Dashboard | 100% SQL shown · 100% Pydantic-validated · guardrail coverage ≥ 90% · Anthropic ↔ Gemini switch via config · load < 5 s |
 | S1 · all | Engineering | Coverage ≥ 80% · CI green · Tier 0 makes zero network calls |
 | S2 | Data | dbt tests blocking · contracts enforced · restatement-replay green · freshness SLAs met · postmortem written |
@@ -1033,6 +1088,9 @@ Question → Orchestrator ─┬─> Filing analyst      (KG + vector retrieval;
 | Agent hallucination or uncited claims (S3) 🆕 *(v9.2)* | Verifier gate (faithfulness ≥ 0.9 or refuse); citations by accession number; three-layer eval (§16A) |
 | Agent tool misuse / prompt injection (S3) 🆕 *(v9.2)* | Read-only allowlist; parameterized Cypher; sqlglot-validated SQL; filing text untrusted; injection fixtures |
 | Public dashboard cost / data-terms exposure 🆕 *(v9.2)* | Per-visitor rate limit, hard LLM budget cap, provider redistribution terms checked before deploy (§18B) |
+| ML overfitting / leakage 🆕 *(CORRECTION 47)* | Purged walk-forward + embargo; calibration on train windows only; all configs in the FDR family; beat-the-best-rule test (§5.7) |
+| LLM look-ahead / distraction in features 🆕 *(CORRECTION 47)* | Anonymize before extraction; post-cutoff slice; faithfulness check on extracted features (§5.7) |
+| ML read as a trading signal 🆕 *(CORRECTION 47)* | Output is a probability for research only; sizing and execution belong to Crucible |
 | Follow-through table read as a short signal 🆕 | Labeled descriptive/gross; Rule 201 + borrow flags; universe-mismatch note; execution lives only in Crucible (§5.6 — CORRECTION 45) |
 
 ---
@@ -1087,7 +1145,7 @@ financial-grade rigor justified by trading decision risk.
 | Stage | Indicative duration @ 25 h/week | Detailed plan |
 |---|---|---|
 | S1 · Phase 1 (benchmark) | ~6 weeks | Build sheet §15, weeks 1–6 |
-| S1 · Phase 2 (backtest v1) | ~8 weeks | Build sheet §15, weeks 7–14 |
+| S1 · Phase 2 (backtest v1 + ML meta-labeling baseline) | ~10 weeks 🆕 *(C47: +2)* | Build sheet §15, weeks 7–16 |
 | S1 · 2b (dashboard) | when hours allow, after Phase 2 | §10–§11 design |
 | S2 | Per roadmap Build Progression (DataVault-led DE/AE hardening) | §7.4 |
 | S3 | After PolicyPulse establishes GraphRAG | §16A |
@@ -1136,6 +1194,11 @@ financial-grade rigor justified by trading decision risk.
 │     • E1–E10 perturbation benchmark, labels by construction │
 │     • Calibration/test split; independent judge; cache      │
 │     • Frozen golden set gates every later change            │
+├─────────────────────────────────────────────────────────────┤
+│  ✅ AI PREDICTION (C47)                                     │
+│     • ML meta-labeling: calibrated P(hit) per trigger event │
+│     • Must beat the best rule, not just the base rate       │
+│     • LLM filing features in S3, look-ahead controlled      │
 ├─────────────────────────────────────────────────────────────┤
 │  ✅ STACK BY STAGE                                          │
 │     • S1 DuckDB + Parquet · S2 dbt + Airflow + contracts    │
@@ -1223,6 +1286,7 @@ flowchart LR
 | SEC EDGAR retrieval | S1 ✅ | Filing ingestion — the grounding corpus |
 | DuckDB + partitioned Parquet lakehouse | S1 ✅ | Data spine (shared with Crucible) |
 | **PIT data + bias controls** | **S1 ✅** | **Survivorship/look-ahead defenses — the statistical-rigor story** |
+| **ML meta-labeling** (scikit-learn, LightGBM, probability calibration, purged walk-forward) 🆕 *(CORRECTION 47)* | **S1 ✅ → S2 (MLflow) → S3 (LLM features)** | **The AI-powered predictive layer — calibrated P(hit) per trigger event, held to the beat-the-best-rule test** |
 | LLM SDK (provider-agnostic) | S1 ✅ | The LLM analyst under evaluation |
 | **DeepEval + FActScore protocol + SelfCheckGPT (three-method eval)** 🆕 *(C46 addendum)* | **S1 ✅** | **Faithfulness ≥ 0.9 on financial claims — the signature showcase** |
 | **Controlled-perturbation catalog** | **S1 ✅** | **Proves the eval detects injected errors — rare, high-signal evidence** |
