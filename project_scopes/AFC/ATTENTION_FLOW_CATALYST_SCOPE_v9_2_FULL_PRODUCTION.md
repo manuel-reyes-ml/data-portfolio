@@ -11,7 +11,7 @@
 **Document Version:** 9.2 (🎯 **FULL-PRODUCTION PROMOTION** — the complete AFC scope v9.0 becomes AFC's Full-Production document, mirroring Crucible's split (`CRUCIBLE_SCOPE_v3_1_STAGE1.md` + `CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md`). Renamed with `git mv` from `ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md` so history is preserved. **Section numbers §1–§19 are preserved** so every existing cross-reference ("v9.0 §5.4", "§10–§11", …) still resolves.)
 **Last Updated:** October 2, 2026
 **Status:** ✅ APPROVED — Full-Production role confirmed by owner (decision D-6, completed).
-**Last aligned:** Roadmap v10.0 through **CORRECTION 47**.
+**Last aligned:** Roadmap v10.0 through **CORRECTION 48**.
 **Author:** Manuel Reyes
 
 ---
@@ -26,6 +26,7 @@
 | v9.0 + C46 (+ addendum) | Backtest retained by decision; positioning amended; S1/S2 trigger split; knowledge time, survivorship, rolling walk-forward + sealed holdout, base-rate lift + BH-FDR; FActScore → protocol re-implementation; PandasAI → validated text-to-SQL; review batch (tree, Dockerfile, CI tiering, thresholds, naming) (Oct 2, 2026). |
 | **v9.2 (this file)** | **Promoted to Full-Production.** Added §1A Vision, §1B Integrity Spine, §1C Platform Architecture, §7.4 S2 knowledge-time lakehouse, §16A S3 read-only research agent, §16B Development Phases, stage-by-stage Tech Stack (§12) and Success Metrics (§17), Approval Checklist. **Build-level content moved, not deleted:** §9 deliverables/weeks → build sheet §7B.8 / §15; §13 pre-commit config → build sheet **Appendix A.1**; §14 logging module → **Appendix A.2**; §15 S1 tree → build sheet §12; §18B dashboard Dockerfile → **Appendix A.3**; §19 weekly timeline → build sheet §15. Each moved section keeps its number here as a design-level summary + pointer. |
 | **v9.2 + C47** (October 3, 2026) | **AI-powered predictive.** Title restored. New **§5.7 AI Predictive Layer — ML meta-labeling** (baseline in S1 Phase 2, scaled in S2, LLM filing features in S3), with purged walk-forward, calibration, beat-the-best-rule test and LLM look-ahead controls. Propagated to §1, §1A–§1C, §2, §12, §16, §16A–§16B, §17, §18, quick reference and skills. |
+| **v9.2 + C48** (October 4, 2026) | ML learning resources for §5.7: full ML Specialization (Courses 1–2 required, Course 3 optional) and the owned Jansen book added to the take-order table (rows 12a–12b). |
 
 ---
 
@@ -1328,6 +1329,8 @@ flowchart LR
 | 10 | Docker for Beginners with Hands-on Labs | KodeKloud | Free | S1 | Reproducible research environment. |
 | 11 | 🎖️ **AI-901** Azure AI Fundamentals | Microsoft · Pearson VUE | **$99** ✅ | S1 | Take once S1 build work is underway. |
 | 12 | ⏸️ **AB-620** AI Agent Builder Associate | Microsoft | ~$165 — **CONDITIONAL** | S1–S2 | **Not by default.** |
+| 12a | 🆕 **Machine Learning Specialization (Andrew Ng)** — full *(CORRECTION 48)* | Coursera · DeepLearning.AI / Stanford Online | Coursera Plus | S1 (Phase 2) | **Courses 1–2 before the §5.7 ML weeks; Course 3 optional.** The ML foundation behind the AI predictive layer. |
+| 12b | 📖 *Machine Learning for Algorithmic Trading* (Jansen, 2nd ed.) — **owned** *(CORRECTION 48)* | Packt | $0 | S1 (Phase 2) | Ch. 6 purged/embargoed CV · ch. 7 logistic regression · ch. 12 LightGBM + SHAP; calibration from the scikit-learn user guide. |
 | 13 | PostgreSQL for Everybody + use-the-index-luke.com | Coursera · U. Michigan + web | Free (audit) | S2 | Opens S2 — the EDGAR/filings lakehouse. |
 | 14 | ⚡ Dataframe Engine Boundary — Polars-first pipelines | Polars User Guide (roadmap S2 row 6.5) | Free | S2 | **Before the lakehouse work** — filing-scale scans and Parquet IO are its first job. |
 | 15 | 🆕 IBM AI-Native Data Engineering PC | Coursera · IBM (CORRECTION 43) | Coursera Plus | S2 | ***Reproducible Training Data*** (point-in-time correctness, leakage/contamination — what the golden set and `signalcore` depend on) and ***Vector DBs & Retrieval DE*** (retrieval governance, recall/latency/drift) both land on the GraphRAG financial-KG. |
