@@ -7,7 +7,7 @@
 ## "Finance is the substrate; faithfulness measurement is the method — and every trigger decision is tested against history."
 
 **Document Version:** 9.1 (🎯 **STAGE-1 BUILD SHEET** — mirrors the Crucible split (`v3_1_STAGE1` + `v1_0_FULL_PRODUCTION`). Promotes the eval-first slice to AFC's Stage-1 build sheet, aligns it to the roadmap's governing AFC positioning, and folds in the October 2026 production review — dependency reality on Python 3.14, point-in-time provenance, statistical design, CI eval tiering, and a corrected repo layout.)
-**Last Updated:** October 3, 2026 (rev. 5 — CORRECTION 47: AI-powered predictive layer, §7B.9)
+**Last Updated:** October 4, 2026 (rev. 6 — CORRECTION 48: ML learning resources)
 **Status:** ✅ **APPROVED** — October 2, 2026. All decisions D-0 … D-9 locked (§20). Supersedes `AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md` for Stage 1 (D-6). Companion Full-Production scope: `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md`.
 **Author:** Manuel Reyes
 **Review record:** `AFC_PROJECT_REVIEW_2026-10-02.md` — every change in this sheet traces to a numbered finding there.
@@ -18,7 +18,7 @@
 
 > **This block governs.** Where anything below conflicts, this block wins. Where this sheet conflicts with the Full-Production scope (v9.2) on **Stage 1 build detail**, this sheet wins.
 
-**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**, through CORRECTION 47.
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**, through CORRECTION 48.
 
 **Governing model:** **3 stages, not 5.** Destination title **Applied AI Engineer → Forward Deployed Engineer (FDE)**. **One system that evolves across stages — never rebuilt per stage.**
 
@@ -73,6 +73,7 @@
 | **v9.1 rev. 3 (October 2, 2026 — C46 addendum)** | **Approved.** D-1, D-2, D-4, D-5, D-6, D-7, D-8, D-9 locked; status → APPROVED; the eval-first slice v1.3 is marked superseded (kept for history). |
 | **v9.1 rev. 4 (October 2, 2026 — Full-Production promotion)** | Parent v9.0 promoted to `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md`; pointers repointed; build-level content moved here as **Appendix A** (A.1 pre-commit config, A.2 logging & debugging, A.3 dashboard container); tree gains `app/`, `config/`, `CONTRIBUTING.md`, `.cursorignore`. |
 | **v9.1 rev. 5 (October 3, 2026 — CORRECTION 47)** | **AI-powered predictive.** Title restored; new **§7B.9 ML meta-labeling baseline** (B16–B19); one pre-registration covers rules + ML before the single holdout; stack, structure, risks, metrics, skills and locked decision #17 updated; Stage-1 timeline 14 → 16 weeks. |
+| **v9.1 rev. 6 (October 4, 2026 — CORRECTION 48)** | Closes the C47 open item: §17 adds the full **Machine Learning Specialization (Andrew Ng)** (Courses 1–2 required before week 13, Course 3 optional), the owned **Jansen** book (ch. 6, 7, 12) and the scikit-learn calibration guide; week 7 starts Course 1. |
 
 ---
 
@@ -775,7 +776,7 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | 4 | Detectors (DeepEval wrapper, FActScore protocol, SelfCheck-Prompt); response cache; CI Tier 1 on a golden draft | All detectors emit `p_unfaithful` on calibration split |
 | 5 | Calibration → thresholds frozen; **commit pre-registration**; single test-split scoring; organic run + spot-check | Report tables generated from manifest |
 | 6 | Report, README, C4/Mermaid export, demo GIF, "What I Learned", release `v1.0.0` | Release published |
-| 7 | **Phase 2 start** — spike B1 (delisted prices, yfinance on 3.14); price pipeline; ADR-0008 | Data source decided |
+| 7 | **Phase 2 start** — spike B1 (delisted prices, yfinance on 3.14); price pipeline; ADR-0008 · 🆕 *(C48)* start ML Specialization Course 1 alongside | Data source decided |
 | 8 | XBRL shares outstanding; knowledge-time layer; leakage tests | `test_knowledge_time` green |
 | 9 | Universe reconstruction + exclusion list; sector map; **power estimate (D-9)** | Expected n per scenario recorded |
 | 10 | Triggers T1 / T4 a–e / T5 state machine with fixtures | Trigger tests green |
@@ -815,7 +816,10 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | 10 | Docker for Beginners with Hands-on Labs | Reproducible environment |
 | 11 | 🎖️ AI-901 Azure AI Fundamentals ($99) | Once S1 build work is underway |
 | 12 | ⏸️ AB-620 (conditional) | Not by default |
-| ⚠️ | **Open (CORRECTION 47):** a learning resource for gradient boosting + probability calibration | The roadmap retired the classical-ML books; no course is added — owner decides whether to pull lessons forward (e.g. scikit-learn docs) |
+| 13 | 🆕 **Machine Learning Specialization (Andrew Ng)** — full specialization *(CORRECTION 48)* | **Courses 1–2 required before week 13** (logistic regression, decision trees, tree ensembles/XGBoost, precision/recall on imbalanced data); start Course 1 in week 7. **Course 3 optional** if time allows. Coursera Plus |
+| 14 | 📖 *Machine Learning for Algorithmic Trading* (Jansen, Packt 2nd ed. — **owned**) *(CORRECTION 48)* | Ch. 6 (purging, embargoing, combinatorial CV) before §7B.5/§7B.9; ch. 7 (logistic regression); ch. 12 (LightGBM, SHAP). Concepts only — implement in this repo's 3.14 stack |
+| 15 | scikit-learn calibration user guide (free docs) *(CORRECTION 48)* | Probability calibration (isotonic / Platt) for §7B.9 — the one ML topic the course and book don't cover |
+| — | *Optional:* Kaggle Learn **Intermediate Machine Learning** (free certificate) | One-day bridge from course theory to pipelines, XGBoost and leakage control |
 
 *Statistics refresh alongside Week 5 (Wilson intervals, McNemar, AUROC): reuse the statistics course already in Crucible's take-order (Statistics with Python, U. Michigan) — no new course added.*
 
