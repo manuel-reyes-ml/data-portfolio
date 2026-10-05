@@ -6,7 +6,7 @@
 ## AI-Assisted backtest → paper → live, where strategies earn their way to real capital
 
 **Document Version:** 3.1 (🎯 **STAGE-1 REFOCUS** — repositioned as the Stage-1 build sheet; Phase 1 (backtest engine + integrity spine) is the S1 deliverable. S2 lakehouse and S3 paper→live agent architecture move to the Full-Production companion. Prior v3.0 note follows.) — v3.0 note: (🎯 **v10.0 REALIGNMENT** — restored **lead Flagship**; 3-stage arc (S1 backtest/integrity → S2 market-data lakehouse + signalcore-as-library → S3 paper→live agent w/ HITL + kill-switch). Destination Applied AI Engineer → FDE. "First project" framing retired; intraday-vs-swing identity flagged for roadmap reconciliation. Prior v2.6 note archived below.)
-**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** propagation — `SAR-on-stop` backlog hypothesis §4.1 + order-intent pointers; additive, same version) · 🆕 follow-up: Rule 201 exclusion sourced from `signalcore.shortsale`; boundary-spec references made explicit (`_v1_5`)
+**Last Updated:** August 10, 2026 · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** propagation — `SAR-on-stop` backlog hypothesis §4.1 + order-intent pointers; additive, same version) · 🆕 follow-up: Rule 201 exclusion sourced from `signalcore.shortsale`; boundary-spec references made explicit (`_v1_5`) · 🆕 October 2, 2026 (AFC review cross-project fixes X-01, X-02 — harness tree nesting; Wikipedia knowledge time)
 **Status:** ✅ APPROVED
 **Author:** Manuel Reyes
 **Codename:** **Crucible** — the vessel where raw material is subjected to extreme heat until only what's pure survives. Every strategy must survive the crucible of backtest → paper → live before it touches real money.
@@ -98,6 +98,8 @@ This version reorients Crucible from intraday-first to **multi-timeframe (swing 
 **v3.1 additive (October 2026 — roadmap v10.0 CORRECTION 45, same version):** adds (1) **`SAR-on-stop`** as strategy-roadmap row 7 with a **pre-registered hypothesis spec** (§4.1) — stop-and-reverse is tested as a *strategy*, never adopted as a safeguard; (2) pointers from the Phase-2 risk gate's brackets and the Phase-3 guardrails to the Full-Production **order-intent classification** (§6.1a there) — bracket legs are signed with the entry and can never open or flip a position; (3) short-side regulatory notes (Rule 201, borrow/locates, the paper-gate blind spot) in §9; (4) a §13 risk row, a Phase-3 success metric and Locked Decision #15. **Phase-1 build scope unchanged.**
 
 **v3.1 additive follow-up (October 2026 — CORRECTION 45, same version):** the Rule 201 check is now a shared primitive, **`signalcore.shortsale.rule201_state`** (`Shared_SignalCore_Boundary_Spec_v1_5.md` §2); the §4.1 exclusion consumes it, with `unknown` treated as restricted (fail-safe, matching the kill-switch's *on ambiguity, halt*). Generic "Boundary Spec" references now name the file. No functional scope change.
+
+**v3.1 additive (October 2, 2026 — AFC review cross-project items, same version):** (X-01) the harness tree in §12 is corrected — `agents/` and `commands/` sit under `.opencode/`, and `hooks/guard.py` stands alone; (X-02) §6.4 gains a knowledge-time rule for Wikipedia pageviews. No functional scope change.
 
 ---
 
@@ -416,6 +418,7 @@ Scraped **Reddit** and **X/Twitter** history cannot be backtested honestly: Redd
 ### 6.4 Integrity rules for sentiment
 - Sentiment never gates entry alone and never overrides a structural NO-TRADE.
 - Backtest uses **only** PIT-clean sources (Wikipedia/Trends); scraped social is **never** backtested.
+- 🆕 **Knowledge time for attention data (review X-02).** Wikipedia daily pageviews close on the **UTC** day boundary and are published after a lag; each record carries `available_at`, and an attention tag may inform an EOD decision for session *S* only if `available_at` precedes that decision. Record the measured publication lag; never assume same-day availability.
 - Forward-captured social data is stored immutably with capture timestamps (PIT-by-construction).
 - Every sentiment input is logged in the overfitting budget like any other peek; it is dropped if it doesn't pay for itself out-of-sample.
 
@@ -644,8 +647,6 @@ crucible/
 ├── .cursor/rules/                  # git-workflow, learning-mode, python-production-standards (always-on);
 │                                   # strategy-plugin, backtest-integrity, ai-sdk-patterns, evaluation (auto-attach)
 ├── .opencode/                      # OpenCode side of the dual harness (mirrors .cursor/; portable across editors)
-├── .claude/                      # Claude Code side — generated from the same shared prompt layer
-├── hooks/guard.py                # PreToolUse — blocks git commit/push; commits stay human
 │   ├── agents/                     # subagent defs — filename = agent name (per OpenCode spec)
 │   │   ├── docs-fix.md             # repairs drift in README / scope docs
 │   │   ├── docs-sync.md            # keeps the 3 public docs aligned to the roadmap
@@ -666,6 +667,9 @@ crucible/
 │   ├── .gitignore                  # ignores node_modules/ (harness deps installed, not committed)
 │   ├── package.json                # pinned OpenCode plugin dependencies
 │   └── package-lock.json           # committed — reproducible harness
+├── .claude/                      # Claude Code side — generated from the same shared prompt layer
+├── hooks/
+│   └── guard.py                  # PreToolUse — blocks git commit/push; commits stay human  🆕 (tree nesting corrected — review X-01)
 ├── AGENTS.md                       # standing instructions; combined with opencode.jsonc instructions[]
 ├── opencode.jsonc                  # harness config — model routing, permissions, instructions[]
 ├── .github/workflows/ci.yml        # lint, type-check, test, eval gate on every PR
@@ -1002,7 +1006,7 @@ Intraday strategies (IT-1, VWAP, Trap, AVWAP) remain in scope as later plugins. 
 | 27 | Agent Skills with Anthropic | Anthropic Academy | Free | S3 | Reusable analyst capability. |
 | 28 | Automated Testing for LLMOps | DeepLearning.AI | Free | S3 | Regression gates on the research loop. |
 | 29 | MCP — Advanced Topics (full) | Anthropic Academy | Free | S3 | Tool exposure with a hard write boundary. |
-| 30 | 🎖️ **Anthropic CCA-F** | Anthropic · Pearson VUE | **~$125** ✅ ⚠️ | S3 | **Domain 1 maps directly to the workflow-vs-agent distinction this project turns on.** |
+| 30 | ⏸️ 🎖️ **Anthropic Claude exam — CONDITIONAL** *(CORRECTION 50)* | Anthropic · Pearson VUE | **~$125 each** ⚠️ | S3 | Every Claude exam requires Claude Partner Network access. If it arrives (incl. an employer joining): **CCDV-F first**, **CCA-F** after — the natural pick when working at an Anthropic partner. **Domain 1 maps directly to the workflow-vs-agent distinction this project turns on.** |
 | 31 | 🎖️ **Databricks GenAI Engineer Associate** | Databricks | **$200** ✅ | S3 | Optional. |
 
 > **🎯 Stage 3 deliverable (CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
