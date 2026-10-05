@@ -1348,7 +1348,7 @@ flowchart LR
 | 27 | Automated Testing for LLMOps | DeepLearning.AI | Free | S3 | Faithfulness ≥ 0.9 as a blocking gate. |
 | 28 | 🎖️ **Neo4j Certified Professional** | Neo4j | **Free** ✅ | S3 | Free — take as soon as GraphAcademy is done. |
 | 29 | 🎖️ **NVIDIA NCA-GENL** | NVIDIA | **$125** ✅ | S3 | GenAI credential. |
-| 30 | 🎖️ **Anthropic CCA-F** | Anthropic · Pearson VUE | **~$125** ✅ ⚠️ | S3 | Agentic orchestration source-of-truth. |
+| 30 | ⏸️ 🎖️ **Anthropic Claude exam — CONDITIONAL** *(CORRECTION 50)* | Anthropic · Pearson VUE | **~$125 each** ⚠️ | S3 | Every Claude exam requires Claude Partner Network access. If it arrives (incl. an employer joining): **CCDV-F first**, **CCA-F** after — the natural pick when working at an Anthropic partner. |
 | 31 | 🎖️ **Databricks GenAI Engineer Associate** | Databricks | **$200** ✅ | S3 | Optional. |
 
 > **🎯 Stage 3 deliverable (CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
