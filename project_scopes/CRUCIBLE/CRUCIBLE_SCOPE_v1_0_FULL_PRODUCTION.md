@@ -574,7 +574,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | 27 | Agent Skills with Anthropic | Anthropic Academy | Free | S3 | Reusable analyst capability. |
 | 28 | Automated Testing for LLMOps | DeepLearning.AI | Free | S3 | Regression gates on the research loop. |
 | 29 | MCP — Advanced Topics (full) | Anthropic Academy | Free | S3 | Tool exposure with a hard write boundary. |
-| 30 | 🎖️ **Anthropic CCA-F** | Anthropic · Pearson VUE | **~$125** ✅ ⚠️ | S3 | **Domain 1 maps directly to the workflow-vs-agent distinction this project turns on.** |
+| 30 | ⏸️ 🎖️ **Anthropic Claude exam — CONDITIONAL** *(CORRECTION 50)* | Anthropic · Pearson VUE | **~$125 each** ⚠️ | S3 | Every Claude exam requires Claude Partner Network access. If it arrives (incl. an employer joining): **CCDV-F first**, **CCA-F** after — the natural pick when working at an Anthropic partner. **Domain 1 maps directly to the workflow-vs-agent distinction this project turns on.** |
 | 31 | 🎖️ **Databricks GenAI Engineer Associate** | Databricks | **$200** ✅ | S3 | Optional. |
 
 > **🎯 Stage 3 deliverable (CORRECTION 8):** ADR set + C4 diagram + **architecture-defense rehearsal** — present and defend the design against a reviewer, mirroring the FDE panel format.
