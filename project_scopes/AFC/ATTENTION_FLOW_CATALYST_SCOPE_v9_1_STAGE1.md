@@ -18,7 +18,7 @@
 
 > **This block governs.** Where anything below conflicts, this block wins. Where this sheet conflicts with the Full-Production scope (v9.2) on **Stage 1 build detail**, this sheet wins.
 
-**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**, through CORRECTION 48.
+**Aligned to:** Career Roadmap **v10.0 (2026 Market Realignment)**, through CORRECTION 51.
 
 **Governing model:** **3 stages, not 5.** Destination title **Applied AI Engineer → Forward Deployed Engineer (FDE)**. **One system that evolves across stages — never rebuilt per stage.**
 
@@ -74,6 +74,7 @@
 | **v9.1 rev. 4 (October 2, 2026 — Full-Production promotion)** | Parent v9.0 promoted to `ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md`; pointers repointed; build-level content moved here as **Appendix A** (A.1 pre-commit config, A.2 logging & debugging, A.3 dashboard container); tree gains `app/`, `config/`, `CONTRIBUTING.md`, `.cursorignore`. |
 | **v9.1 rev. 5 (October 3, 2026 — CORRECTION 47)** | **AI-powered predictive.** Title restored; new **§7B.9 ML meta-labeling baseline** (B16–B19); one pre-registration covers rules + ML before the single holdout; stack, structure, risks, metrics, skills and locked decision #17 updated; Stage-1 timeline 14 → 16 weeks. |
 | **v9.1 rev. 6 (October 4, 2026 — CORRECTION 48)** | Closes the C47 open item: §17 adds the full **Machine Learning Specialization (Andrew Ng)** (Courses 1–2 required before week 13, Course 3 optional), the owned **Jansen** book (ch. 6, 7, 12) and the scikit-learn calibration guide; week 7 starts Course 1. |
+| **v9.1 rev. 7 (October 5, 2026 — CORRECTION 51)** | §17 row 14: Jansen's **3rd edition** (2026) promoted to a committed buy at Phase 2 entry; the owned 2nd edition becomes the backup. |
 
 ---
 
@@ -817,7 +818,7 @@ Use the CORRECTION 21 block as written (**Appendix A.1**) (Tier A + `nbstripout`
 | 11 | 🎖️ AI-901 Azure AI Fundamentals ($99) | Once S1 build work is underway |
 | 12 | ⏸️ AB-620 (conditional) | Not by default |
 | 13 | 🆕 **Machine Learning Specialization (Andrew Ng)** — full specialization *(CORRECTION 48)* | **Courses 1–2 required before week 13** (logistic regression, decision trees, tree ensembles/XGBoost, precision/recall on imbalanced data); start Course 1 in week 7. **Course 3 optional** if time allows. Coursera Plus |
-| 14 | 📖 *Machine Learning for Algorithmic Trading* (Jansen, Packt 2nd ed. — **owned**) *(CORRECTION 48)* | Ch. 6 (purging, embargoing, combinatorial CV) before §7B.5/§7B.9; ch. 7 (logistic regression); ch. 12 (LightGBM, SHAP). Concepts only — implement in this repo's 3.14 stack |
+| 14 | 📗 *Machine Learning for Trading* (Jansen, Packt **3rd ed., 2026**) — **committed buy at Phase 2 entry** *(CORRECTION 51)* | The primary ML-for-trading reference for §7B.5/§7B.9: its leak-proof cross-validation, gradient-boosting and MLOps chapters. Read for methodology; results stay lift over a base rate. Until bought, use the owned **2nd ed.** (ch. 6 purged/embargoed CV · ch. 7 logistic regression · ch. 12 LightGBM + SHAP) — concepts only, implement in this repo's 3.14 stack |
 | 15 | scikit-learn calibration user guide (free docs) *(CORRECTION 48)* | Probability calibration (isotonic / Platt) for §7B.9 — the one ML topic the course and book don't cover |
 | — | *Optional:* Kaggle Learn **Intermediate Machine Learning** (free certificate) | One-day bridge from course theory to pipelines, XGBoost and leakage control |
 
