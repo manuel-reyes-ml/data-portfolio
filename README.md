@@ -1,288 +1,169 @@
-# 📊 Data & AI Portfolio
+# 📊 Data & AI Portfolio — Manuel Reyes
 
-![AI-Focused](https://img.shields.io/badge/AI--Focused-Analytics_Engineering_·_Data_Engineering-blueviolet?style=for-the-badge)
+**Analytics Engineer · Data Engineer — AI-ready data platforms.** The engineering write-ups behind my profile: what each system does, how it's built, and the standard every repo meets.
 
-**Manuel Reyes** — Production systems, evaluation-gated, built in a regulated financial domain.
-
-**🟢 Open to AI-Focused Analytics Engineer and Data Engineer roles.**
-
-[![Open to work](https://img.shields.io/badge/🟢_Open_to-Analytics_Engineer_·_Data_Engineer-success?style=flat-square)](mailto:manuelreyesv410@gmail.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-mr410-0077B5?logo=linkedin)](https://linkedin.com/in/mr410)
-[![GitHub](https://img.shields.io/badge/GitHub-manuel--reyes--ml-181717?logo=github)](https://github.com/manuel-reyes-ml)
-[![Email](https://img.shields.io/badge/Email-Contact-D14836?logo=gmail)](mailto:manuelreyesv410@gmail.com)
+[![Open to roles](https://img.shields.io/badge/🟢_Open_to-Analytics_Engineer_·_Data_Engineer-success?style=flat-square)](mailto:manuelreyesv410@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-mr410-0077B5?logo=linkedin)](https://www.linkedin.com/in/mr410/)
+[![Profile](https://img.shields.io/badge/GitHub-manuel--reyes--ml-181717?logo=github)](https://github.com/manuel-reyes-ml)
 [![Roadmap](https://img.shields.io/badge/Roadmap-v10.0-28a745)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
 
----
-
-## Positioning
-
-This portfolio is organized around a single thesis: **proof over keywords.** Each project is a production-grade system with evaluation gates, most of them grounded in ERISA-regulated retirement-plan operations — the domain I've worked in for years. The evidence layer (shipped systems, eval thresholds, decision records) is the point; the credentials and titles are secondary.
-
-The through-line:
-
-- **Real production impact** — a 1099 reconciliation platform running live at work (details below), not a tutorial clone.
-- **Domain depth as a moat** — ~15 years of business operations and financial-services work, applied to problems where correctness is regulated, not optional.
-- **Evaluation-first engineering** — DeepEval / RAGAS / SelfCheckGPT as *blocking* gates, faithfulness thresholds, synthetic data in every public repo.
-- **Reproducible by construction** — uv-managed environments with a committed `uv.lock` in every repo; images build via `uv sync --frozen`, so a reviewer gets the exact dependency set I ran — and a pinned `.pre-commit-config.yaml` with a `uv-lock` hook keeps that lockfile honest at the commit boundary, so the claim is enforced rather than asserted. Architecture diagrams are single-source too: modeled once in Structurizr DSL, exported to Mermaid, so the picture never lies about the system. Logging is single-source in the same spirit — one `structlog` chain formats my code and my dependencies alike, so there is no second format to drift.
-- **Engine choice is an architecture decision, not a habit** — **Polars** owns ingestion, schema enforcement and bulk transforms; **pandas is retained deliberately** at the `openpyxl` template write and the plotting hand-off; business logic lives in **dbt**, not in either engine. The reviewable artifact is the ADR recording which engine owns which layer plus a `.explain()` query plan — never a speed number on a small dataset.
-- **One system per project, evolved across stages** — projects are hardened S1 → S3, never rebuilt per stage.
-
-Full plan and rationale: the [v10.0 career roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) (3 stages, ~32 months).
+> **Hiring for Analytics or Data Engineering?** Start with [DataVault](#-datavault--ai-assisted-1099-data-platform) (the platform arc, live in production), then [PostCheck](#-postcheck--ai-powered-qa-review-agent) (exactly-once ingestion → a dbt quality mart with a declared grain).
+> **Hiring for Applied AI?** Start with [PolicyPulse](#-policypulse--ai-powered-policy-assistant) and [PostCheck](#-postcheck--ai-powered-qa-review-agent).
 
 ---
 
-## 🗂️ Portfolio at a Glance
+## 🗂️ Index
 
-**4 flagships + 2 supporting**, plus a backlog and shared tooling. *Flagship vs supporting denotes size and emphasis — not a quality tier. Every project carries the full production standard.*
+Every project puts AI to work — **powered** where the model does the core job, **assisted** where a deterministic core must make the decision. Each is one system evolved across three stages, never rebuilt. Flagship vs supporting is size, not quality: every repo meets the [production standard](#️-production-standard).
 
-| Project | Role | Arc | What it demonstrates | Status |
+Status: ✅ live · 🏗️ in build · 📐 designed · 📅 planned
+
+| Project | Role | Stage 1 → Stage 3 | Status | Scope docs |
 |---|---|---|---|---|
-| 🧾 **DataVault / 1099 Data Platform** | 🚩 Flagship — Data Engineering | S1 → S3 | Production ETL + reconciliation → dbt-tested models (CI) → orchestration → an Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live in production** |
-| 📋 **PolicyPulse** | 🚩 Flagship — Applied AI (RAG) | S1 → S3 | RAG over plan documents → GraphRAG hybrid (Neo4j + ChromaDB) → agentic + eval/observability; exposes a FastMCP server | 🏗️ **S1 shipping** |
-| 🔥 **Crucible** | 🚩 Flagship — Autonomous trading research | S1 → S3 | Multi-timeframe (swing → intraday) backtest engine + integrity spine → agentic execution; **mandatory HITL sign-off + kill-switch** on the live path | 🏗️ **S1 in progress** |
-| 🧾 **PostCheck** | 🚩 Flagship — **Dual-target** (Applied AI **and** AE/DE) | S1 → S3 | Autonomous post-posting QA review: agentic SOP adjudication with a hard escalation boundary **+** exactly-once event ingestion → dbt-modelled NIGO quality mart. One deliverable, first-class evidence for both target doors | 🏗️ **S1 scoped** |
-| 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | S1 → S3 | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
-| 📄 **FormSense** | Supporting — Document ops | S1 → S3 | Multimodal structured extraction from distribution forms; Pydantic frozen-schema contract; agentic workflow | 📅 Planned |
-| 📺 StreamSmart · 📊 ODI | Backlog | — | Production-grade when built; ODI is a consolidation candidate against the platform's mart/AI layer | 🗒️ Backlog |
-| 🧩 **Cadence** | Support tooling | — | Build-in-public content pipeline (a tool, not a portfolio flagship) | 🛠️ Tooling |
-| ⚙️ **signalcore** | Shared library | — | Point-in-time-safe primitives beneath AFC + Crucible (see the [boundary spec](project_scopes/CRUCIBLE/Shared_SignalCore_Boundary_Spec_v1_3.md)) | 📚 Library |
+| **DataVault**<br>*AI-assisted* | Flagship · AE/DE | Live reconciliation core → dbt platform with contracts and a semantic layer → AI analyst (text-to-SQL, human approves every write) | ✅ S1 live · 🏗️ S2 | [S1](project_scopes/DATAVAULT/DATAVAULT_1099_DATA_PLATFORM_SCOPE_v2_1_STAGE1.md) · [Full](project_scopes/DATAVAULT/DATAVAULT_1099_DATA_PLATFORM_SCOPE_v1_0_FULL_PRODUCTION.md) |
+| **PostCheck**<br>*AI-powered* | Flagship · AE/DE + AI | Evaluated review agent → event log as data infrastructure (dbt marts, Airflow, ECS) → evaluator-optimizer loop + SOP retrieval | 📐 | [S1](project_scopes/POSTCHECK/POSTCHECK_QA_AGENT_SCOPE_v1_1_STAGE1.md) · [Full](project_scopes/POSTCHECK/POSTCHECK_QA_AGENT_SCOPE_v1_0_FULL_PRODUCTION.md) |
+| **PolicyPulse**<br>*AI-powered* | Flagship · Applied AI | RAG + FastMCP + eval gates → embedding pipeline as data infrastructure → GraphRAG + agentic + access-controlled retrieval | 🏗️ | [S1](project_scopes/POLICYPULSE/POLICYPULSE_HR_RAG_SCOPE_v1_6_STAGE1.md) · [Full](project_scopes/POLICYPULSE/POLICYPULSE_HR_RAG_SCOPE_v2_0_FULL_PRODUCTION.md) |
+| **Crucible**<br>*AI-assisted* | Flagship · execution safety | Backtest engine + integrity spine → market-data lakehouse → paper → live agent with human sign-off + kill-switch | 🏗️ | [S1](project_scopes/CRUCIBLE/CRUCIBLE_SCOPE_v3_1_STAGE1.md) · [Full](project_scopes/CRUCIBLE/CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md) |
+| AFC<br>*AI-powered* | Supporting · research | Faithfulness benchmark + event-study backtest + ML baseline → filings lakehouse + full trigger matrix → GraphRAG research loop | 🏗️ | [S1](project_scopes/AFC/ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md) · [Full](project_scopes/AFC/ATTENTION_FLOW_CATALYST_SCOPE_v9_2_FULL_PRODUCTION.md) |
+| FormSense<br>*AI-powered* | Supporting · document AI | Multimodal extract → validate → route → document-ops pipeline with dbt SLA analytics → agentic workflow + MCP | 📅 | [S1](project_scopes/FORMSENSE/FORMSENSE_DISTRIBUTION_SCOPE_v1_8_STAGE1.md) · [Full](project_scopes/FORMSENSE/FORMSENSE_DISTRIBUTION_SCOPE_v2_0_FULL_PRODUCTION.md) |
 
-Each project links to its scope document(s) in the [Repository Structure](#-repository-structure) section below.
+Every write-up below follows the same order — **① Production · ② Cost · ③ Architecture** — then what it does and the stack.
 
 ---
 
-## 🏆 Production Highlight — DataVault / 1099 Data Platform (S1 core)
+## 🧾 DataVault — AI-assisted 1099 data platform
 
-**✅ Live in production in an ERISA-regulated retirement-plan operations environment.** The Data-Engineering flagship's Stage-1 core: ingests Matrix + Relius sources into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics.
+**[Repo](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** · ✅ Stage 1 live in production · 🏗️ Stage 2 in build
 
 | Metric | Impact |
 |---|---|
-| ⚡ Time saved | ~95% reduction (hours → minutes per cycle) |
-| 📈 Scale | Handles the **full distribution book without added headcount** |
+| ⚡ Effort | **~95% reduction** in weekly reconciliation effort |
+| 📈 Scale | The **full distribution book**, without added headcount |
 | 🛡️ Correctness | **Derived-vs-reported Box-7 validation gate** — mismatches quarantined before distribution |
-| ✅ Reliability | **Reconciliation success rate** held against a stated freshness SLA |
+| ✅ Reliability | Reconciliation success rate held against a stated **freshness SLA** |
 
-**Stack:** Python · pandas · pytest · GitHub Actions CI · synthetic-data fixtures for the public build.
+- **① Production** — a live, depended-upon pipeline in an ERISA-regulated operation: success rate, freshness SLA, quarantine and retry behaviour, schema contracts. Stage 1 invariants: `matched + quarantined == total_ingested`, zero silent drops, every Box-7 branch tested on both sides of age 59½.
+- **② Cost** — 🔒 deliberately constrained: mechanism and relative deltas only.
+- **③ Architecture** — ERISA-driven ADRs (retention, auditability, reconciliation guarantees, PII boundary) · C4 context + container · dbt tests and data contracts.
 
-> 🧭 **The S1 pandas pipeline is not rewritten — it is frozen as the "before."** The S2 hardening moves ingestion and bulk transforms to **Polars** and the reconciliation rules to **tested dbt models**; the delta between the two becomes the S2 headline metric rather than an unmeasured refactor.
+**Stage 1** reconciles two recordkeeping systems into one canonical model, derives and validates the 1099-R Box 7 code, and produces correction files and corrections analytics; a narrow LLM layer explains exceptions as typed output behind a DeepEval gate. **Stage 2** rebuilds the rules as dbt models with a unit test per rule (dbt Core + DuckDB first, then Snowflake), with medallion layers, Great Expectations contracts, idempotent Airflow runs, Docker → ECS via Terraform, monitoring, a written postmortem and a semantic layer. **Stage 3** adds the AI analyst: text-to-SQL over the semantic layer and proposed corrections with citations — it ships only if it beats the rules engine, and a human approves every write.
 
-> 🔒 **Regulated-environment disclosure.** The public portfolio build uses synthetic data only — the production deployment runs internally on regulated data. Published claims are limited to **mechanism and non-identifying relative deltas**: no absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes. The Cost section for this project is therefore thinner than a typical portfolio project's — that is a disclosure constraint, not a gap.
+> 🧭 The shipped pandas pipeline is **frozen as the baseline**, not rewritten; the Stage 2 delta is the headline metric.
+>
+> 🔒 Public repos use **synthetic data only**. No absolute cost figures, participant or plan data, client identifiers or employer-identifying volumes.
 
----
-
-## 🚀 Project Summaries
-
-### 🧾 DataVault / 1099 Data Platform — *Data-Engineering flagship*
-
-- **① Production** — Live, depended-upon pipeline in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry behaviour, schema contracts, on-call reality.
-- **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
-- **③ Architecture** — **ERISA-driven ADRs** (retention, auditability, reconciliation guarantees, PII boundary) · C4 Context + Container · dbt tests and data contracts.
-
-One system across the arc, not two projects. **Stage 1:** the live 1099 reconciliation core (canonical model → reconcile → Box-7 derivation → corrections analytics). **Stage 2:** hardened into a data platform — **Polars** ingestion and bulk transforms, dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy (Docker/ECS), monitoring. **Stage 3:** the Applied-AI analyst layer — natural-language querying with **human-in-the-loop on every write**.
-
-**Stack:** Python · **Polars** (default engine) · pandas *(boundary-scoped: `openpyxl` writes + plotting hand-off)* · dbt · Great Expectations · Airflow · Snowflake · Docker · GitHub Actions CI · Anthropic SDK · Pydantic
+**Stack:** Python · SQL · dbt · Polars · pandas *(Excel template + plotting only)* · DuckDB → Snowflake · Great Expectations · Airflow · Docker · AWS ECS · Terraform · Anthropic SDK · Pydantic · GitHub Actions
 
 ---
 
-### 📋 PolicyPulse — *Applied-AI flagship (RAG)*
+## 🧾 PostCheck — AI-powered QA review agent
 
-- **① Production** — Containerised RAG + **FastMCP** service; **RAGAS/DeepEval blocking gates are merge conditions**, not reports; confidence-gated escalation path.
-- **② Cost** — Cost-per-query and p95 latency measured across inference substrates; local-vs-cloud routing policy; embedding/re-index cost.
-- **③ Architecture** — GraphRAG (Neo4j + ChromaDB) · retrieval-strategy **ADRs with rejected alternatives** · C4 Context + Container · MCP read → approval-gated write boundary.
+**[Repo](https://github.com/manuel-reyes-ml/postcheck)** · 📐 Designed · the one project that evidences **both** target roles
 
-Retrieval-augmented answering over retirement-plan documents with cited sources and confidence-gated escalation. Exposes a **FastMCP server** so an editor/assistant can query the knowledge base directly. Evolves from vector RAG (S1) to a **GraphRAG hybrid — Neo4j + ChromaDB** (S2/S3) for multi-hop questions vector-only retrieval stitches together wrong, then to agentic workflows with a three-layer eval spine.
+- **① Production** — **read-only and advisory, as a tested invariant.** It never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor; never edits SSN, name or DOB. An IGO verdict is a recommendation to a human, never an authorization.
+- **② Cost** — provider-agnostic across Anthropic, Azure OpenAI (Microsoft Foundry) and local Ollama; one eval suite, gates run per provider.
+- **③ Architecture** — the spreadsheet is a rendered export, never the source of truth · declared grain (`fct_document_reviews` = one row per packet × review run) · ADRs · C4 context + container.
 
-**Stack:** Python · Anthropic SDK (primary) · ChromaDB · Neo4j (GraphRAG) · Gemini embeddings · FastMCP · Arize Phoenix · RAGAS · SelfCheckGPT · DeepEval · Streamlit · Pydantic · Docker
+It watches an intake folder and claims each packet **exactly once** (content-hash idempotency + lease TTL), parses the posted-transaction export **deterministically** — the LLM never sees the workbook — and reads the scanned multi-document packet with a multimodal model. Rules run first and the LLM handles only the residual, across a fixed 15-item checklist against a **versioned SOP** → **IGO**, **NIGO (needs clarification)** or **NIGO (do not process)**. Findings go to the human processor with field, form value, export value, SOP citation and fix, and every verdict appends to an event log feeding a **dbt NIGO quality mart** (first-pass IGO rate, reason Pareto, reason-mix drift, agent-vs-human agreement).
 
----
-
-### 🔥 Crucible — *Autonomous trading-research flagship*
-
-- **① Production** — Backtest → paper → live path with **mandatory human sign-off + kill-switch**; deterministic core owns every trade; intended-vs-filled reconciliation.
-- **② Cost** — Compute cost per backtest sweep, data-feed cost, sweep efficiency (results per compute-hour).
-- **③ Architecture** — Multi-timeframe design · execution and risk-control ADRs · C4 Context + Container · `signalcore` boundary (primitives in, strategy logic out).
-
-A strategy-agnostic platform taking a strategy from **backtest → paper → live** through validation gates. **Multi-timeframe (swing → intraday)** — swing-first is the lower-risk on-ramp; intraday plugins follow once swing clears all three integrity gates. Strategies are plugins (Protocol + ABC + registry). Research-loop integrity is enforced by a sealed out-of-sample vault + an overfitting-budget ledger + an engine-parity gate. Live execution is the one genuinely irreversible path, so it is gated by **mandatory HITL sign-off + a kill-switch**; the LLM sits *behind the Wall* (proposes, never executes). Local-first inference keeps cost at zero and proprietary data on-machine.
-
-**Stack:** Python · own event-driven backtest harness → NautilusTrader · Optuna · DuckDB/Parquet · Ollama/Qwen (local-first) → cloud fallback · Pydantic · LangGraph · Alpaca (paper + live) · DeepEval · Docker · uv *(Conda conditional — only if compiled/GPU numerical backends land)*
-
-> ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
-
----
-
-### 🧾 PostCheck — *Dual-target flagship (Applied AI **and** Analytics/Data Engineering)*
-
-- **① Production** — **Read-only and advisory — a binding, tested safety invariant.** Never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor; never edits SSN, name or DOB. An IGO verdict is a **recommendation to a human, never an authorization**.
-- **② Cost** — Provider-agnostic across three named substrates (**Anthropic · Azure OpenAI via Microsoft Foundry · local Ollama**); one eval suite, gates run per substrate.
-- **③ Architecture** — The spreadsheet is a **rendered export, never the source of truth** · declared grain (`fct_document_reviews` = one row per packet × review run) · ADRs + C4 Context + Container.
-
-An autonomous **post-posting QA review agent** for regulated distribution operations, and the only project whose single deliverable produces first-class evidence for **both** target doors. It watches an intake folder and claims each packet **exactly once** (event-as-hint + poll floor + content-hash idempotency + lease TTL), parses the posted-transaction export **deterministically** (row-type discriminator dispatch — *the LLM never sees the workbook*), segments and extracts a scanned multi-document packet with a multimodal model, routes on form family, resolves live-vs-dead payee legs, then adjudicates against a **versioned SOP** across a fixed 15-item verification surface (PASS / EXCEPTION / CRITICAL / N/A) → **IGO** / **NIGO (needs clarification)** / **NIGO (do not process)**. Findings escalate to the human processor with field, form value, export value, **SOP citation** and fix; every adjudication appends to an event log feeding a **dbt-modelled NIGO quality mart** (first-pass IGO rate, reason Pareto, reason-mix drift, agent-vs-human agreement).
-
-| Door | What this system evidences |
+| Role | What it evidences |
 |---|---|
-| 🤖 **Applied AI** | Agentic adjudication with a hard escalation boundary · multimodal reasoning over scanned packets · three-layer eval with a blocking gate · MCP + HITL |
-| 📊 **Analytics / Data Engineering** | Exactly-once event ingestion · deterministic parsing of a ragged block-structured source · append-only event log with a **declared grain** · dbt models + contracts · a metrics layer answering a real operational question |
+| 📊 **Analytics / Data Engineering** | Exactly-once ingestion · deterministic parsing of a ragged source · append-only event log with a declared grain · dbt models + contracts · a metrics layer answering a real operational question |
+| 🤖 **Applied AI** | Multimodal extraction · agentic adjudication with a hard escalation boundary · three-layer eval with a blocking gate · MCP + human in the loop |
 
-**📏 It has a real incumbent to beat** — a prompt-only reviewer already in use — so the headline is a genuine before/after rather than an unfalsifiable claim. Headline metric: **false-CRITICAL rate** against a flattened-text baseline running the identical rule pack on the identical golden set. **The blocking gate is false-NIGO rate, not accuracy** — precision blocks the merge, recall is reported, because a review agent that cries wolf destroys the trust it needs to be useful. **Synthetic corpus only**; the controlled-NIGO-injection generator is itself a portfolio artifact and the only route to ground-truth labels.
+**📏 Measured against a real incumbent** — a prompt-only reviewer already in use. Headline metric: **false-CRITICAL rate** against a flattened-text baseline on the same rules and golden set. **The blocking gate is false-NIGO rate, not accuracy** (precision blocks, recall is reported): a reviewer that cries wolf loses the trust it needs. The synthetic-corpus generator with controlled NIGO injection is itself an artifact.
 
-> 🗓️ **Scheduling:** when hours are scarce the priority order is **DataVault → PolicyPulse → Crucible**. PostCheck S1 is scoped to be **independently shippable and independently evidence-bearing**, so it never blocks the S2 evidence gate.
-
-**Stack:** Python · Anthropic SDK · Azure OpenAI / Microsoft Foundry · Ollama *(local)* · multimodal extraction · Pydantic · **dbt** · DeepEval · FastMCP · Docker · GitHub Actions CI
+**Stack:** Python · Anthropic SDK · Azure OpenAI · Ollama · multimodal extraction · Pydantic · dbt · Airflow · DeepEval · FastMCP · Docker · GitHub Actions
 
 ---
 
-### 📈 Attention-Flow Catalyst (AFC) — *Supporting (research)*
+## 📋 PolicyPulse — AI-powered policy assistant
 
-- **① Production** — Read-only research loop; **faithfulness ≥ 0.9 as a blocking gate** — the eval-first premise is the deliverable.
-- **② Cost** — ⚪ Optional at supporting tier. Where it applies: cost-per-screen-run and embedding/re-index cost.
-- **③ Architecture** — GraphRAG (Neo4j + ChromaDB) · full ADR set + C4 Context · `signalcore` boundary (primitives in, thresholds out).
+**[Repo](https://github.com/manuel-reyes-ml/policypulse)** · 🏗️ In build
 
-An eval-first research system on small-cap attention/accumulation signals. The Stage-1 deliverable is the smallest publishable high-signal artifact: a **SEC-grounded faithfulness benchmark + a controlled-perturbation catalog**. A Neo4j financial knowledge graph anchors the later GraphRAG work. Shares a thin primitives layer (`signalcore`) with Crucible — siblings, no merge.
+- **① Production** — containerised RAG + **FastMCP** service; **RAGAS / DeepEval gates are merge conditions**, not reports; confidence-gated escalation.
+- **② Cost** — cost per query and p95 latency across local and cloud models; routing policy; embedding and re-index cost.
+- **③ Architecture** — GraphRAG (Neo4j + ChromaDB) · retrieval ADRs with rejected alternatives · C4 context + container · MCP reads open, writes approval-gated.
 
-**Stack:** Python · DuckDB/Parquet · edgartools (SEC) · Neo4j · Anthropic SDK · SelfCheckGPT · FActScore · DeepEval · Streamlit · Docker
+Answers policy questions with cited sources and escalates when unsure. It starts as vector RAG, becomes an embedding pipeline treated as data infrastructure (Airflow ingest, dbt metadata models, contracts), and grows into a **GraphRAG hybrid** for multi-hop questions with **access control enforced at retrieval time**. A streaming UI built with the Vercel AI SDK is the last mile; the agent loop, retrieval and evals stay in Python.
 
----
-
-### 📄 FormSense — *Supporting (document operations)*
-
-- **① Production** — Deploy path (Docker + CI) with **GEval schema-adherence gates** as merge conditions; business-rule validation and routing to operations.
-- **② Cost** — ⚪ Optional at supporting tier — not manufactured where there is nothing to report.
-- **③ Architecture** — Frozen Pydantic schema contract · full ADR set + C4 Context · document → parse → validate → route boundary.
-
-Multimodal structured extraction from retirement-plan distribution forms (checkboxes, signatures), validated against business rules and routed to operations. An **agentic workflow** (control flow in code, not a free-roaming multi-agent), with a **Pydantic frozen-schema contract** on the output.
-
-> 🔀 **FormSense is not PostCheck.** FormSense sits **pre-index** — is this form complete, legible and internally consistent enough to file? It judges the form *against itself*. PostCheck sits **post-posting** — does the posted transaction match the request and comply with the SOP? It judges the form *against the posted export*. Different position in the workflow, different source of truth, different escalation target. **Never merged, never sharing a source of truth.**
-
-**Stack:** Python · Gemini Vision · Pydantic · DeepEval · Streamlit · Docker
+**Stack:** Python · Anthropic SDK · ChromaDB · Neo4j · FastMCP · RAGAS · DeepEval · Arize Phoenix · Streamlit · Pydantic · Docker · Vercel AI SDK *(TypeScript, last mile only)*
 
 ---
 
-### 📺 StreamSmart · 📊 ODI — *Backlog*
-Production-grade when built, positioned last. StreamSmart is a consumer subscription-optimization app; ODI (Operations-Demand-Intelligence) is enterprise workflow-demand analytics, flagged as a consolidation candidate against the DataVault platform's mart/AI layer.
+## 🔥 Crucible — AI-assisted trading research
+
+**[Repo](https://github.com/manuel-reyes-ml/crucible)** · 🏗️ In build
+
+- **① Production** — backtest → paper → live, with **mandatory human sign-off and a kill-switch** on the live path; a deterministic core owns every order; intended-vs-filled reconciliation.
+- **② Cost** — compute per backtest sweep, data-feed cost, results per compute-hour.
+- **③ Architecture** — multi-timeframe design (swing first, then intraday) · execution and risk ADRs · C4 context + container · `signalcore` boundary (primitives in, strategy logic out).
+
+Strategies are plugins that must clear three validation gates before real capital. Research integrity comes from a sealed out-of-sample vault, an overfitting-budget ledger, walk-forward validation and an engine-parity gate. An **LLM analyst** reads aggregated results and proposes hypotheses but sits behind a wall: it sees statistics, never raw outcomes, and never places an order. Protective stops are signed with the entry so they fire unattended. Local-first inference keeps proprietary data on-machine.
+
+**Stack:** Python · own event-driven harness → NautilusTrader · Optuna · DuckDB · Parquet · Ollama / Qwen3 → cloud fallback · Pydantic · LangGraph · Alpaca · DeepEval · Docker
+
+> ⚖️ Research project. Not investment advice; no claim of positive returns — validation is the point.
 
 ---
 
-## 🏗️ Production Standard (v10.0 — non-negotiable, all projects)
+## 📈 AFC — AI-powered predictive trigger analysis *(supporting)*
 
-Every project ships with:
+**[Repo](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** · 🏗️ In build
 
-- **Mermaid architecture diagram** · **C4 Context diagram** (+ Container view on lead flagships) — both generated from **one source**: the architecture is modeled once in **Structurizr DSL** (`docs/architecture.dsl`) and the C4 views are exported to Mermaid via `structurizr-cli`, so the diagram in the README never drifts from the model
-- **`docs/adr/`** — numbered, immutable Architecture Decision Records (context → decision → consequences)
-- **Dockerfile** · **evaluation-metrics table** · 15–30s **demo GIF** · **"What I Learned"**
-- **Eval-first blocking gates** · **synthetic data only** in public repos · no vibe coding
-- **Python 3.14** (standard GIL build; the free-threaded `python3.14t` build is deliberately *not* used — no CPU-bound multicore workload here, and that build is where the C-extension wheel problems live). The version is a **single-source pin**: declared once as `requires-python = ">=3.14"`, with ruff's `target-version`, mypy's `python_version`, the Dockerfile base image and the CI matrix all reading from it — a mismatch is a **CI failure, not a lint warning**
-- `pyproject.toml` + **`uv.lock`** + `src/` layout + `py.typed` + ruff + mypy · **pinned `.pre-commit-config.yaml`** · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)** · Conventional Commits · **branch → PR → self-review → merge** (never direct commits to `main`) · file-by-file review before merge
-- **Observable by construction** — `structlog` renders **every** log line, including those from third-party libraries (LLM SDKs, httpx, Neo4j), through one `ProcessorFormatter` chain; a redaction processor sits in that chain as the PII choke point, so masking is structural rather than dependent on remembering it at each call site. Run context (`run_id`) is bound via contextvars, so one query reconstructs a whole pipeline run. Logs go to stdout (12-Factor); rotation and shipping belong to the runtime
-- **Enforced at the commit boundary** — a pinned `.pre-commit-config.yaml` in every repo. The governing rule is that **the hook set is a strict *subset* of the CI gate**: CI stays authoritative and nothing runs locally that does not also run in CI, so the two can never quietly disagree. `ruff-check --fix` is ordered *before* `ruff-format` (the linter's fixes can emit changes that then need reformatting); `uv-lock` keeps `uv.lock` in step with `pyproject.toml`; `gitleaks` and `detect-private-key` scan for credentials; `nbstripout` strips notebook output wherever notebooks exist, which extends the PII choke point from the logging boundary to the git boundary and is what makes **synthetic-data-only** a mechanical guarantee instead of a thing to remember; `conventional-pre-commit` runs on the `commit-msg` stage, so Conventional Commits above is *enforced*, not merely declared. **`mypy` is deliberately excluded and runs in CI only** — the `mirrors-mypy` hook's default `--ignore-missing-imports` silently degrades third-party types to `Any`, so the exclusion is recorded as an ADR rather than left as an omission. Hook revisions are pinned and never floating; the drift between those pins and `uv.lock` is a known risk with its own ADR
-- **uv (Astral)** for packages and environments — `uv sync --frozen` in CI and Docker; **no `requirements.txt`** in any repo
-- **Dual agentic harness in-repo** — **OpenCode + Claude Code**, governed by one portable **`AGENTS.md`** contract plus a shared prompt-extraction layer, so identical standards drive both and no prompt content is duplicated. `.opencode/` (`agents/` + `commands/`) and `opencode.jsonc` sit alongside `.cursor/rules/`; OpenCode loads those same rule files via `instructions[]`. The review discipline is version-controlled, not ad-hoc — and enforcement is architectural: a `PreToolUse` guard hook blocks `git commit`/`push` and sensitive-path access, so **every commit is made by a human, by construction.**
+- **① Production** — read-only by construction; **faithfulness ≥ 0.9 is a blocking gate** on the LLM's filing analysis.
+- **② Cost** — optional at supporting tier; where it applies, cost per screen run and re-index cost.
+- **③ Architecture** — knowledge-time (point-in-time) data · walk-forward validation with embargo and a sealed holdout · Benjamini–Hochberg false-discovery control · ADRs + C4 context · `signalcore` boundary.
 
-*Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
+Small-cap trigger research in two layers. An LLM analyst reads SEC filings with provenance and is scored by three faithfulness methods against a controlled-perturbation benchmark. A read-only **event-study backtest** tests trigger combinations (insider purchases, dilution state, volume), and an **ML meta-labeling model** (logistic regression + LightGBM) predicts which trigger events follow through. Results are reported as **calibrated lift over a base rate** — never alpha, Sharpe or returns — and the model ships only if it beats the best rule-based combination. Stage 3 adds a GraphRAG research loop.
+
+**Stack:** Python · edgartools · DuckDB · Parquet · scikit-learn · LightGBM · Anthropic SDK · DeepEval · SelfCheckGPT · FActScore · Docker
+
+> ⚖️ Research project. Not investment advice.
 
 ---
 
-## 🛠️ Technical Stack
+## 📄 FormSense — AI-powered form validator *(supporting)*
 
-**Languages & Core** — **Python 3.14** · SQL · **Polars** *(default dataframe engine)* · pandas *(boundary-scoped)* · Jupyter · **uv** (packaging & environments) · TypeScript *(last mile only)*
+**[Repo](https://github.com/manuel-reyes-ml/formsense)** · 📅 Planned
 
-**Data Engineering** — dbt · Great Expectations · Airflow (Astronomer) · Snowflake · Terraform · DuckDB/Parquet · Docker
+- **① Production** — Docker + CI deploy path; **GEval schema-adherence gates (≥ 0.85) are merge conditions**; low-confidence forms routed to a person.
+- **② Cost** — optional at supporting tier; not manufactured where there is nothing to report.
+- **③ Architecture** — frozen Pydantic schema contract · ADRs + C4 context · document → parse → validate → route boundary.
 
-**AI-ready data infrastructure** — embedding pipelines · vector schemas & retrieval governance · **PII-safe corpus preparation** and citation-grade chunking · reproducible ML-ready datasets with **point-in-time correctness**, leakage detection and CI gates for schema/slice/drift/bias
+Reads scanned retirement-plan distribution forms (checkboxes, signatures) with a multimodal model, validates every field against business rules and a frozen contract, and routes the result. An **agentic workflow** — control flow in code, not free-roaming agents.
 
-**AI & GenAI** — Anthropic SDK (primary) · Ollama / Qwen (local-first) · LM Studio · Gemini SDK · FastMCP · LangGraph · Pydantic · ChromaDB · Neo4j (GraphRAG)
+> 🔀 **Not PostCheck.** FormSense works **before indexing** and judges a form against itself (is it complete and consistent enough to file?). PostCheck works **after posting** and judges the posted transaction against the request and the SOP. Different step, source of truth and escalation target — never merged.
 
-**Last-mile UI** — Vercel **AI SDK 7** · TypeScript · Zod · React. ⚠️ **Language boundary:** TypeScript is the last mile only — the agentic loop, GraphRAG fusion, access-control retrieval and the full eval suite stay in Python; no agent core crosses the boundary
-
-**Evaluation & Observability** — DeepEval · RAGAS · SelfCheckGPT · GEval · Arize Phoenix · LangSmith
-
-**Testing & CI/CD** — pytest · GitHub Actions · ruff · mypy · **pre-commit** (pinned hooks; strict subset of CI) · **uv** (`uv sync --frozen`)
-
-**Documentation & Architecture** — Structurizr DSL (C4 model source) → Mermaid export · Architecture Decision Records (`docs/adr/`, Nygard/MADR)
-
-**Agentic dev harness** — **OpenCode + Claude Code** under one portable `AGENTS.md` contract (`.opencode/agents/` · `.opencode/commands/` · `opencode.jsonc`) · Cursor (`.cursor/rules/`, shared via OpenCode `instructions[]`) · VS Code · `PreToolUse` guard hook (human commits only)
-
-**Trading & backtesting (Crucible)** — NautilusTrader · Optuna · Alpaca
-
-**Data & domain APIs** — edgartools (SEC) · yfinance · Wikipedia API
-
-**Domain:** ~15 years business operations · financial services (ERISA-regulated) · active trading
+**Stack:** Python · vision LLM · Pydantic · DeepEval (GEval) · Streamlit · Docker
 
 ---
 
-## 📂 Repository Structure
+## 🧩 Backlog & shared components
 
-> **Document versions (2026):** scope docs aligned to **Roadmap v10.0**. Filenames unchanged — the version lives in each document's header. Each scope carries a Stage-1 build sheet and a Full-Production architecture doc where applicable.
+- **StreamSmart** ([scope](project_scopes/STREAMSMART/STREAMSMART_OPTIMIZER_SCOPE_v1_6_STAGE1.md)) — consumer streaming-subscription optimizer. Backlog.
+- **Operations Demand Intelligence** ([scope](project_scopes/ODI/OPERATIONS_DEMAND_INTELLIGENCE_SCOPE_v3_0.md)) — workflow-demand analytics on document-management data; a consolidation candidate against DataVault's mart and AI layer. Backlog.
+- **signalcore** ([boundary spec](project_scopes/CRUCIBLE/Shared_SignalCore_Boundary_Spec_v1_5.md)) — point-in-time-safe primitives shared by Crucible and AFC.
+- **Cadence** ([scope](support_tools/CADENCE_CONTENT_SCOPE_v1_0_STAGE1.md)) — build-in-public content pipeline; tooling, not a portfolio project.
 
-```
-data-portfolio/
-├── README.md                                  # This file — portfolio hub
-├── AGENTS.md                                  # standing instructions for agentic coding sessions
-├── opencode.jsonc                             # OpenCode config — model routing, permissions, instructions[]
-├── .opencode/                                 # agentic harness (replicated in every project repo)
-│   ├── agents/                                # docs-fix · docs-sync · eval-guardian · learn ·
-│   │                                          #   pattern-scout · security-auditor
-│   └── commands/                              # /commit-msg · /draft-issue · /eval · /labels · /pr-prep ·
-│                                              #   /readme · /review · /task-brief · /test
-├── project_scopes/
-│   ├── POLICYPULSE/                            # 🚩 Applied-AI flagship (RAG → GraphRAG → agentic)
-│   │   ├── POLICYPULSE_HR_RAG_SCOPE_v1_6_STAGE1.md
-│   │   └── POLICYPULSE_HR_RAG_SCOPE_v2_0_FULL_PRODUCTION.md
-│   ├── DATAVAULT/                              # 🚩 Data-Engineering flagship (1099 core → platform → AI layer)
-│   │   ├── DATAVAULT_1099_DATA_PLATFORM_SCOPE_v2_1_STAGE1.md
-│   │   └── DATAVAULT_1099_DATA_PLATFORM_SCOPE_v1_0_FULL_PRODUCTION.md
-│   ├── CRUCIBLE/                               # 🚩 Autonomous trading-research flagship
-│   │   ├── CRUCIBLE_SCOPE_v3_1_STAGE1.md
-│   │   ├── CRUCIBLE_SCOPE_v1_0_FULL_PRODUCTION.md
-│   │   └── Shared_SignalCore_Boundary_Spec_v1_3.md   # shared primitives (AFC ↔ Crucible)
-│   ├── POSTCHECK/                              # 🚩 Dual-target flagship (Applied AI + AE/DE)
-│   │   ├── POSTCHECK_QA_AGENT_SCOPE_v1_1_STAGE1.md
-│   │   └── POSTCHECK_QA_AGENT_SCOPE_v1_0_FULL_PRODUCTION.md
-│   ├── AFC/                                    # Supporting — eval-first research
-│   │   ├── AFC_EVAL_FIRST_CORE_SCOPE_v1_3.md
-│   │   └── ATTENTION_FLOW_CATALYST_SCOPE_v9_0.md
-│   ├── FORMSENSE/                             # Supporting — multimodal document ops
-│   │   ├── FORMSENSE_DISTRIBUTION_SCOPE_v1_8_STAGE1.md
-│   │   └── FORMSENSE_DISTRIBUTION_SCOPE_v2_0_FULL_PRODUCTION.md
-│   ├── STREAMSMART/                           # Backlog — consumer AI app
-│   │   ├── STREAMSMART_OPTIMIZER_SCOPE_v1_6_STAGE1.md
-│   │   └── STREAMSMART_OPTIMIZER_SCOPE_v2_0_FULL_PRODUCTION.md
-│   ├── ODI/                                   # Backlog — enterprise demand analytics
-│   │   └── OPERATIONS_DEMAND_INTELLIGENCE_SCOPE_v3_0.md
-│   └── revisions/                            # superseded Crucible revisions (kept for trail)
-│       ├── CRUCIBLE_SCOPE_v1_1_SWING_REVISION.md
-│       └── CRUCIBLE_SCOPE_v1_2_CONFIRMED.md
-└── support_tools/                            # tooling, not portfolio flagships
-    ├── CADENCE_CONTENT_SCOPE_v1_0_STAGE1.md
-    └── CADENCE_CONTENT_SCOPE_v1_0_FULL_PRODUCTION.md
-```
-
-> Each scope document includes: executive summary, business problem, data/architecture, phased S1→S3 implementation, tech stack, CI/CD, evaluation strategy, Docker support, a Mermaid diagram, the per-stage courses/certs, a Skills-Required table, and the v10.0 production standard (C4 + ADR + uv/`uv.lock` + the pinned pre-commit hook set + the Structurizr-DSL→Mermaid diagram toolchain + the observability/config/retry layer — `structlog` + redaction processor, `pydantic-settings`, `stamina` — + the `.opencode/` agentic harness). Agentic-workflow vs. autonomous-agent boundaries are drawn explicitly per Anthropic's *Building Effective Agents* taxonomy; Crucible's live path is the one irreversible route requiring HITL + kill-switch. The `signalcore` boundary spec defines the shared-primitives contract between AFC and Crucible.
+Superseded scope versions and review records live in [`project_scopes/revisions/`](project_scopes/revisions/).
 
 ---
 
-## 📖 More Resources
+## 🏗️ Production standard
 
-| Resource | Link |
-|---|---|
-| 📋 Interactive roadmap | [v10.0 career roadmap (3 stages, ~32 months)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
-| 📚 Learning journey | [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) |
-| 👤 GitHub profile | [@manuel-reyes-ml](https://github.com/manuel-reyes-ml) |
-| 🔗 LinkedIn | [Manuel Reyes](https://linkedin.com/in/mr410) |
+Every repo, flagship or supporting:
 
----
-
-## 🎯 Open To
-
-- **AI-Focused Analytics Engineer** (first door) and **Data Engineer** roles — AI-ready data platforms (semantic/metrics layers, embedding pipelines, vector stores, PII-safe unstructured-data ETL feeding RAG, reproducible ML-ready datasets)
-- **Where to look first if you are hiring for AE/DE:** DataVault for the platform arc, **PostCheck** for event ingestion + a modelled metrics layer with a declared grain
-- Networking with data and AI practitioners · code reviews · technical discussion
+- **Documentation** — README leads with Production · Cost · Architecture · Mermaid + C4 context (container on flagships), both generated from one Structurizr DSL model · numbered, immutable ADRs in `docs/adr/` · Dockerfile · eval-metrics table · 15–30 s demo GIF · "What I learned".
+- **Quality gates** — evaluation thresholds block merges · **synthetic data only** in public repos · earned overlay: AI or ML ships only if it beats the deterministic baseline · no vibe coding — every line understood before merge.
+- **Python & dependencies** — Python 3.14, standard GIL build, declared once in `requires-python`; ruff, mypy, the Docker base image and the CI matrix read from it, so a mismatch fails CI · `pyproject.toml` + `src/` + `py.typed` · uv with a committed `uv.lock`, `uv sync --frozen` in CI and Docker, no `requirements.txt`.
+- **Data engines** — Polars for ingestion and bulk transforms; pandas only at the `openpyxl` template write and plotting hand-off; business logic in dbt. The reviewable artifact is the ADR plus a `.explain()` plan, not a small-data benchmark.
+- **Observability & config** — `structlog` over stdlib via `ProcessorFormatter`, so third-party logs pass through the same chain and its **PII-redaction processor** · `run_id` bound per run · logs to stdout · `pydantic-settings` with `SecretStr` · capped, jittered retries with `stamina`.
+- **Commit boundary** — a pinned `.pre-commit-config.yaml` that is a **strict subset of CI**: `ruff-check --fix` before `ruff-format`, `uv-lock`, `gitleaks`, `detect-private-key`, `nbstripout`, Conventional Commits on `commit-msg`. mypy runs in CI only — the mirrors-mypy hook silently degrades third-party types to `Any` (recorded as an ADR).
+- **Workflow** — branch → PR → self-review → merge; no direct commits to `main`. Agent harness: OpenCode writes, Claude Code reviews read-only, both governed by one `AGENTS.md`; a guard hook blocks agent `git commit` / `push`, so every commit is made by a human.
 
 ---
 
-<div align="center">
+## 🔗 More
 
-**🟢 Open to AI-Focused Analytics Engineer and Data Engineer roles** · longer-term trajectory: Applied AI / FDE (Stage 3 of the roadmap)
-
-🟢 Active · building in public
-
-</div>
+[GitHub profile](https://github.com/manuel-reyes-ml) — the 60-second summary · [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) — what I'm learning and why · [Roadmap v10.0](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) — every decision with its evidence · [LinkedIn](https://www.linkedin.com/in/mr410/) · [manuelreyesv410@gmail.com](mailto:manuelreyesv410@gmail.com)
