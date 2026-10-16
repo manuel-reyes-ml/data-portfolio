@@ -8,7 +8,7 @@
 **Document Version:** 1.0 (new — created under roadmap v10.0.)
 **Status:** 📋 DRAFT — v10.0-aligned. S2–S3 layers build progressively; the live-execution path is gated behind everything else.
 **Last aligned:** v10.0 (2026 Market Realignment).
-**Last Updated:** August 10, 2026 (CORRECTION 26 propagation). · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §6.1a order-intent classification + §6.5 stop-and-reverse ruling; additive, same version) · 🆕 follow-up: boundary-spec references repointed to `_v1_5`; Rule 201 check sourced from `signalcore.shortsale`.
+**Last Updated:** August 10, 2026 (CORRECTION 26 propagation). · 🆕 October 1, 2026 (roadmap v10.0 **CORRECTION 45** — §6.1a order-intent classification + §6.5 stop-and-reverse ruling; additive, same version) · 🆕 follow-up: boundary-spec references repointed to `_v1_5`; Rule 201 check sourced from `signalcore.shortsale`. · 🆕 October 13, 2026 (roadmap v10.0 **CORRECTION 63** — free price sources corrected per Stage-1 v3.1 §5.4: data-flow node, data-sources row, skills row; SPDR snapshots private; additive, same version)
 
 ---
 
@@ -125,7 +125,7 @@ This is the part most portfolio trading projects skip, and it is the reason this
 ```mermaid
 flowchart TB
     subgraph DATA[S2 — PIT Market-Data Lakehouse]
-      SRC[Stooq · Alpha Vantage · Finnhub<br/>SEC EDGAR · SPDR holdings]
+      SRC[Free price source chosen at spike<br/>Stooq · Tiingo · Alpaca · AV top-up<br/>SEC EDGAR · SPDR holdings private]
       BR[(🥉 Bronze — raw, append-only, PIT-stamped)]
       SI[(🥈 Silver — conformed bars, corp actions,<br/>PIT GICS map)]
       GO[(🥇 Gold — feature/universe marts)]
@@ -367,7 +367,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | Contracts | **Great Expectations** (PIT invariants) |
 | Orchestration | **Airflow** (idempotent, backfillable) |
 | Primitives | **`signalcore`** (semver'd, tested, shared with AFC) |
-| Data sources | Stooq (bulk), Alpha Vantage, Finnhub, **SEC EDGAR** (dilution + 8-K), SPDR holdings (PIT GICS) — all free-first |
+| Data sources | 🆕 Spike-selected free price source (Stage-1 v3.1 §5.4: Stooq bulk / Tiingo Starter / Alpaca Basic; Alpha Vantage compact top-up; Finnhub earnings calendar if free), **SEC EDGAR** (dilution + 8-K), SPDR holdings (PIT GICS, private store) — all free-first; no vendor rows in any repo |
 | ML (earned-overlay) | scikit-learn, statsmodels, SHAP |
 | Agents | **LangGraph** (Phases 2–3) |
 | AI providers | **Ollama/Qwen3 (default, local)** → Gemini → Anthropic → OpenAI (config-selected) |
@@ -460,7 +460,7 @@ The agent uses an LLM for reasoning and explanation, **never** for unsupervised 
 | **Own backtest harness** | **S1 ✅** | **You own fill/look-ahead logic — the integrity story you can defend under questioning** |
 | **PIT data discipline, walk-forward CV** | **S1 ✅** | **The Wall, sealed OOS vault, overfitting ledger — the anti-overfitting spine** |
 | DuckDB + partitioned Parquet | S1 ✅ | Data spine (shared with AFC) |
-| Free-first data sourcing (Stooq, AV, Finnhub, SEC EDGAR, SPDR) | S1 ✅ | Price, fundamentals, dilution/8-K, PIT GICS map |
+| Free-first data sourcing (🆕 spike-selected: Stooq / Tiingo / Alpaca; AV, Finnhub, SEC EDGAR, SPDR) | S1 ✅ | Price, fundamentals, dilution/8-K, PIT GICS map; 🆕 source verification + licence discipline |
 | Pydantic v2 | S1 ✅ | Config + structured LLM outputs; no free-text ever reaches a broker |
 | Ollama / local open-weight LLM | S1 ✅ | **Privacy routing — trading data never leaves the machine** |
 | Streamlit | S1 ✅ | Research dashboard + live monitor |
